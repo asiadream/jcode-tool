@@ -1,9 +1,9 @@
 package com.asiadream.jcode.tool.share.util;
 
-import kr.amc.amil.tool.share.data.Pair;
-import kr.amc.amil.tool.share.rule.PackageRule;
-import kr.amc.amil.tool.share.util.file.PathUtil;
-import kr.amc.amil.tool.share.util.json.JsonUtil;
+import com.asiadream.jcode.tool.share.data.Pair;
+import com.asiadream.jcode.tool.share.rule.PackageRule;
+import com.asiadream.jcode.tool.share.util.file.PathUtil;
+import com.asiadream.jcode.tool.share.util.json.JsonUtil;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,6 +1,6 @@
 package com.asiadream.jcode.tool.share.util;
 
-import kr.amc.amil.tool.share.util.file.PathUtil;
+import com.asiadream.jcode.tool.share.util.file.PathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 

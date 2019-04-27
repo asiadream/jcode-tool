@@ -1,6 +1,6 @@
 package com.asiadream.jcode.tool.share.util;
 
-import kr.amc.amil.tool.share.rule.NameRule;
+import com.asiadream.jcode.tool.share.rule.NameRule;
 import org.junit.Assert;
 import org.junit.Test;
 

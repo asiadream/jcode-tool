@@ -1,0 +1,233 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="wa.wj.dr.MddpDrSptrYnManageBrkdwn">
+
+    
+    <update id="updateMddpDrSptrYnManageBrkdwn" parameterType="amis3.vo.wa.wj.dr.SptrHistVO">
+        <![CDATA[
+            UPDATE /* SQLID=amis3.wa.wj.dr.dao.MddpDrSptrYnManageBrkdwnDao.updateMddpDrSptrYnManageBrkdwn */
+                   WJDRRSPCL
+               SET
+        ]]>
+        <if test="manageWorkKndCd == 'T'.toString()">
+                   END_DT          = TO_CHAR(TO_DATE(#{stDt},  'YYYYMMDD') - 1, 'YYYYMMDD'),
+        </if>
+        <if test="manageWorkKndCd == 'F'.toString()">
+                   ST_DT           = TO_CHAR(TO_DATE(#{endDt}, 'YYYYMMDD') + 1, 'YYYYMMDD'),
+        </if>
+        <![CDATA[
+                   FINL_UPID_EMPNO = #{finlUpidEmpno},
+                   FINL_UPDT_DTM   = SYSDATE
+             WHERE DR_EMPNO = #{drEmpno}
+               AND MDDP_CD  = #{mddpCd}
+        ]]>
+        <if test="manageWorkKndCd == 'T'.toString()">
+            <![CDATA[
+               AND ST_DT    < #{stDt}
+               AND END_DT  >= #{stDt}
+            ]]>
+	    </if>
+        <if test="manageWorkKndCd == 'F'.toString()">
+            <![CDATA[
+               AND ST_DT   <= #{endDt}
+               AND END_DT   > #{endDt}
+            ]]>
+	    </if>
+    </update>
+
+    
+    <insert id="registerMddpDrSptrYnManageBrkdwn" parameterType="amis3.vo.wa.wj.dr.SptrHistVO">
+        <![CDATA[
+            INSERT /* SQLID=amis3.wa.wj.dr.dao.MddpDrSptrYnManageBrkdwnDao.registerMddpDrSptrYnManageBrkdwn */
+                   INTO WJDRRSPCL
+                 (
+                   MDDP_CD          -- 진료과코드
+                 , DR_EMPNO         -- 의사사번
+                 , ST_DT            -- 시작일자(여기까지 키)
+                 , END_DT           -- 종료일자
+                 , SPTR_YN          -- 선택진료여부
+                 , SPTR_QUAFI_PA    -- 선택진료자격유무
+                 , FRST_ENTR_EMPNO
+                 , FRST_ENTR_DTM
+                 , FINL_UPID_EMPNO
+                 , FINL_UPDT_DTM
+                 )
+            VALUES
+                 (
+                   #{mddpCd}
+                 , #{drEmpno}
+                 , #{stDt}
+                 , #{endDt}
+                 , #{sptrYn}
+                 , #{sptrQuafiPa}
+                 , #{finlUpidEmpno}
+                 , SYSDATE
+                 , #{finlUpidEmpno}
+                 , SYSDATE
+                 )
+        ]]>
+    </insert>
+
+    
+    <select id="retrieveMddpDrSptrYnManageBrkdwn" parameterType="amis3.vo.wa.wj.dr.SptrHistVO" resultType="amis3.vo.wa.wj.dr.SptrHistVO">
+        <![CDATA[
+            SELECT /* SQLID=amis3.wa.wj.dr.dao.MddpDrSptrYnManageBrkdwnDao.retrieveMddpDrSptrYnManageBrkdwn */
+                   DS.DR_EMPNO
+                 , DS.MDDP_CD
+                 , DS.ST_DT
+                 , DS.END_DT
+        ]]>
+        <if test="manageWorkKndCd == 'T'.toString()">
+                 , TO_CHAR(TO_DATE(#{stDt}, 'YYYYMMDD') - 1, 'YYYYMMDD')
+        </if>
+        <if test="manageWorkKndCd == 'F'.toString()">
+                 , TO_CHAR(TO_DATE(#{endDt}, 'YYYYMMDD') + 1, 'YYYYMMDD')
+        </if>
+        <![CDATA[
+                 , DS.SPTR_YN
+                 , DS.SPTR_QUAFI_PA
+              FROM WJDRRSPCL DS
+        ]]>
+            <where>
+            <![CDATA[
+                   DS.MDDP_CD  =  #{mddpCd}
+               AND DS.DR_EMPNO =  #{drEmpno}
+            ]]>
+            <if test="manageWorkKndCd == 'T'.toString()">
+            <![CDATA[
+               AND DS.ST_DT    <  #{stDt}
+               AND DS.END_DT   >= #{stDt}
+            ]]>
+            </if>
+            <if test="manageWorkKndCd == 'F'.toString()">
+            <![CDATA[
+               AND DS.ST_DT    <= #{endDt}
+               AND DS.END_DT    > #{endDt}
+            ]]>
+            </if>
+            </where>
+    </select>
+
+    
+    <select id="retrieveMddpDrSptrYnManageBrkdwnList" parameterType="amis3.vo.wa.wj.dr.SptrHistVO" resultType="amis3.vo.wa.wj.dr.SptrHistVO">
+        <![CDATA[
+            SELECT /* SQLID=amis3.wa.wj.dr.dao.MddpDrSptrYnManageBrkdwnDao.retrieveMddpDrSptrYnManageBrkdwnList */
+                   DS.MDDP_CD        -- 진료과코드
+                 , DS.DR_EMPNO       -- 의사사번
+                 , DS.ST_DT          -- 시작일자
+                 , DS.END_DT         -- 종료일자
+                 , DS.SPTR_YN        -- 선택진료여부
+                 , DS.SPTR_QUAFI_PA  -- 선택진료자격유무
+              FROM WJDRRSPCL DS
+        ]]>
+        <where>
+                   DS.MDDP_CD  = #{mddpCd}
+               AND DS.DR_EMPNO = #{drEmpno}
+            <if test="manageWorkKndCd == 'D'.toString()">
+            <![CDATA[
+               AND DS.ST_DT    >= #{stDt}
+               AND DS.END_DT   <= #{endDt}
+            ]]>
+            </if>
+        </where>
+             ORDER BY DS.ST_DT DESC
+                    , DS.MDDP_CD
+    </select>
+
+    /* 삭제 */
+	<delete id="deleteMddpDrSptrYnManageBrkdwn" parameterType="amis3.vo.wa.wj.dr.SptrHistVO">
+		<![CDATA[
+            DELETE /* SQLID=amis3.wa.wj.dr.dao.MddpDrSptrYnManageBrkdwnDao.deleteMddpDrSptrYnManageBrkdwn */
+                   WJDRRSPCL
+        ]]>
+        <where>
+        <![CDATA[
+                   MDDP_CD  = #{mddpCd}
+               AND DR_EMPNO = #{drEmpno}
+               AND ST_DT    >= #{stDt}
+               AND END_DT   <= #{endDt}
+        ]]>
+        </where>
+	</delete>
+
+    <select id="retrieveOtrMddpSptrConfmYn" parameterType="amis3.vo.wa.wj.dr.SptrHistVO" resultType="amis3.vo.wa.wj.dr.SptrHistVO">
+        <![CDATA[
+            SELECT /* SQLID=amis3.wa.wj.dr.dao.MddpDrSptrYnManageBrkdwnDao.retrieveOtrMddpSptrConfmYn */
+                   CASE
+                     WHEN NVL(COUNT(*), 0) >= 2 THEN 'Y'
+                     ELSE 'N'
+                   END AS OTR_MDDP_SPTR_CONFM_YN
+              FROM (
+                   SELECT DS.DR_EMPNO, DS.SPTR_YN
+                     FROM WJDRDDPDO DD, WJDRRSPCL DS
+                    WHERE DD.DR_EMPNO = #{drEmpno}
+                      AND DD.VALD_YN = 'Y'
+                      AND DS.MDDP_CD = DD.MDDP_CD
+                      AND DS.DR_EMPNO = DD.DR_EMPNO
+                      AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN DS.ST_DT AND DS.END_DT
+                    GROUP BY DS.DR_EMPNO, DS.SPTR_YN, DS.SPTR_YN
+                    )
+             GROUP BY DR_EMPNO
+        ]]>
+    </select>
+
+
+   <select id="retrieveSptrYn" parameterType="amis3.vo.wa.wj.op.DrInfoMdexPosblDtmInqryVO"  resultType="amis3.vo.wa.wj.dr.SptrYnVO">
+        <![CDATA[
+            SELECT /* SQLID=amis3.wa.wj.dr.dao.MddpDrSptrYnManageBrkdwnDao.retrieveSptrYn */
+                   RP.SPTR_YN
+              FROM WJDRRSPCL RP
+        ]]>
+        <where>
+                   RP.DR_EMPNO = #{drEmpno}
+               AND RP.MDDP_CD  = #{mddpCd}
+               AND #{vistDt} BETWEEN RP.ST_DT AND RP.END_DT
+        </where>
+    </select>
+
+    <select id="retrieveSptrUsePosblYn" parameterType="amis3.vo.wa.wj.op.DrInfoMdexPosblDtmInqryVO"  resultType="amis3.vo.wa.wj.dr.SptrUsePosblConfmVO">
+        <![CDATA[
+            SELECT /* SQLID=amis3.wa.wj.dr.dao.MddpDrSptrYnManageBrkdwnDao.retrieveSptrUsePosblYn */
+                   DECODE(TRIM(#{bforMddpCd}), TRIM(#{mddpCd}), 'Y', 'N') AS MDDP_SAME_YN
+                 , DECODE(#{bforDrEmpno}, #{drEmpno}, 'Y', 'N') AS DR_EMPNO_SAME_YN
+                 , DECODE(RS1.SPTR_YN, RS2.SPTR_YN, 'Y', 'N') AS SPTR_SAME_YN
+              FROM WJDRRSPCL RS1
+                 , WJDRRSPCL RS2
+        ]]>
+        <where>
+                   RS1.MDDP_CD  = #{bforMddpCd}
+               AND RS1.DR_EMPNO = #{bforDrEmpno}
+               AND #{bforVistDt} BETWEEN RS1.ST_DT AND RS1.END_DT
+               AND RS2.MDDP_CD  = #{mddpCd}
+               AND RS2.DR_EMPNO = #{drEmpno}
+               AND #{vistDt}     BETWEEN RS2.ST_DT AND RS2.END_DT
+        </where>
+    </select>
+
+    <!-- 의사이력을 조회한다. -->
+    <select id="retrieveDrMddpHistWithIntgRcep" parameterType="amis3.vo.wa.wj.zz.InqryCndtVO" resultType="String">
+        <![CDATA[
+            SELECT /* SQLID=amis3.wa.wj.dr.dao.MddpDrSptrYnManageBrkdwnDao.retrieveDrMddpHistWithIntgRcep */
+                   SPCL.SPTR_YN             AS SPTR_YN
+              FROM WJDRRSPCL    SPCL        /* 진료과의사선택진료여부관리내역 */
+             WHERE SPCL.MDDP_CD         = #{mddpCd, jdbcType=VARCHAR}
+               AND SPCL.DR_EMPNO        = #{atnnEmpno, jdbcType=VARCHAR}
+               AND #{vistDt, jdbcType=VARCHAR}
+                                        BETWEEN SPCL.ST_DT
+                                            AND SPCL.END_DT
+        ]]>
+    </select>
+
+    <select id="retrieveRadTumorDrSptrYn" parameterType="amis3.vo.wa.wj.op.FtrOrdrRcepStorgVO"
+        resultType="amis3.vo.wa.wj.op.FtrOrdrRcepStorgVO">
+        <![CDATA[
+            SELECT /* SQLID=amis3.wa.wj.dr.dao.MddpDrSptrYnManageBrkdwnDao.retrieveRadTumorDrSptrYn */
+                   NVL(SPTR_YN, 'N') AS SPTR_YN /* 선택진료여부 */
+              FROM WJDRRSPCL /* 진료과의사선택진료여부관리내역 */
+             WHERE MDDP_CD  = #{mddpCd}
+               AND DR_EMPNO = #{atnnEmpno}
+               AND #{mdexDt} BETWEEN ST_DT AND END_DT
+        ]]>
+    </select>
+
+</mapper>
