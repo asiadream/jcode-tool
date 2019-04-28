@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{35} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+	<timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss" />
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<!--
+		<file>C:\03_amc\zz_log\log-${bySecond}.txt</file>
+		-->
+		<file>log\converter-log.txt</file>
+		<append>false</append>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="ERROR_FILE" class="ch.qos.logback.core.FileAppender">
+		<!--
+		<file>C:\03_amc\zz_log\log-${bySecond}.txt</file>
+		-->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>error</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter> 
+		<file>log\converter-log-error.txt</file>
+		<append>false</append>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+	</appender>
+    
+    <appender name="WARN_FILE" class="ch.qos.logback.core.FileAppender">
+        <!--
+        <file>C:\03_amc\zz_log\log-${bySecond}.txt</file>
+        -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter> 
+        <file>log\converter-log-warn.txt</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="WARN_FILE_DUP_CHECKER_JAVA" class="ch.qos.logback.core.FileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter> 
+        <file>log\converter-log-warn-dup-checker-java.txt</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="WARN_FILE_DUP_CHECKER_XML" class="ch.qos.logback.core.FileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter> 
+        <file>log\converter-log-warn-dup-checker-xml.txt</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="WARN_FILE_DTO_CHECKER_TO" class="ch.qos.logback.core.FileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter> 
+        <file>log\converter-log-warn-dto-checker-to.txt</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="WARN_FILE_DTO_CHECKER_VO" class="ch.qos.logback.core.FileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter> 
+        <file>log\converter-log-warn-dto-checker-vo.txt</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="WARN_FILE_SELFEXT_CHECKER" class="ch.qos.logback.core.FileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter> 
+        <file>log\converter-log-warn-selfext-checker.txt</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="WARN_FILE_SQLMAP_CHECKER" class="ch.qos.logback.core.FileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter> 
+        <file>log\converter-log-warn-sqlmap-checker.txt</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="WARN_FILE_SQLMAP_ERROR_CHECKER" class="ch.qos.logback.core.FileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter> 
+        <file>log\converter-log-warn-sqlmap-error-checker.txt</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="WARN_FILE_INCOMPLETE" class="ch.qos.logback.core.FileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter> 
+        <file>log\converter-log-incomplete.txt</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+	
+	<logger name="kr.amc.amil.tool.project.complex" level="DEBUG" />
+    
+    <logger name="dup-checker-java" level="WARN">
+        <appender-ref ref="WARN_FILE_DUP_CHECKER_JAVA" />
+    </logger>
+    
+    <logger name="dup-checker-xml" level="WARN">
+        <appender-ref ref="WARN_FILE_DUP_CHECKER_XML" />
+    </logger>
+    
+    <logger name="dto-checker-to" level="WARN">
+        <appender-ref ref="WARN_FILE_DTO_CHECKER_TO" />
+    </logger>
+    
+    <logger name="dto-checker-vo" level="WARN">
+        <appender-ref ref="WARN_FILE_DTO_CHECKER_VO" />
+    </logger>
+    
+    <logger name="selfext-checker" level="WARN">
+        <appender-ref ref="WARN_FILE_SELFEXT_CHECKER" />
+    </logger>
+    
+    <logger name="sqlmap-checker" level="WARN">
+        <appender-ref ref="WARN_FILE_SQLMAP_CHECKER" />
+    </logger>
+    
+    <logger name="sqlmap-error-checker" level="WARN">
+        <appender-ref ref="WARN_FILE_SQLMAP_ERROR_CHECKER" />
+    </logger>
+    
+    <logger name="incomplete" level="WARN">
+        <appender-ref ref="WARN_FILE_INCOMPLETE" />
+    </logger>
+
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+		<appender-ref ref="ERROR_FILE" />
+	</root>
+
+</configuration>
