@@ -10,16 +10,20 @@ public class TestClass {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
         doSomething();
     }
+
     private void doSomething() {
     }
+
     public int getAge() {
         doSomething();
         return age;
     }
+
     public void setAge(int age) {
         this.age = age;
     }

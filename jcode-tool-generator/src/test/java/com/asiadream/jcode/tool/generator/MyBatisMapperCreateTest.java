@@ -12,21 +12,21 @@ public class MyBatisMapperCreateTest {
     private static final String SOURCE_FILE = "foo/bar/SampleSqlMap.xml";
     private static final String SOURCE_FILE2 = "com/foo/bar/dao/mapper/Sample.xml".replaceAll("/", Matcher.quoteReplacement(File.separator));
 
-    @Test
+    //@Test
     public void testExecute() throws Exception {
         //
         MyBatisMapperCreate myBatisMapperCreate = new MyBatisMapperCreate();
         myBatisMapperCreate.execute(PROJECT_HOME, PROJECT_HOME, SOURCE_FILE);
     }
 
-    @Test
+    //@Test
     public void testExecuteToTarget() throws Exception {
         //
         MyBatisMapperCreate myBatisMapperCreate = new MyBatisMapperCreate();
         myBatisMapperCreate.execute(PROJECT_HOME, TARGET_HOME, SOURCE_FILE);
     }
 
-    @Test
+    //@Test
     public void testExecute2() throws Exception {
         // Requirements
         // 1. return List type with Dao class.

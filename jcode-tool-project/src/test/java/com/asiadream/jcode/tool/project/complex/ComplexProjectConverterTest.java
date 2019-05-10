@@ -25,7 +25,7 @@ public class ComplexProjectConverterTest extends BaseFileTest {
     // change name rule
     // amis3.vo.sp.ss.ge.SsgedwkmoVO -> kr.amc.amis.sp.speciments.ge.entity.SsgedwkmoDTO
     //   - postfix:VO   -> postfix:DTO
-    @Test
+    //@Test
     public void testConvert() throws Exception {
         //
         ConvertParameter parameter = new ConvertParameter();

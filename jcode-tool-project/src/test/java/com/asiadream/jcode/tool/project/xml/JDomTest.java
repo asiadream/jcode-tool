@@ -8,7 +8,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 
 public class JDomTest {
-    @Test
+    //@Test
     public void testParse() throws Exception {
         //
         File file = new File("./pom.xml");

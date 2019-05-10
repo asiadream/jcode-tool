@@ -12,7 +12,7 @@ public class AmisProjectConvertTest extends BaseFileTest {
     private static final String RESOURCE_PROJECT_HOME = "D:\\Projects\\AMIS\\workspace\\amis3-resource";
     private final String TARGET_WORKSPACE = super.testDirName;
     
-    @Test
+    //@Test
     public void testConvert() throws Exception {
         //
         ConvertParameter parameter = new ConvertParameter();

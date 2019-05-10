@@ -11,7 +11,7 @@ public class JavaInterfaceAbstractingTest extends BaseFileTest {
     private static final String SOURCE_FILE_NAME = "com/foo/bar/service/SampleService.java";
     private static final String SOURCE_BASE_PACKAGE = "com.foo";
 
-    @Test
+    //@Test
     public void testExecute() throws IOException {
         //
         JavaInterfaceAbstracting abstracting = new JavaInterfaceAbstracting();

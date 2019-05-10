@@ -51,4 +51,12 @@ public class StringUtil extends org.apache.commons.lang3.StringUtils {
         c[0] -= 32;
         return new String(c);
     }
+
+    public static String removeSuffix(String s, String suffix) {
+        //
+        if (s != null && suffix != null && s.endsWith(suffix)) {
+            return s.substring(0, s.length() - suffix.length());
+        }
+        return s;
+    }
 }

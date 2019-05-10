@@ -17,7 +17,7 @@ public class JavaConvert {
      * @param sourceProjectHome ex) ./source-project
      * @param targetProjectHome ex) ./target-project
      * @param sourceFileName    ex) com/foo/bar/service/SampleService.java
-     * @throws IOException
+     * @throws IOException throws IOException.
      */
     public void execute(String sourceProjectHome, String targetProjectHome, String sourceFileName) throws IOException {
         //

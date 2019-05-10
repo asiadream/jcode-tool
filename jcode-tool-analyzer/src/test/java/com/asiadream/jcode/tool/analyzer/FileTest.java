@@ -10,14 +10,14 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 public class FileTest {
-    private static final String PROJECT_PATH = "/Users/daniel/Documents/work/source_gen/source-gen-work/source-project";
+    private static final String PROJECT_PATH = ".";
     private static final String JAVA_PATH = "src/main/java";
     private static final String PACKAGE_PATH = "com/foo/bar";
 
-    private static final String PROJECT_PATH2 = "/Users/daniel/Documents/work/source_gen/source-gen-work/source-gen";
+    private static final String PROJECT_PATH2 = ".";
     private static final String PACKAGE_PATH2 = "syhan";
 
-    @Test
+    //@Test
     public void testDir() throws Exception {
         //
         String srcPath = PROJECT_PATH + File.separator + JAVA_PATH + File.separator + PACKAGE_PATH;
@@ -30,7 +30,7 @@ public class FileTest {
         }
     }
 
-    @Test
+    //@Test
     public void testDir2() throws Exception {
         //
         String srcPath = PROJECT_PATH2 + File.separator + JAVA_PATH + File.separator + PACKAGE_PATH2;
@@ -43,7 +43,7 @@ public class FileTest {
         }
     }
 
-    @Test
+    //@Test
     public void testCreateDir() throws Exception {
         FileUtils.forceMkdir(new File("foo/bar/hello"));
     }

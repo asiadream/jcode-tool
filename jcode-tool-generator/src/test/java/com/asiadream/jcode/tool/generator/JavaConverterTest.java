@@ -14,7 +14,7 @@ public class JavaConverterTest extends BaseFileTest {
     private static final String SOURCE_PROJECT_HOME = "../source-project";
     private static final String SOURCE_FILE_NAME = "com/foo/bar/service/SampleService.java";
 
-    @Test
+    //@Test
     public void testConvert() throws IOException {
         //
         ProjectConfiguration sourceConfig = new ProjectConfiguration(ConfigurationType.Source, SOURCE_PROJECT_HOME, false);

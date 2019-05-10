@@ -5,7 +5,7 @@ import com.asiadream.jcode.tool.project.model.ProjectModel;
 
 public class ProjectCreate {
     //
-    private static final String TARGET_PATH = "/Users/daniel/Documents/work/source_gen/javatool-parent";
+    private static final String TARGET_PATH = "./source_gen/javatool-parent";
 
     public static void main(String[] args) throws Exception {
         //
