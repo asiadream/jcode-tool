@@ -142,7 +142,10 @@ public class ComplexProjectConverter {
                 .addDependency("org.slf4j", "slf4j-api")
                 .addDependency("kr.amc.amil", "amil-core", "1.0-SNAPSHOT")
                 .addDependency("kr.amc.amil", "amil-batch", "1.0-SNAPSHOT")
-                .addDependency("kr.amc.amis", "share-entity", "0.0.1-SNAPSHOT");
+                .addDependency("kr.amc.amis", "share-entity", "0.0.1-SNAPSHOT")
+                .addProperty("spring.boot.version", "2.0.0.RELEASE")
+                .addProperty("spring.cloud.version", "Finchley.M7")
+                .addProperty("spring.cloud.stream.version", "Elmhurst.RC3");
 
         // level2 parent
         String nameLevel2 = param.getNewProjectName1() + "-" + param.getNewProjectName2();

@@ -4,6 +4,7 @@ import com.asiadream.jcode.tool.generator.source.XmlSource;
 import com.asiadream.jcode.tool.generator.writer.XmlWriter;
 import com.asiadream.jcode.tool.project.model.Dependency;
 import com.asiadream.jcode.tool.project.model.ProjectModel;
+import com.asiadream.jcode.tool.project.model.ProjectProperty;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
 import com.asiadream.jcode.tool.share.util.xml.DomUtil;
 import org.w3c.dom.Document;
@@ -79,8 +80,8 @@ public class PomCreator {
         }
 
         // properties element
-        if (model.isRoot()) {
-            Element properties = createPropertiesElement(document);
+        if (model.isRoot() && model.hasProperties()) {
+            Element properties = createPropertiesElement(document, model.getProperties());
             project.appendChild(properties);
         }
 
@@ -122,12 +123,15 @@ public class PomCreator {
         return parent;
     }
 
-    private Element createPropertiesElement(Document document) {
+    private Element createPropertiesElement(Document document, List<ProjectProperty> projectProperties) {
         //
         Element properties = document.createElement("properties");
-        properties.appendChild(DomUtil.createTextElement(document, "spring.boot.version", "2.0.0.RELEASE"));
-        properties.appendChild(DomUtil.createTextElement(document, "spring.cloud.version", "Finchley.M7"));
-        properties.appendChild(DomUtil.createTextElement(document, "spring.cloud.stream.version", "Elmhurst.RC3"));
+        for (ProjectProperty property : projectProperties) {
+            properties.appendChild(DomUtil.createTextElement(document, property.getKey(), property.getValue()));
+        }
+//        properties.appendChild(DomUtil.createTextElement(document, "spring.boot.version", "2.0.0.RELEASE"));
+//        properties.appendChild(DomUtil.createTextElement(document, "spring.cloud.version", "Finchley.M7"));
+//        properties.appendChild(DomUtil.createTextElement(document, "spring.cloud.stream.version", "Elmhurst.RC3"));
         return properties;
     }
 

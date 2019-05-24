@@ -17,6 +17,7 @@ public class ProjectModel {
     private ProjectModel parent;
     private List<ProjectModel> children;
     private List<Dependency> dependencies;
+    private List<ProjectProperty> properties;
 
     private String workspacePath;
 
@@ -38,6 +39,7 @@ public class ProjectModel {
         this.packaging = packaging;
         this.children = new ArrayList<>();
         this.dependencies = new ArrayList<>();
+        this.properties = new ArrayList<>();
     }
 
     public ProjectConfiguration configuration(ConfigurationType configurationType) {
@@ -130,6 +132,23 @@ public class ProjectModel {
         return dependencies != null && dependencies.size() > 0;
     }
 
+    public ProjectModel addProperty(String key, String value) {
+        //
+        this.properties.add(new ProjectProperty(key, value));
+        return this;
+    }
+
+    public ProjectModel addProperty(ProjectProperty property) {
+        //
+        this.properties.add(property);
+        return this;
+    }
+
+    public boolean hasProperties() {
+        //
+        return properties != null && properties.size() > 0;
+    }
+
     public List<ProjectModel> getChildren() {
         return children;
     }
@@ -185,5 +204,9 @@ public class ProjectModel {
 
     public List<Dependency> getDependencies() {
         return dependencies;
+    }
+
+    public List<ProjectProperty> getProperties() {
+        return properties;
     }
 }
