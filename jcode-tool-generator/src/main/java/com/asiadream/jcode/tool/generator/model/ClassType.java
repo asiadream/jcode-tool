@@ -140,6 +140,20 @@ public class ClassType {
         this.packageName = packageName;
         this.typeArguments = new ArrayList<>();
     }
+
+    public List<String> usingClassNames() {
+        //
+        List<String> classNames = new ArrayList<>();
+        if (!isPrimitive()) {
+            classNames.add(getClassName());
+        }
+        if (hasTypeArgument()) {
+            for (ClassType typeArgument : getTypeArguments()) {
+                classNames.addAll(typeArgument.usingClassNames());
+            }
+        }
+        return classNames;
+    }
     
     public void addTypeArgument(ClassType typeArgument) {
         //

@@ -4,9 +4,7 @@ import com.asiadream.jcode.tool.generator.model.*;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.*;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.type.*;
 
@@ -16,6 +14,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
+// Ast -> Model : to***(), Model -> Ast : create***()
 public abstract class AstMapper {
     //
     // Ast:CompilationUnit -> Model:JavaModel
@@ -85,6 +84,13 @@ public abstract class AstMapper {
             for (ClassType implementsType : javaModel.getImplementsTypes()) {
                 classType.addImplementedType(implementsType.getName());
             }
+        }
+
+        // Field
+        for (FieldModel fieldModel : javaModel.getFields()) {
+            //
+            FieldDeclaration fieldDeclaration = createFieldDeclaration(fieldModel);
+            classType.addMember(fieldDeclaration);
         }
 
         // Method
@@ -158,6 +164,18 @@ public abstract class AstMapper {
         // Comment
         method.setComment(methodModel.getComment());
         return method;
+    }
+
+    // Model:FieldModel -> Ast:FieldDeclaration
+    public static FieldDeclaration createFieldDeclaration(FieldModel fieldModel) {
+        //
+        Type fieldType = createType(fieldModel.getType());
+
+        FieldDeclaration field = new FieldDeclaration();
+        field.addModifier(Modifier.PRIVATE);
+        VariableDeclarator variable = new VariableDeclarator(fieldType, fieldModel.getName());
+        field.addVariable(variable);
+        return field;
     }
 
     // Ast:Type -> Model:ClassType

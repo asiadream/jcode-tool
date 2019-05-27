@@ -43,6 +43,11 @@ public class MethodModel {
         return parameterModels.size();
     }
 
+    public boolean hasParameter() {
+        //
+        return this.parameterModels != null && this.parameterModels.size() > 0;
+    }
+
     public void addParameterModel(ParameterModel parameterModel) {
         //
         this.parameterModels.add(parameterModel);
@@ -66,6 +71,23 @@ public class MethodModel {
     public boolean isPublic() {
         //
         return "public".equals(access);
+    }
+
+    public List<String> usingClassNames() {
+        //
+        List<String> classNames = new ArrayList<>();
+
+        if (returnType != null) {
+            classNames.addAll(returnType.usingClassNames());
+        }
+
+        if (hasParameter()) {
+            for (ParameterModel parameter : parameterModels) {
+                classNames.addAll(parameter.usingClassNames());
+            }
+        }
+
+        return classNames;
     }
 
     public String getName() {

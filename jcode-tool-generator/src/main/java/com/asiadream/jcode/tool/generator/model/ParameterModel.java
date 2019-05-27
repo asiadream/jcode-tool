@@ -1,5 +1,7 @@
 package com.asiadream.jcode.tool.generator.model;
 
+import java.util.List;
+
 public class ParameterModel {
     //
     private ClassType type;
@@ -15,6 +17,11 @@ public class ParameterModel {
         //
         this.type = ClassType.copyOf(other.type);
         this.varName = other.varName;
+    }
+
+    public List<String> usingClassNames() {
+        //
+        return type.usingClassNames();
     }
 
     public ClassType getType() {

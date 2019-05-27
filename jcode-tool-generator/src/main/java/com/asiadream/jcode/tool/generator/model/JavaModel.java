@@ -17,6 +17,7 @@ public class JavaModel implements SourceModel {
     private List<ClassType> extendsTypes;
     private List<ClassType> implementsTypes;
 
+    private List<FieldModel> fields;
     private List<MethodModel> methods;
 
     private Comment nodeComment;
@@ -25,6 +26,7 @@ public class JavaModel implements SourceModel {
     private JavaModel() {
         //
         this.annotations = new ArrayList<>();
+        this.fields = new ArrayList<>();
         this.methods = new ArrayList<>();
         this.extendsTypes = new ArrayList<>();
         this.implementsTypes = new ArrayList<>();
@@ -61,6 +63,18 @@ public class JavaModel implements SourceModel {
         }
 
         this.isInterface = other.isInterface;
+
+        for (ClassType type : other.extendsTypes) {
+            this.extendsTypes.add(new ClassType(type));
+        }
+
+        for (ClassType type : other.implementsTypes) {
+            this.implementsTypes.add(new ClassType(type));
+        }
+
+        for (FieldModel field : other.fields) {
+            this.fields.add(new FieldModel(field));
+        }
 
         for (MethodModel method : other.methods) {
             this.methods.add(new MethodModel(method));
@@ -177,6 +191,11 @@ public class JavaModel implements SourceModel {
         this.implementsTypes.add(implementsType);
     }
 
+    public void addFieldModel(FieldModel fieldModel) {
+        //
+        this.fields.add(fieldModel);
+    }
+
     public void addMethodModel(MethodModel methodModel) {
         //
         this.methods.add(methodModel);
@@ -195,6 +214,16 @@ public class JavaModel implements SourceModel {
     public boolean hasImplementsType() {
         //
         return this.implementsTypes != null && this.implementsTypes.size() > 0;
+    }
+
+    public boolean hasField() {
+        //
+        return this.fields != null && this.fields.size() > 0;
+    }
+
+    public boolean hasMethod() {
+        //
+        return this.methods != null && this.methods.size() > 0;
     }
 
     public List<String> computeImports() {
@@ -252,26 +281,39 @@ public class JavaModel implements SourceModel {
 
         if (hasAnnotation()) {
             for (AnnotationType annotation : annotations) {
-                classNames.add(annotation.getClassName());
+                classNames.addAll(annotation.usingClassNames());
             }
         }
 
         if (hasExtendsType()) {
             for (ClassType classType : extendsTypes) {
-                classNames.add(classType.getClassName());
+                classNames.addAll(classType.usingClassNames());
             }
         }
 
         if (hasImplementsType()) {
             for (ClassType classType : implementsTypes) {
-                classNames.add(classType.getClassName());
+                classNames.addAll(classType.usingClassNames());
             }
         }
 
-        classNames.addAll(extractMethodUsingClassNames());
+        if (hasField()) {
+            for (FieldModel field : fields) {
+                classNames.addAll(field.usingClassNames());
+            }
+        }
+
+        if (hasMethod()) {
+            for (MethodModel method : methods) {
+                classNames.addAll(method.usingClassNames());
+            }
+        }
+
+        //classNames.addAll(extractMethodUsingClassNames());
         return classNames;
     }
 
+    @Deprecated
     private List<String> extractMethodUsingClassNames() {
         //
         List<String> classNames = new ArrayList<>();
@@ -346,6 +388,10 @@ public class JavaModel implements SourceModel {
 
     public void setMethods(List<MethodModel> methods) {
         this.methods = methods;
+    }
+
+    public List<FieldModel> getFields() {
+        return fields;
     }
 
     public Comment getNodeComment() {
