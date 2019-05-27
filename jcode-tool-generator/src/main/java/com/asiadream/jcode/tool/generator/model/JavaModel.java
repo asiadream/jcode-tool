@@ -8,40 +8,64 @@ import com.github.javaparser.ast.comments.Comment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JavaModel {
+public class JavaModel implements SourceModel {
     //
     private ClassType classType;
-    private AnnotationType annotation;
+    private List<AnnotationType> annotations;
     private boolean isInterface;
 
+    private List<ClassType> extendsTypes;
+    private List<ClassType> implementsTypes;
+
     private List<MethodModel> methods;
-    
+
     private Comment nodeComment;
     private Comment typeComment;
 
+    private JavaModel() {
+        //
+        this.annotations = new ArrayList<>();
+        this.methods = new ArrayList<>();
+        this.extendsTypes = new ArrayList<>();
+        this.implementsTypes = new ArrayList<>();
+    }
+
+    // an example of className: com.foo.Foo
+    public JavaModel(String className) {
+        //
+        this(className, false);
+    }
+
     public JavaModel(String className, boolean isInterface) {
         //
+        this();
         this.classType = ClassType.newClassType(className);
         this.isInterface = isInterface;
-        this.methods = new ArrayList<>();
     }
 
     public JavaModel(String name, String packageName, boolean isInterface) {
         //
+        this();
         this.classType = ClassType.newClassType(name, packageName);
         this.isInterface = isInterface;
-        this.methods = new ArrayList<>();
     }
 
     public JavaModel(JavaModel other) {
         //
+        this();
+
         this.classType = ClassType.copyOf(other.classType);
-        this.annotation = AnnotationType.copyOf(other.annotation);
+
+        for (AnnotationType annotation : other.annotations) {
+            this.annotations.add(AnnotationType.copyOf(annotation));
+        }
+
         this.isInterface = other.isInterface;
-        this.methods = new ArrayList<>();
+
         for (MethodModel method : other.methods) {
             this.methods.add(new MethodModel(method));
         }
+
         this.nodeComment = other.nodeComment;
         this.typeComment = other.typeComment;
     }
@@ -116,7 +140,7 @@ public class JavaModel {
         }
 
         for (MethodModel methodModel : methods) {
-            if(methodModel.getName().equals(methodName)) {
+            if (methodModel.getName().equals(methodName)) {
                 return methodModel;
             }
         }
@@ -138,6 +162,21 @@ public class JavaModel {
         classType.setPackageName(packageName);
     }
 
+    public void addAnnotation(AnnotationType annotationType) {
+        //
+        this.annotations.add(annotationType);
+    }
+
+    public void addExtendsType(ClassType extendsType) {
+        //
+        this.extendsTypes.add(extendsType);
+    }
+
+    public void addImplementsType(ClassType implementsType) {
+        //
+        this.implementsTypes.add(implementsType);
+    }
+
     public void addMethodModel(MethodModel methodModel) {
         //
         this.methods.add(methodModel);
@@ -145,7 +184,17 @@ public class JavaModel {
 
     public boolean hasAnnotation() {
         //
-        return this.annotation != null;
+        return this.annotations != null && this.annotations.size() > 0;
+    }
+
+    public boolean hasExtendsType() {
+        //
+        return this.extendsTypes != null && this.extendsTypes.size() > 0;
+    }
+
+    public boolean hasImplementsType() {
+        //
+        return this.implementsTypes != null && this.implementsTypes.size() > 0;
     }
 
     public List<String> computeImports() {
@@ -177,7 +226,7 @@ public class JavaModel {
                     || name.toUpperCase().equals("BOOLEAN")
                     || name.toUpperCase().equals("STRING")
                     || name.toUpperCase().equals("BYTE")
-                    ) {
+            ) {
                 //
             } else {
                 resultList.add(name);
@@ -201,8 +250,22 @@ public class JavaModel {
         //
         List<String> classNames = new ArrayList<>();
 
-        if (annotation != null) {
-            classNames.add(annotation.getClassName());
+        if (hasAnnotation()) {
+            for (AnnotationType annotation : annotations) {
+                classNames.add(annotation.getClassName());
+            }
+        }
+
+        if (hasExtendsType()) {
+            for (ClassType classType : extendsTypes) {
+                classNames.add(classType.getClassName());
+            }
+        }
+
+        if (hasImplementsType()) {
+            for (ClassType classType : implementsTypes) {
+                classNames.add(classType.getClassName());
+            }
         }
 
         classNames.addAll(extractMethodUsingClassNames());
@@ -213,6 +276,7 @@ public class JavaModel {
         //
         List<String> classNames = new ArrayList<>();
 
+        // FIXME : refactoring
         for (MethodModel methodModel : methods) {
             ClassType returnType = methodModel.getReturnType();
             if (returnType != null && !returnType.isPrimitive()) {
@@ -244,12 +308,28 @@ public class JavaModel {
         this.classType = classType;
     }
 
-    public AnnotationType getAnnotation() {
-        return annotation;
+    public List<AnnotationType> getAnnotations() {
+        return annotations;
     }
 
-    public void setAnnotation(AnnotationType annotation) {
-        this.annotation = annotation;
+    public void setAnnotations(List<AnnotationType> annotations) {
+        this.annotations = annotations;
+    }
+
+    public List<ClassType> getExtendsTypes() {
+        return extendsTypes;
+    }
+
+    public void setExtendsTypes(List<ClassType> extendsTypes) {
+        this.extendsTypes = extendsTypes;
+    }
+
+    public List<ClassType> getImplementsTypes() {
+        return implementsTypes;
+    }
+
+    public void setImplementsTypes(List<ClassType> implementsTypes) {
+        this.implementsTypes = implementsTypes;
     }
 
     public boolean isInterface() {

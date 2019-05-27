@@ -561,9 +561,10 @@ public class JavaSource {
     public void write(String physicalTargetFilePath) throws IOException {
         //
         File file = new File(physicalTargetFilePath);
-        // TODO : using Logger
-        //System.out.println(compilationUnit.toString());
-        
+        if (logger.isTraceEnabled()) {
+            logger.trace(compilationUnit.toString());
+        }
+
         FileUtils.writeStringToFile(file, generate(), "UTF-8");
     }
     

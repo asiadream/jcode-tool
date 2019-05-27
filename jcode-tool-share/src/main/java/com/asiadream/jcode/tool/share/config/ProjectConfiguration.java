@@ -38,6 +38,11 @@ public class ProjectConfiguration {
         this(type, projectHomePath, ProjectSources.SOURCE_FOLDERS, lexicalPreserving);
     }
 
+    public ProjectConfiguration(ConfigurationType type, String projectHomePath) {
+        //
+        this(type, projectHomePath, ProjectSources.SOURCE_FOLDERS, false);
+    }
+
     public ProjectConfiguration(ConfigurationType type, String projectHomePath, SourceFolders sourceFolders, boolean lexicalPreserving) {
         //
         this.type = type;

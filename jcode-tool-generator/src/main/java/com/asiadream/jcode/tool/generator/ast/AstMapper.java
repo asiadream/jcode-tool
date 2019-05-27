@@ -1,9 +1,6 @@
 package com.asiadream.jcode.tool.generator.ast;
 
-import com.asiadream.jcode.tool.generator.model.ClassType;
-import com.asiadream.jcode.tool.generator.model.JavaModel;
-import com.asiadream.jcode.tool.generator.model.MethodModel;
-import com.asiadream.jcode.tool.generator.model.ParameterModel;
+import com.asiadream.jcode.tool.generator.model.*;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.*;
@@ -68,8 +65,26 @@ public abstract class AstMapper {
         // Class
         EnumSet<Modifier> modifiers = EnumSet.of(Modifier.PUBLIC);
         ClassOrInterfaceDeclaration classType = new ClassOrInterfaceDeclaration(modifiers, javaModel.isInterface(), javaModel.getName());
+
+        // Type Annotation
         if (javaModel.hasAnnotation()) {
-            classType.addMarkerAnnotation(javaModel.getAnnotation().getName());
+            for (AnnotationType annotation : javaModel.getAnnotations()) {
+                classType.addMarkerAnnotation(annotation.getName());
+            }
+        }
+
+        // Extended Type
+        if (javaModel.hasExtendsType()) {
+            for (ClassType extendsType : javaModel.getExtendsTypes()) {
+                classType.addExtendedType(extendsType.getName());
+            }
+        }
+
+        // Implemented Type
+        if (javaModel.hasImplementsType()) {
+            for (ClassType implementsType : javaModel.getImplementsTypes()) {
+                classType.addImplementedType(implementsType.getName());
+            }
         }
 
         // Method

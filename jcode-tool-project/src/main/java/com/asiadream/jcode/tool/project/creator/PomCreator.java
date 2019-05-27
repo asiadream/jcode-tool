@@ -129,9 +129,6 @@ public class PomCreator {
         for (ProjectProperty property : projectProperties) {
             properties.appendChild(DomUtil.createTextElement(document, property.getKey(), property.getValue()));
         }
-//        properties.appendChild(DomUtil.createTextElement(document, "spring.boot.version", "2.0.0.RELEASE"));
-//        properties.appendChild(DomUtil.createTextElement(document, "spring.cloud.version", "Finchley.M7"));
-//        properties.appendChild(DomUtil.createTextElement(document, "spring.cloud.stream.version", "Elmhurst.RC3"));
         return properties;
     }
 

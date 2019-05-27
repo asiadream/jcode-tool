@@ -120,7 +120,7 @@ public class MyBatisMapperCreator extends ProjectItemConverter {
         String mapperClassName = sqlMapSource.getNamespace();
 
         JavaModel javaModel = new JavaModel(mapperClassName, true);
-        javaModel.setAnnotation(new AnnotationType("org.apache.ibatis.annotations.Mapper"));
+        javaModel.addAnnotation(new AnnotationType("org.apache.ibatis.annotations.Mapper"));
         List<Element> sqlElements = sqlMapSource.findSqlElements();
         for (Element element : sqlElements) {
             String methodName = element.getAttribute("id");
