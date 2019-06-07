@@ -18,6 +18,7 @@ public class JavaModel implements SourceModel {
     private List<ClassType> implementsTypes;
 
     private List<FieldModel> fields;
+    private List<ConstructorModel> constructors;
     private List<MethodModel> methods;
 
     private Comment nodeComment;
@@ -27,6 +28,7 @@ public class JavaModel implements SourceModel {
         //
         this.annotations = new ArrayList<>();
         this.fields = new ArrayList<>();
+        this.constructors = new ArrayList<>();
         this.methods = new ArrayList<>();
         this.extendsTypes = new ArrayList<>();
         this.implementsTypes = new ArrayList<>();
@@ -74,6 +76,10 @@ public class JavaModel implements SourceModel {
 
         for (FieldModel field : other.fields) {
             this.fields.add(new FieldModel(field));
+        }
+
+        for (ConstructorModel constructor : other.constructors) {
+            this.constructors.add(new ConstructorModel(constructor));
         }
 
         for (MethodModel method : other.methods) {
@@ -176,29 +182,40 @@ public class JavaModel implements SourceModel {
         classType.setPackageName(packageName);
     }
 
-    public void addAnnotation(AnnotationType annotationType) {
+    public JavaModel addAnnotation(AnnotationType annotationType) {
         //
         this.annotations.add(annotationType);
+        return this;
     }
 
-    public void addExtendsType(ClassType extendsType) {
+    public JavaModel addExtendsType(ClassType extendsType) {
         //
         this.extendsTypes.add(extendsType);
+        return this;
     }
 
-    public void addImplementsType(ClassType implementsType) {
+    public JavaModel addImplementsType(ClassType implementsType) {
         //
         this.implementsTypes.add(implementsType);
+        return this;
     }
 
-    public void addFieldModel(FieldModel fieldModel) {
+    public JavaModel addFieldModel(FieldModel fieldModel) {
         //
         this.fields.add(fieldModel);
+        return this;
     }
 
-    public void addMethodModel(MethodModel methodModel) {
+    public JavaModel addConstructorModel(ConstructorModel constructorModel) {
+        //
+        this.constructors.add(constructorModel);
+        return this;
+    }
+
+    public JavaModel addMethodModel(MethodModel methodModel) {
         //
         this.methods.add(methodModel);
+        return this;
     }
 
     public boolean hasAnnotation() {
@@ -219,6 +236,11 @@ public class JavaModel implements SourceModel {
     public boolean hasField() {
         //
         return this.fields != null && this.fields.size() > 0;
+    }
+
+    public boolean hasConstructor() {
+        //
+        return this.constructors != null && this.constructors.size() > 0;
     }
 
     public boolean hasMethod() {
@@ -303,13 +325,18 @@ public class JavaModel implements SourceModel {
             }
         }
 
+        if (hasConstructor()) {
+            for (ConstructorModel constructor : constructors) {
+                classNames.addAll(constructor.usingClassNames());
+            }
+        }
+
         if (hasMethod()) {
             for (MethodModel method : methods) {
                 classNames.addAll(method.usingClassNames());
             }
         }
 
-        //classNames.addAll(extractMethodUsingClassNames());
         return classNames;
     }
 
@@ -408,6 +435,18 @@ public class JavaModel implements SourceModel {
 
     public void setTypeComment(Comment typeComment) {
         this.typeComment = typeComment;
+    }
+
+    public void setFields(List<FieldModel> fields) {
+        this.fields = fields;
+    }
+
+    public List<ConstructorModel> getConstructors() {
+        return constructors;
+    }
+
+    public void setConstructors(List<ConstructorModel> constructors) {
+        this.constructors = constructors;
     }
 
     public String toJson() {

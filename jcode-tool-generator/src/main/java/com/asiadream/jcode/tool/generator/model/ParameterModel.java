@@ -13,6 +13,12 @@ public class ParameterModel {
         this.varName = varName;
     }
 
+    public ParameterModel(FieldModel fieldModel) {
+        //
+        this.type = ClassType.copyOf(fieldModel.getType());
+        this.varName = fieldModel.getName();
+    }
+
     public ParameterModel(ParameterModel other) {
         //
         this.type = ClassType.copyOf(other.type);

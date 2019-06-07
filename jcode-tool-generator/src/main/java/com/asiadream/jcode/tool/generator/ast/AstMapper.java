@@ -6,6 +6,7 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.Name;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.*;
 
 import java.util.EnumSet;
@@ -37,11 +38,11 @@ public abstract class AstMapper {
                 javaModel.addMethodModel(toMethodModel(method, fullNameProvider));
             }
         }
-        
+
         // Comment
         javaModel.setNodeComment(compilationUnit.getComment().orElse(null));
         javaModel.setTypeComment(classType.getComment().orElse(null));
-        
+
         return javaModel;
     }
 
@@ -93,17 +94,23 @@ public abstract class AstMapper {
             classType.addMember(fieldDeclaration);
         }
 
+        // Constructor
+        for (ConstructorModel constructorModel : javaModel.getConstructors()) {
+            ConstructorDeclaration constructorDeclaration = createConstructorDeclaration(constructorModel);
+            classType.addMember(constructorDeclaration);
+        }
+
         // Method
         for (MethodModel methodModel : javaModel.getMethods()) {
             MethodDeclaration methodDeclaration = createMethodDeclaration(methodModel);
             classType.addMember(methodDeclaration);
         }
-        
+
         // Type Comment
         classType.setComment(javaModel.getTypeComment());
 
         compilationUnit.addType(classType);
-        
+
         // Node Comment
         compilationUnit.setComment(javaModel.getNodeComment());
 
@@ -120,25 +127,43 @@ public abstract class AstMapper {
         ClassType returnType = toClassType(methodType, fullNameProvider);
 
         MethodModel methodModel = new MethodModel(name, returnType);
-        methodModel.setAccess(access.asString());
+        methodModel.setAccess(Access.valueOf(access.asString()));
         for(Parameter parameter : method.getParameters()) {
             ClassType parameterType = toClassType(parameter.getType(), fullNameProvider);
             // FIXME parameterName check
             String parameterName = parameter.getNameAsString();
             methodModel.addParameterModel(new ParameterModel(parameterType, parameterName));
         }
-        
+
         // throws
         for (ReferenceType thrown : method.getThrownExceptions()) {
             String typeName = ((ClassOrInterfaceType)thrown).getName().asString();
             ClassType thrownClassType = ClassType.newClassType(typeName);
             methodModel.addThrown(thrownClassType);
         }
-        
+
         // Comment
         methodModel.setComment(method.getComment().orElse(null));
 
         return methodModel;
+    }
+
+    public static ConstructorDeclaration createConstructorDeclaration(ConstructorModel constructorModel) {
+        //
+        ConstructorDeclaration constructor = new ConstructorDeclaration(constructorModel.getName());
+        constructor.addModifier(Modifier.PUBLIC);
+
+        for (ParameterModel parameterModel : constructorModel.getParameterModels()) {
+            Parameter parameter = createParameter(parameterModel);
+            constructor.addParameter(parameter);
+        }
+
+        BlockStmt bstmt = new BlockStmt();
+        for (String stmt : constructorModel.getBodyStatements()) {
+            bstmt.addStatement(stmt);
+        }
+        constructor.setBody(bstmt);
+        return constructor;
     }
 
     // Model:MethodModel -> Ast:MethodDeclaration
@@ -150,19 +175,36 @@ public abstract class AstMapper {
         MethodDeclaration method = new MethodDeclaration(EnumSet.noneOf(Modifier.class), methodType, methodModel.getName());
         method.setBody(null);
 
+        // Access
+        if (methodModel.getAccess() != null) {
+            method.addModifier(Modifier.valueOf(methodModel.getAccess().name()));
+        }
+
+        // Static
+        if (methodModel.isStaticMethod()) {
+            method.addModifier(Modifier.STATIC);
+        }
+
         // Parameter
         for (ParameterModel parameterModel : methodModel.getParameterModels()) {
             Parameter parameter = createParameter(parameterModel);
             method.addParameter(parameter);
         }
-        
+
         // throws
         for (ClassType thrown : methodModel.getThrowns()) {
             method.addThrownException(createClassOrInterfaceType(thrown));
         }
-        
+
         // Comment
         method.setComment(methodModel.getComment());
+
+        // Body
+        BlockStmt bstmt = new BlockStmt();
+        for (String stmt : methodModel.getBodyStatements()) {
+            bstmt.addStatement(stmt);
+        }
+        method.setBody(bstmt);
         return method;
     }
 
@@ -213,7 +255,7 @@ public abstract class AstMapper {
         if (classType.isPrimitive()) {
             return new PrimitiveType(PrimitiveType.Primitive.valueOf(classType.getName().toUpperCase()));
         }
-        
+
         if (classType.isArray()) {
             ClassType elementType = ClassType.newArrayElementType(classType);
             Type componentType = createType(elementType);
@@ -228,6 +270,14 @@ public abstract class AstMapper {
         //
         Type type = createType(parameterModel.getType());
         Parameter parameter = new Parameter(type, parameterModel.getVarName());
+        return parameter;
+    }
+
+    // Model:FieldModel -> Ast:Parameter
+    public static Parameter createParameter(FieldModel fieldModel) {
+        //
+        Type type = createType(fieldModel.getType());
+        Parameter parameter = new Parameter(type, fieldModel.getName());
         return parameter;
     }
 
