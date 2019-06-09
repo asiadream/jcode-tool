@@ -1,0 +1,4 @@
+!!com.asiadream.jcode.tool.project.yaml.model.Customer
+firstName: "John"
+lastName: "Doe"
+age: 20
