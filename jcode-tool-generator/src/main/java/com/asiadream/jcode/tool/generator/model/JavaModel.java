@@ -90,6 +90,11 @@ public class JavaModel implements SourceModel {
         this.typeComment = other.typeComment;
     }
 
+    public String getSourceFileName() {
+        // SomeClass.java
+        return classType.getName() + ".java";
+    }
+
     public void changeName(NameRule nameRule) {
         //
         if (nameRule == null) {
@@ -152,6 +157,19 @@ public class JavaModel implements SourceModel {
 
         classType.changeName(nameRule);
         classType.changePackage(packageRule);
+    }
+
+    public FieldModel findFieldByName(String fieldName) {
+        //
+        if (fields == null || fields.isEmpty()) {
+            return null;
+        }
+        for (FieldModel fieldModel : fields) {
+            if (fieldModel.getName().equals(fieldName)) {
+                return fieldModel;
+            }
+        }
+        return null;
     }
 
     public MethodModel findMethodByName(String methodName) {

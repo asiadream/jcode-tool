@@ -14,7 +14,7 @@ public class ProjectService {
 
     public void createNestedProject(String name, String workspace) {
         //
-        ProjectModel projectModel = createProjectModel(name, workspace);
+        ProjectModel projectModel = projectMeta.toProjectModel(name, workspace);
         NestedProjectCreator projectCreator = new NestedProjectCreator(workspace);
         projectCreator.create(projectModel);
     }
@@ -27,14 +27,8 @@ public class ProjectService {
         return projectMeta;
     }
 
-    private ProjectModel createProjectModel(String name, String workspace) {
-        // level1
-//        String groupId = projectMeta.getGroupId();
-//        String version = projectMeta.getVersion();
-
-        ProjectModel projectModel = projectMeta.toProjectModel(name, workspace);
-
-
+//    private ProjectModel createProjectModel(String name, String workspace) {
+    //
 //        ProjectModel projectModelLevel1 = new ProjectModel(name, groupId, version, "pom")
 //                .setWorkspacePath(workspace)
 //                .addDependency("junit", "junit")
@@ -78,7 +72,7 @@ public class ProjectService {
 //        bootModel.addDependency(jpaModel);
 //        bootModel.addDependency(serviceModel);
 //        projectModelLevel1.add(bootModel);
-
-        return projectModel;
-    }
+//
+//        return projectModel;
+//    }
 }

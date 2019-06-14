@@ -3,6 +3,7 @@ package com.asiadream.jcode.tool.project.meta;
 import com.asiadream.jcode.tool.project.model.ProjectModel;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ProjectMeta {
     //
@@ -17,24 +18,15 @@ public class ProjectMeta {
         ProjectModel projectModel = new ProjectModel(name, groupId, version, "pom");
         projectModel.setWorkspacePath(workspace);
 
-        if (dependencies != null) {
-            for (DependencyMeta dependencyMeta : dependencies) {
-                projectModel.addDependency(dependencyMeta.getGroupId(), dependencyMeta.getName(), dependencyMeta.getVersion());
-            }
-        }
+        Optional.ofNullable(dependencies).ifPresent(deps -> deps.forEach(dep ->
+                projectModel.addDependency(dep.getGroupId(), dep.getName(), dep.getVersion())));
+        Optional.ofNullable(properties).ifPresent(props -> props.forEach(prop ->
+                projectModel.addProperty(prop.getKey(), prop.getValue())));
+        Optional.ofNullable(modules).ifPresent(mods -> mods.forEach(mod -> {
+            ProjectModel subProject = mod.toProjectModel(projectModel);
+            projectModel.add(subProject);
+        }));
 
-        if (properties != null) {
-            for (PropertyMeta propertyMeta : properties) {
-                projectModel.addProperty(propertyMeta.getKey(), propertyMeta.getValue());
-            }
-        }
-
-        if (modules != null) {
-            for (ModuleMeta moduleMeta : modules) {
-                ProjectModel subProject = moduleMeta.toProjectModel(projectModel);
-                projectModel.add(subProject);
-            }
-        }
         return projectModel;
     }
 

@@ -1,0 +1,32 @@
+packageSuffix: "domain.entity"
+classAnnotations:
+  - "lombok.Getter"
+  - "lombok.Setter"
+  - "lombok.NoArgsConstructor"
+classExtends:
+  - "io.naraplatform.share.domain.nara.NaraEntity"
+classImplements:
+  - "io.naraplatform.share.domain.nara.NaraAggregate"
+fields:
+  - name: "id"
+    type: "String"
+  - name: "name"
+    type: "String"
+constructors:
+  - parameters:
+    - "id"
+    - "name"
+  - parameters:
+methods:
+  - name: "toJson"
+    type: "String"
+    access: PUBLIC
+    body: "return (new Gson()).toJson(this);"
+  - name: "fromJson"
+    type: "${simpleClassName}"
+    access: PUBLIC
+    staticMethod: true
+    parameters:
+      - type: "String"
+        varName: "json"
+    body: "return (new Gson()).fromJson(json, ${simpleClassName}.class);"

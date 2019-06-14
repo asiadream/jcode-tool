@@ -103,6 +103,9 @@ public abstract class AstMapper {
         // Method
         for (MethodModel methodModel : javaModel.getMethods()) {
             MethodDeclaration methodDeclaration = createMethodDeclaration(methodModel);
+            if (javaModel.isInterface()) {
+                methodDeclaration.setBody(null);
+            }
             classType.addMember(methodDeclaration);
         }
 

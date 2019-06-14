@@ -1,0 +1,13 @@
+packageSuffix: "domain.store"
+nameSuffix: "Store"
+interfaceFile: true
+methods:
+  - name: "create"
+    parameters:
+      - type: "BaseName"
+        varName: "baseName"
+  - name: "retrieve"
+    type: "kr.nextree.BaseName"
+    parameters:
+      - type: "String"
+        varName: "id"
