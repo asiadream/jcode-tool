@@ -6,6 +6,7 @@ import com.asiadream.jcode.tool.generator.model.ConstructorModel;
 import com.asiadream.jcode.tool.generator.model.JavaModel;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,17 +16,45 @@ public class JavaMeta {
     private String nameSuffix;    // Store
     private boolean interfaceFile;
     private List<FieldMeta> fields;
+    private EachFieldMeta eachField;
     private List<String> classAnnotations;
     private List<String> classExtends;
     private List<String> classImplements;
     private List<ConstructorMeta> constructors;
     private List<MethodMeta> methods;
 
-    public JavaModel toJavaModel(String groupId, String baseName) {
-        // baseName: hello, groupId: io.naradrama, packageSuffix: domain.entity
+    public JavaMeta replaceExp(ExpressionContext expressionContext) {
+        //
+        Optional.ofNullable(eachField).ifPresent(eachField -> {
+            List<FieldMeta> created = eachField.eachFieldsByExp(expressionContext);
+            this.fields = Optional.ofNullable(fields).orElse(new ArrayList<>());
+            this.fields.addAll(created);
+        });
+        Optional.ofNullable(methods).ifPresent(methods -> methods.forEach(method -> method.replaceExp(expressionContext)));
+        return this;
+    }
+
+    public String getSimpleClassName(String baseName) {
+        //
+        return StringUtil.toFirstUpperCase(baseName) + StringUtil.defaultString(nameSuffix, ""); // Hello
+    }
+
+    public String getPackageName(String groupId) {
+        //
+        return groupId + "." + packageSuffix;
+    }
+
+    public String getClassName(String groupId, String baseName) {
+        //
         String simpleClassName = StringUtil.toFirstUpperCase(baseName) + StringUtil.defaultString(nameSuffix, ""); // Hello
         String packageName = groupId + "." + packageSuffix;
-        String className = packageName + "." + simpleClassName;
+        return packageName + "." + simpleClassName;
+    }
+
+    public JavaModel toJavaModel(String groupId, String baseName) {
+        // baseName: hello, groupId: io.naradrama, packageSuffix: domain.entity
+        String simpleClassName = getSimpleClassName(baseName);
+        String className = getClassName(groupId, baseName);
 
         JavaModel javaModel = new JavaModel(className, interfaceFile);
 
@@ -47,7 +76,7 @@ public class JavaMeta {
         }));
 
         Optional.ofNullable(methods).ifPresent(methods -> methods.forEach(method ->
-                javaModel.addMethodModel(method.toMethodModel(simpleClassName))));
+                javaModel.addMethodModel(method.toMethodModel())));
         return javaModel;
     }
 
@@ -69,6 +98,14 @@ public class JavaMeta {
 
     public List<FieldMeta> getFields() {
         return fields;
+    }
+
+    public EachFieldMeta getEachField() {
+        return eachField;
+    }
+
+    public void setEachField(EachFieldMeta eachField) {
+        this.eachField = eachField;
     }
 
     public void setFields(List<FieldMeta> fields) {

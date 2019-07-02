@@ -3,7 +3,9 @@ package com.asiadream.jcode.tool.generator.meta;
 import com.asiadream.jcode.tool.generator.model.Access;
 import com.asiadream.jcode.tool.generator.model.ClassType;
 import com.asiadream.jcode.tool.generator.model.MethodModel;
+import com.asiadream.jcode.tool.share.util.string.StringUtil;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,9 +18,17 @@ public class MethodMeta {
     private List<ParameterMeta> parameters;
     private String body;
 
-    public MethodModel toMethodModel(String simpleClassName) {
+    public MethodMeta replaceExp(ExpressionContext expressionContext) {
         //
-        MethodModel methodModel = new MethodModel(name, getMethodReturnType(simpleClassName));
+        this.type = expressionContext.replaceExpString(type);
+        Optional.ofNullable(parameters).ifPresent(parameters -> parameters.forEach(parameter -> parameter.replaceExp(expressionContext)));
+        this.body = expressionContext.replaceExpString(body);
+        return this;
+    }
+
+    public MethodModel toMethodModel() {
+        //
+        MethodModel methodModel = new MethodModel(name, getMethodReturnType());
         methodModel.setAccess(access);
         methodModel.setStaticMethod(staticMethod);
 
@@ -26,27 +36,23 @@ public class MethodMeta {
                 methodModel.addParameterModel(parameter.toParameterModel())));
 
         if (body != null) {
-            String replacedBody = replaceExp(body, simpleClassName);
-            methodModel.body(replacedBody);
+            methodModel.body(body);
         }
 
         return methodModel;
     }
 
-    private ClassType getMethodReturnType(String simpleClassName) {
+    private ClassType getMethodReturnType() {
         //
         if (type == null)
             return null;
-        String replacedType = replaceExp(type, simpleClassName);
-        return ClassType.newClassType(replacedType);
-    }
-
-    private String replaceExp(String src, String simpleClassName) {
-        //
-        if (src.contains("${simpleClassName}")) {
-            return src.replace("${simpleClassName}", simpleClassName);
+        if (type.indexOf('<') > 0) {
+            ClassType returnType = ClassType.newClassType(type.substring(0, type.indexOf('<')));
+            String typeArgNames = StringUtil.substringBetween(type, "<", ">");
+            Arrays.asList(typeArgNames.split(",")).forEach(typeArg -> returnType.addTypeArgument(typeArg));
+            return returnType;
         }
-        return src;
+        return ClassType.newClassType(type);
     }
 
     public String getName() {

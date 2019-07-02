@@ -4,10 +4,27 @@ interfaceFile: true
 methods:
   - name: "create"
     parameters:
-      - type: "BaseName"
-        varName: "baseName"
+      - type: "${refClassName}"
   - name: "retrieve"
-    type: "kr.nextree.BaseName"
+    type: "${refClassName}"
+    parameters:
+      - type: "String"
+        varName: "id"
+  - name: "retrieveAll"
+    type: "java.util.List<${refClassName}>"
+    parameters:
+      - type: "int"
+        varName: "offset"
+      - type: "int"
+        varName: "limit"
+  - name: "update"
+    parameters:
+      - type: "${refClassName}"
+  - name: "delete"
+    parameters:
+      - type: "${refClassName}"
+  - name: "exists"
+    type: "boolean"
     parameters:
       - type: "String"
         varName: "id"

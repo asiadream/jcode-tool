@@ -220,6 +220,10 @@ public abstract class AstMapper {
         field.addModifier(Modifier.PRIVATE);
         VariableDeclarator variable = new VariableDeclarator(fieldType, fieldModel.getName());
         field.addVariable(variable);
+
+        // Type Annotation
+        fieldModel.getAnnotations().forEach(annotationType -> field.addMarkerAnnotation(annotationType.getName()));
+
         return field;
     }
 

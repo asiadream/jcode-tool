@@ -8,14 +8,16 @@ classExtends:
 classImplements:
   - "io.naraplatform.share.domain.nara.NaraAggregate"
 fields:
-  - name: "id"
-    type: "String"
   - name: "name"
+    type: "String"
+  - name: "sequence"
+    type: "int"
+  - name: "email"
     type: "String"
 constructors:
   - parameters:
-    - "id"
-    - "name"
+      - "name"
+      - "sequence"
   - parameters:
 methods:
   - name: "toJson"

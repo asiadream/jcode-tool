@@ -50,6 +50,11 @@ public class FieldModel {
         this.annotations.add(annotation);
     }
 
+    public void addAnnotation(String annotationClassName) {
+        //
+        addAnnotation(new AnnotationType(annotationClassName));
+    }
+
     public boolean hasAnnotation() {
         //
         return this.annotations != null && this.annotations.size() > 0;

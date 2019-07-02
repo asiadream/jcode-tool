@@ -2,6 +2,7 @@ package com.asiadream.jcode.tool.generator.source;
 
 import com.asiadream.jcode.tool.generator.ast.AstMapper;
 import com.asiadream.jcode.tool.generator.model.ClassType;
+import com.asiadream.jcode.tool.generator.model.FieldModel;
 import com.asiadream.jcode.tool.generator.model.JavaModel;
 import com.asiadream.jcode.tool.generator.model.MethodModel;
 import com.asiadream.jcode.tool.share.data.Pair;
@@ -41,7 +42,7 @@ public class JavaSource {
 
     private CompilationUnit compilationUnit;
     private String physicalSourceFile;
-    
+
     private boolean lexicalPreserving;
 
     public JavaSource(String physicalSourceFile, boolean lexicalPreserving) throws FileNotFoundException {
@@ -198,7 +199,7 @@ public class JavaSource {
 
         compilationUnit.addImport(packageName + "." + name);
     }
-    
+
     public String getExtendedType() {
         ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
         if (classType.getExtendedTypes().size() > 0) {
@@ -212,16 +213,24 @@ public class JavaSource {
         addField(fieldType.getName(), fieldType.getPackageName(), varName, annotation.getName(), annotation.getPackageName());
     }
 
-    public void addField(String name, String packageName, String varName, String annotationName, String annotationPackageName) {
+    public void addField(String fieldTypeName, String packageName, String varName, String annotationName, String annotationPackageName) {
         //
         ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
-        FieldDeclaration field = classType.addPrivateField(name, varName);
-        compilationUnit.addImport(packageName + "." + name);
+        FieldDeclaration field = classType.addPrivateField(fieldTypeName, varName);
+        compilationUnit.addImport(packageName + "." + fieldTypeName);
 
         if (annotationName != null) {
             field.addMarkerAnnotation(annotationName);
             compilationUnit.addImport(annotationPackageName + "." + annotationName);
         }
+    }
+
+    public List<FieldModel> getFieldsAsModel() {
+        //
+        return compilationUnit.getType(0).getFields().stream().map(fieldDeclaration -> {
+            VariableDeclarator varDec = fieldDeclaration.getVariable(0);
+            return new FieldModel(varDec.getName().asString(), ClassType.newClassType(varDec.getType().asString()));
+        }).collect(Collectors.toList());
     }
 
     public void addAnnotation(ClassType classType) {
@@ -281,7 +290,7 @@ public class JavaSource {
         //
         compilationUnit.addImport(classType.getClassName());
     }
-    
+
     public List<String> getImports() {
         //
         return compilationUnit.getImports()
@@ -567,7 +576,7 @@ public class JavaSource {
 
         FileUtils.writeStringToFile(file, generate(), "UTF-8");
     }
-    
+
     public String generate() {
         //
         if (lexicalPreserving) {
@@ -575,7 +584,7 @@ public class JavaSource {
         }
         return compilationUnit.toString();
     }
-    
+
     @Override
     public String toString() {
         //

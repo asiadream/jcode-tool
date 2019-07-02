@@ -13,8 +13,8 @@ import java.util.List;
 
 public class ClassType {
     //
-	private static final Logger logger  = LoggerFactory.getLogger(ClassType.class);
-	
+    private static final Logger logger  = LoggerFactory.getLogger(ClassType.class);
+
     public static final String PRIMITIVE_INT = "INT";
     public static final String PRIMITIVE_BOOLEAN = "BOOLEAN";
     public static final String PRIMITIVE_CHAR = "CHAR";
@@ -76,7 +76,7 @@ public class ClassType {
         //
         return new ClassType(primitiveName, true);
     }
-    
+
     public static ClassType newArrayType(ClassType componentType) {
         //
         ClassType classType = new ClassType(componentType);
@@ -103,7 +103,7 @@ public class ClassType {
         int lastDotIndex = className.lastIndexOf(".");
         if (lastDotIndex > 0) {
             this.packageName = className.substring(0, lastDotIndex);
-            this.name = className.substring(lastDotIndex + 1, className.length());
+            this.name = className.substring(lastDotIndex + 1);
         } else {
             this.name = className;
             this.packageName = null;
@@ -154,7 +154,12 @@ public class ClassType {
         }
         return classNames;
     }
-    
+
+    public void addTypeArgument(String typeArgumentTypeName) {
+        //
+        addTypeArgument(ClassType.newClassType(typeArgumentTypeName));
+    }
+
     public void addTypeArgument(ClassType typeArgument) {
         //
         this.typeArguments.add(typeArgument);
@@ -234,9 +239,15 @@ public class ClassType {
     public List<ClassType> getTypeArguments() {
         return typeArguments;
     }
-    
+
     public boolean isArray() {
         return array;
+    }
+
+    @Override
+    public String toString() {
+        //
+        return getClassName();
     }
 
     public static void main(String[] args) {
@@ -244,6 +255,4 @@ public class ClassType {
         ClassType classType = new ClassType("com.foo.bar.SomeClass");
         logger.info("classType name {}, packageName {}", classType.getName(), classType.getPackageName());
     }
-
-
 }

@@ -190,6 +190,11 @@ public class JavaModel implements SourceModel {
         return classType.getName();
     }
 
+    public String getClassName() {
+        //
+        return classType.getClassName();
+    }
+
     public String getPackageName() {
         //
         return classType.getPackageName();
