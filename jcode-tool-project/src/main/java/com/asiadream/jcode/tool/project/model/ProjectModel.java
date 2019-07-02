@@ -13,6 +13,7 @@ public class ProjectModel {
     private String groupId;
     private String version;
     private String packaging;
+    private String baseName;
 
     private ProjectModel parent;
     private List<ProjectModel> children;
@@ -34,6 +35,7 @@ public class ProjectModel {
     public ProjectModel(String name, String groupId, String version, String packaging) {
         //
         this.name = name;
+        this.baseName = name;
         this.groupId = groupId;
         this.version = version;
         this.packaging = packaging;
@@ -208,5 +210,13 @@ public class ProjectModel {
 
     public List<ProjectProperty> getProperties() {
         return properties;
+    }
+
+    public String getBaseName() {
+        return baseName;
+    }
+
+    public void setBaseName(String baseName) {
+        this.baseName = baseName;
     }
 }

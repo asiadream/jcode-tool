@@ -7,6 +7,6 @@ public class ProjectServiceTest extends BaseFileTest {
     @Test
     public void testCreate() {
         ProjectService service = new ProjectService();
-        service.createNestedProject("talk", super.testDirName);
+        service.createNestedProject("drama-talk", "talk", super.testDirName);
     }
 }

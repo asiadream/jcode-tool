@@ -13,9 +13,10 @@ public class ProjectMeta {
     private List<PropertyMeta> properties;
     private List<ModuleMeta> modules;
 
-    public ProjectModel toProjectModel(String name, String workspace) {
+    public ProjectModel toProjectModel(String name, String baseName, String workspace) {
         //
         ProjectModel projectModel = new ProjectModel(name, groupId, version, "pom");
+        projectModel.setBaseName(baseName);
         projectModel.setWorkspacePath(workspace);
 
         Optional.ofNullable(dependencies).ifPresent(deps -> deps.forEach(dep ->

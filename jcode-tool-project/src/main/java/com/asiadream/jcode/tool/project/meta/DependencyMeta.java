@@ -7,6 +7,7 @@ public class DependencyMeta {
     private String groupId;
     private String name;
     private String version;
+    private String type;
     private String ref;
 
     public boolean existRef() {
@@ -36,6 +37,14 @@ public class DependencyMeta {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getRef() {
