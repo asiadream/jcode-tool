@@ -23,7 +23,16 @@ public class GradleScript implements GroovyPrintable {
     public String print(int level) {
         //
         StringBuffer sb = new StringBuffer();
-        this.elements.forEach(e -> sb.append(e.print()));
+        int size = elements.size();
+        for (GradleElement e : elements) {
+            sb.append(e.print());
+            if (--size > 0) {
+                sb.append("\n");
+                if (e.getClass() == GroovyDSL.class) {
+                    sb.append("\n");
+                }
+            }
+        }
         return sb.toString();
     }
 

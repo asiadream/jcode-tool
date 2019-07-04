@@ -13,7 +13,7 @@ public class ModuleMeta {
     public ProjectModel toProjectModel(ProjectModel parent) {
         //
         String name = ExpressionUtil.replaceExp(this.name, "baseName", parent.getBaseName());
-        String groupId = parent.getGroupId();
+        String groupId = parent.getGroup();
         String version = parent.getVersion();
         ProjectModel projectModel = new ProjectModel(name, groupId, version);
 
@@ -21,9 +21,9 @@ public class ModuleMeta {
             if (dependencyMeta.existRef()) {
                 String ref = ExpressionUtil.replaceExp(dependencyMeta.getRef(), "baseName", parent.getBaseName());
                 ProjectModel subModel = parent.findBySuffix(ref);
-                projectModel.addDependency(subModel);
+                projectModel.addDependency(subModel, dependencyMeta.getType());
             } else {
-                projectModel.addDependency(dependencyMeta.getGroupId(), dependencyMeta.getName(), dependencyMeta.getVersion());
+                projectModel.addDependency(dependencyMeta.toDependencyModel());
             }
         }));
 

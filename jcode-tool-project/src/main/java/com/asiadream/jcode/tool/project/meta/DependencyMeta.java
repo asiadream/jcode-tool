@@ -1,26 +1,37 @@
 package com.asiadream.jcode.tool.project.meta;
 
+import com.asiadream.jcode.tool.project.model.Dependency;
+import com.asiadream.jcode.tool.project.model.DependencyType;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
+
+import java.util.Optional;
 
 public class DependencyMeta {
     //
-    private String groupId;
+    private String group;
     private String name;
     private String version;
-    private String type;
+    private DependencyType type;
     private String ref;
+
+    public Dependency toDependencyModel() {
+        //
+        Dependency dependency = new Dependency(group, name, version);
+        Optional.ofNullable(type).ifPresent(type -> dependency.setType(type));
+        return dependency;
+    }
 
     public boolean existRef() {
         //
         return StringUtil.isNotEmpty(ref);
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getGroup() {
+        return group;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setGroup(String group) {
+        this.group = group;
     }
 
     public String getName() {
@@ -39,11 +50,11 @@ public class DependencyMeta {
         this.version = version;
     }
 
-    public String getType() {
+    public DependencyType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(DependencyType type) {
         this.type = type;
     }
 

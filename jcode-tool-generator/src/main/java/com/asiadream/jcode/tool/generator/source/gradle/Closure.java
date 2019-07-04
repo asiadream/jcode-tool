@@ -17,6 +17,11 @@ public class Closure implements Argument {
         this.elements.add(element);
     }
 
+    public void addAllElement(List<GradleElement> elements) {
+        //
+        this.elements.addAll(elements);
+    }
+
     @Override
     public String print(int level) {
         //

@@ -17,5 +17,12 @@ public class GradleWriter implements Writer<GradleSource> {
     @Override
     public void write(GradleSource source) throws IOException {
         //
+        String targetFilePath = source.getSourceFilePath();
+        writeSource(source, configuration.makePhysicalHomeFilePath(targetFilePath));
+    }
+
+    private void writeSource(GradleSource source, String physicalTargetFilePath) throws IOException {
+        //
+        source.write(physicalTargetFilePath);
     }
 }

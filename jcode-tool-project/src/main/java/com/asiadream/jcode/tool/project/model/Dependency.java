@@ -5,20 +5,20 @@ public class Dependency {
     private String groupId;
     private String name;
     private String version;
-    private String type;
+    private DependencyType type;
     private String scope;
 
     public Dependency(String groupId, String name) {
         //
-        this(groupId, name, null, null, null);
+        this(groupId, name, null, DependencyType.Compile, null);
     }
 
     public Dependency(String groupId, String name, String version) {
         //
-        this(groupId, name, version, null, null);
+        this(groupId, name, version, DependencyType.Compile, null);
     }
 
-    public Dependency(String groupId, String name, String version, String type, String scope) {
+    public Dependency(String groupId, String name, String version, DependencyType type, String scope) {
         //
         this.groupId = groupId;
         this.name = name;
@@ -51,11 +51,11 @@ public class Dependency {
         this.version = version;
     }
 
-    public String getType() {
+    public DependencyType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(DependencyType type) {
         this.type = type;
     }
 
@@ -66,4 +66,27 @@ public class Dependency {
     public void setScope(String scope) {
         this.scope = scope;
     }
+
+    /**
+     * @return {groupId}:{name}:{version}
+     */
+    public String toColonSeparatedString() {
+        //
+        StringBuffer sb = new StringBuffer();
+        sb.append(groupId).append(":").append(name);
+        if (version != null) {
+            sb.append(":").append(version);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * @return :{name}
+     */
+    public String toSimpleString() {
+        //
+        return ":" + name;
+    }
+
+
 }

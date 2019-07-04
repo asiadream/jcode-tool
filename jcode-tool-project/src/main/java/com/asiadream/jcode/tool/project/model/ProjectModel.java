@@ -6,11 +6,12 @@ import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ProjectModel {
     //
     private String name;
-    private String groupId;
+    private String group;
     private String version;
     private String packaging;
     private String baseName;
@@ -32,11 +33,11 @@ public class ProjectModel {
         this(name, groupId, version, null);
     }
 
-    public ProjectModel(String name, String groupId, String version, String packaging) {
+    public ProjectModel(String name, String group, String version, String packaging) {
         //
         this.name = name;
         this.baseName = name;
-        this.groupId = groupId;
+        this.group = group;
         this.version = version;
         this.packaging = packaging;
         this.children = new ArrayList<>();
@@ -102,8 +103,14 @@ public class ProjectModel {
     }
 
     public ProjectModel addDependency(ProjectModel dependencyProject) {
+        return addDependency(dependencyProject, null);
+    }
+
+    public ProjectModel addDependency(ProjectModel dependencyProject, DependencyType type) {
         //
-        this.dependencies.add(new Dependency(dependencyProject.groupId, dependencyProject.name, "${project.version}"));
+        Dependency dependency = new Dependency(dependencyProject.group, dependencyProject.name, "${project.version}");
+        Optional.ofNullable(type).ifPresent(_type -> dependency.setType(_type));
+        this.dependencies.add(dependency);
         return this;
     }
 
@@ -113,7 +120,7 @@ public class ProjectModel {
             return this;
         }
 
-        dependencyProjects.forEach(dependencyProject -> this.addDependency(dependencyProject));
+        dependencyProjects.forEach(dependencyProject -> this.addDependency(dependencyProject, null));
         return this;
     }
 
@@ -163,12 +170,12 @@ public class ProjectModel {
         this.name = name;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getGroup() {
+        return group;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setGroup(String group) {
+        this.group = group;
     }
 
     public ProjectModel getParent() {

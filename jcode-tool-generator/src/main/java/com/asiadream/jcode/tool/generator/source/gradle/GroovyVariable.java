@@ -1,6 +1,6 @@
 package com.asiadream.jcode.tool.generator.source.gradle;
 
-public class GroovyVariable implements GroovyExpression {
+public class GroovyVariable implements GroovyExpression, Argument {
     //
     private String name;
 

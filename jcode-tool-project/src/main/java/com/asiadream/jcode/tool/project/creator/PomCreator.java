@@ -3,6 +3,7 @@ package com.asiadream.jcode.tool.project.creator;
 import com.asiadream.jcode.tool.generator.source.XmlSource;
 import com.asiadream.jcode.tool.generator.writer.XmlWriter;
 import com.asiadream.jcode.tool.project.model.Dependency;
+import com.asiadream.jcode.tool.project.model.DependencyType;
 import com.asiadream.jcode.tool.project.model.ProjectModel;
 import com.asiadream.jcode.tool.project.model.ProjectProperty;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
@@ -75,7 +76,7 @@ public class PomCreator {
         }
 
         if (!model.hasParent()) {
-            project.appendChild(DomUtil.createTextElement(document, "groupId", model.getGroupId()));
+            project.appendChild(DomUtil.createTextElement(document, "groupId", model.getGroup()));
             project.appendChild(DomUtil.createTextElement(document, "version", model.getVersion()));
         }
 
@@ -117,7 +118,7 @@ public class PomCreator {
         Element parent = document.createElement("parent");
 
         parent.appendChild(DomUtil.createTextElement(document, "artifactId", model.getName()));
-        parent.appendChild(DomUtil.createTextElement(document, "groupId", model.getGroupId()));
+        parent.appendChild(DomUtil.createTextElement(document, "groupId", model.getGroup()));
         parent.appendChild(DomUtil.createTextElement(document, "version", model.getVersion()));
 
         return parent;
@@ -157,8 +158,8 @@ public class PomCreator {
         dependency.appendChild(DomUtil.createTextElement(document, "artifactId", dependencyModel.getName()));
         if (dependencyModel.getVersion() != null)
             dependency.appendChild(DomUtil.createTextElement(document, "version", dependencyModel.getVersion()));
-        if (dependencyModel.getType() != null)
-            dependency.appendChild(DomUtil.createTextElement(document, "type", dependencyModel.getType()));
+        if (dependencyModel.getType() == DependencyType.MavenBom)
+            dependency.appendChild(DomUtil.createTextElement(document, "type", "pom"));
         if (dependencyModel.getScope() != null)
             dependency.appendChild(DomUtil.createTextElement(document, "scope", dependencyModel.getScope()));
 
@@ -172,13 +173,13 @@ public class PomCreator {
         Element dependencies = document.createElement("dependencies");
         dependencies.appendChild(createDependencyElement(document,
                 new Dependency("org.springframework.boot", "spring-boot-dependencies",
-                        "${spring.boot.version}", "pom", "import")));
+                        "${spring.boot.version}", DependencyType.MavenBom, "import")));
         dependencies.appendChild(createDependencyElement(document,
                 new Dependency("org.springframework.cloud", "spring-cloud-dependencies",
-                        "${spring.cloud.version}", "pom", "import")));
+                        "${spring.cloud.version}", DependencyType.MavenBom, "import")));
         dependencies.appendChild(createDependencyElement(document,
                 new Dependency("org.springframework.cloud", "spring-cloud-stream-dependencies",
-                        "${spring.cloud.stream.version}", "pom", "import")));
+                        "${spring.cloud.stream.version}", DependencyType.MavenBom, "import")));
         dependencyManagement.appendChild(dependencies);
 
         return dependencyManagement;

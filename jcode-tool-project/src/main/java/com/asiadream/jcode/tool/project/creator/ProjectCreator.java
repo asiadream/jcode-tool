@@ -30,7 +30,7 @@ public class ProjectCreator {
 
         // make pom
         makePom(model, configuration);
-        // make build.gradle
+        // make build.gradle, settings.gradle
         makeGradle(model, configuration);
     }
 
@@ -60,6 +60,10 @@ public class ProjectCreator {
     private void makeGradle(ProjectModel model, ProjectConfiguration configuration) {
         //
         GradleCreator gradleCreator = new GradleCreator(configuration);
-        gradleCreator.create(model);
+        try {
+            gradleCreator.create(model);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public class ProjectMeta {
     //
-    private String groupId;
+    private String group;
     private String version;
     private List<DependencyMeta> dependencies;
     private List<PropertyMeta> properties;
@@ -15,12 +15,12 @@ public class ProjectMeta {
 
     public ProjectModel toProjectModel(String name, String baseName, String workspace) {
         //
-        ProjectModel projectModel = new ProjectModel(name, groupId, version, "pom");
+        ProjectModel projectModel = new ProjectModel(name, group, version, "pom");
         projectModel.setBaseName(baseName);
         projectModel.setWorkspacePath(workspace);
 
         Optional.ofNullable(dependencies).ifPresent(deps -> deps.forEach(dep ->
-                projectModel.addDependency(dep.getGroupId(), dep.getName(), dep.getVersion())));
+                projectModel.addDependency(dep.toDependencyModel())));
         Optional.ofNullable(properties).ifPresent(props -> props.forEach(prop ->
                 projectModel.addProperty(prop.getKey(), prop.getValue())));
         Optional.ofNullable(modules).ifPresent(mods -> mods.forEach(mod -> {
@@ -31,12 +31,12 @@ public class ProjectMeta {
         return projectModel;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getGroup() {
+        return group;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setGroup(String group) {
+        this.group = group;
     }
 
     public String getVersion() {

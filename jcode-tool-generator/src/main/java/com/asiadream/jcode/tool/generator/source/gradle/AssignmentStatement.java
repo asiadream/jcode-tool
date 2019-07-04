@@ -29,4 +29,12 @@ public class AssignmentStatement implements GradleElement {
     public String print(int level) {
         return blank(level) + variable.print() + " " + EQUAL_SIGN + " " + expression.print();
     }
+
+    public GroovyVariable getVariable() {
+        return variable;
+    }
+
+    public GroovyExpression getExpression() {
+        return expression;
+    }
 }

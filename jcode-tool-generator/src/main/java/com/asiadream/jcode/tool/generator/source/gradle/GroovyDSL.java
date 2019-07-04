@@ -1,5 +1,7 @@
 package com.asiadream.jcode.tool.generator.source.gradle;
 
+import java.util.List;
+
 public class GroovyDSL implements GradleElement, GroovyPrintable {
     //
     private String name;
@@ -23,13 +25,19 @@ public class GroovyDSL implements GradleElement, GroovyPrintable {
         return this;
     }
 
+    public GroovyDSL addAllElement(List<GradleElement> elements) {
+        //
+        this.closure.addAllElement(elements);
+        return this;
+    }
+
     @Override
     public String print(int level) {
         //
         StringBuffer sb = new StringBuffer();
         sb.append(blank(level))
-        .append(name).append(" ")
-        .append(closure.print(level));
+                .append(name).append(" ")
+                .append(closure.print(level));
         return sb.toString();
     }
 }
