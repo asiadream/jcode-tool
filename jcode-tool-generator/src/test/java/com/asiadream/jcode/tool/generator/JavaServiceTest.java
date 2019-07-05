@@ -13,8 +13,10 @@ public class JavaServiceTest extends BaseFileTest {
         String domainEntityClassName = javaService.create("talk", "domain_entity", super.testDirName);
         // store interface
         javaService.createByRefClass(domainEntityClassName, "store_interface", super.testDirName);
-
+        // store lifecycler
+        javaService.createByRefClass(domainEntityClassName, "store_lycler", super.testDirName);
         // jpo
         javaService.createByRefClass(domainEntityClassName, "store_jpo", super.testDirName);
+
     }
 }

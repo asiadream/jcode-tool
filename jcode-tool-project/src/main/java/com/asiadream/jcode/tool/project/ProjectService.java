@@ -27,4 +27,9 @@ public class ProjectService {
         return projectMeta;
     }
 
+    public ProjectMeta getProjectMeta() {
+        //
+        return projectMeta;
+    }
+
 }

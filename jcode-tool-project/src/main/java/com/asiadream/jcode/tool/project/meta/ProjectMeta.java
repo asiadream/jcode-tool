@@ -1,6 +1,7 @@
 package com.asiadream.jcode.tool.project.meta;
 
 import com.asiadream.jcode.tool.project.model.ProjectModel;
+import com.asiadream.jcode.tool.project.model.ProjectType;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,29 @@ public class ProjectMeta {
         }));
 
         return projectModel;
+    }
+
+    public String findModuleName(ProjectType projectType, String baseName) {
+        //
+        ModuleMeta finded = findFirstModuleByType(projectType);
+        if (finded == null) {
+            throw new RuntimeException("could not find module with " + projectType);
+        }
+        return finded.getAppliedName(baseName);
+    }
+
+    public ModuleMeta findFirstModuleByType(ProjectType projectType) {
+        //
+        if (modules == null) {
+            return null;
+        }
+
+        for (ModuleMeta moduleMeta : modules) {
+            if (moduleMeta.containsType(projectType)) {
+                return moduleMeta;
+            }
+        }
+        return null;
     }
 
     public String getGroup() {

@@ -16,11 +16,15 @@ properties:
     value: "Fishtown.RELEASE"
 modules:
   - name: "${baseName}-domain-entity"
+    types:
+      - Entity
     dependencies:
       - group: "io.naraplatform"
         name: "share-domain"
         version: "0.2.2-SNAPSHOT"
   - name: "${baseName}-client"
+    types:
+      - Client
     dependencies:
       - ref: "${baseName}-domain-entity"
       - group: "org.apache.httpcomponents"
@@ -30,10 +34,19 @@ modules:
     dependencies:
       - ref: "${baseName}-domain-entity"
   - name: "${baseName}-domain-test"
+    types:
+      - Test
   - name: "${baseName}-local-boot"
+    types:
+      - Boot
   - name: "${baseName}-proxy"
   - name: "${baseName}-service"
+    types:
+      - Service
   - name: "${baseName}-service-comp-test"
+    types:
+      - Service
+      - Test
   - name: "${baseName}-service-restapi-test"
     dependencies:
       - ref: "${baseName}-service"

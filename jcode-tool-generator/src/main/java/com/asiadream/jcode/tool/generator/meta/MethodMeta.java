@@ -20,6 +20,7 @@ public class MethodMeta {
 
     public MethodMeta replaceExp(ExpressionContext expressionContext) {
         //
+        this.name = expressionContext.replaceExpString(name);
         this.type = expressionContext.replaceExpString(type);
         Optional.ofNullable(parameters).ifPresent(parameters -> parameters.forEach(parameter -> parameter.replaceExp(expressionContext)));
         this.body = expressionContext.replaceExpString(body);

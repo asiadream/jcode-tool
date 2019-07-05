@@ -15,6 +15,7 @@ public class ProjectModel {
     private String version;
     private String packaging;
     private String baseName;
+    private List<ProjectType> types;
 
     private ProjectModel parent;
     private List<ProjectModel> children;
@@ -225,5 +226,13 @@ public class ProjectModel {
 
     public void setBaseName(String baseName) {
         this.baseName = baseName;
+    }
+
+    public List<ProjectType> getTypes() {
+        return types;
+    }
+
+    public void setTypes(List<ProjectType> types) {
+        this.types = types;
     }
 }

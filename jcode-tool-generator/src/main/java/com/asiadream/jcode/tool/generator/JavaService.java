@@ -27,6 +27,9 @@ public class JavaService {
         //
         Yaml yaml = new Yaml(new Constructor(GeneratorMeta.class));
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream("generator.yaml");
+        if (inputStream == null) {
+            throw new RuntimeException("generator.yaml not exists.");
+        }
         GeneratorMeta generatorMeta = yaml.load(inputStream);
         return generatorMeta;
     }
@@ -77,13 +80,14 @@ public class JavaService {
         ExpressionContext expressionContext = new ExpressionContext();
         expressionContext.add("groupId", groupId);
         expressionContext.add("baseName", baseName);
-        expressionContext.add("refClassName", refClassName);
         expressionContext.add("simpleClassName", javaMeta.getSimpleClassName(baseName));
         expressionContext.add("packageName", javaMeta.getPackageName(groupId));
         expressionContext.add("className", javaMeta.getClassName(groupId, baseName));
 
-        Optional.ofNullable(refClassName).ifPresent(className -> {
-            JavaSource javaSource = readJavaSource(refClassProjectPath, className);
+        Optional.ofNullable(refClassName).ifPresent(_refClassName -> {
+            expressionContext.add("refClassName", _refClassName);
+            expressionContext.add("refSimpleClassName", ClassNameUtil.getSimpleClassName(_refClassName));
+            JavaSource javaSource = readJavaSource(refClassProjectPath, _refClassName);
             expressionContext.add("refClass.fields", javaSource.getFieldsAsModel());
         });
 
