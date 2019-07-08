@@ -1,0 +1,12 @@
+includeNewlines: |
+  exactly as you see
+  will appear these three
+  lines of poetry
+
+windowsDrive: "c:"
+containExpression: ${a.b}
+
+foldNewlines: >
+  this is really a
+  single line of text
+  despite appearances

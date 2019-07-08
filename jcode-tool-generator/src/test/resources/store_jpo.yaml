@@ -1,21 +1,21 @@
-packageSuffix: "store.jpa.jpo"
-nameSuffix: "Jpo"
+packageSuffix: store.jpa.jpo
+nameSuffix: Jpo
 classAnnotations:
-  - "lombok.Getter"
-  - "lombok.Setter"
-  - "lombok.NoArgsConstructor"
-  - "javax.persistence.Entity"
-  - "javax.persistence.Table"
+  - lombok.Getter
+  - lombok.Setter
+  - lombok.NoArgsConstructor
+  - javax.persistence.Entity
+  - javax.persistence.Table
 classImplements:
-  - "io.naraplatform.share.util.json.JsonSerializable"
+  - io.naraplatform.share.util.json.JsonSerializable
 fields:
-  - name: "id"
-    type: "String"
+  - name: id
+    type: String
     annotations:
-      - "javax.persistence.Id"
+      - javax.persistence.Id
 eachField:
-  items: "${refClass.fields}"
-  var: "f"
+  items: ${refClass.fields}
+  var: f
   field:
-    name: "${f.name}"
-    type: "${f.type}"
+    name: ${f.name}
+    type: ${f.type}
