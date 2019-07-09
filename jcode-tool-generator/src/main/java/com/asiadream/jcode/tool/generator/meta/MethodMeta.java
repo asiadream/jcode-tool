@@ -1,11 +1,8 @@
 package com.asiadream.jcode.tool.generator.meta;
 
 import com.asiadream.jcode.tool.generator.model.Access;
-import com.asiadream.jcode.tool.generator.model.ClassType;
 import com.asiadream.jcode.tool.generator.model.MethodModel;
-import com.asiadream.jcode.tool.share.util.string.StringUtil;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +26,7 @@ public class MethodMeta {
 
     public MethodModel toMethodModel() {
         //
-        MethodModel methodModel = new MethodModel(name, getMethodReturnType());
+        MethodModel methodModel = new MethodModel(name, MetaHelper.toClassType(type));
         methodModel.setAccess(access);
         methodModel.setStaticMethod(staticMethod);
 
@@ -37,23 +34,10 @@ public class MethodMeta {
                 methodModel.addParameterModel(parameter.toParameterModel())));
 
         if (body != null) {
-            methodModel.body(body);
+            methodModel.body(MetaHelper.toMultiStatements(body));
         }
 
         return methodModel;
-    }
-
-    private ClassType getMethodReturnType() {
-        //
-        if (type == null)
-            return null;
-        if (type.indexOf('<') > 0) {
-            ClassType returnType = ClassType.newClassType(type.substring(0, type.indexOf('<')));
-            String typeArgNames = StringUtil.substringBetween(type, "<", ">");
-            Arrays.asList(typeArgNames.split(",")).forEach(typeArg -> returnType.addTypeArgument(typeArg));
-            return returnType;
-        }
-        return ClassType.newClassType(type);
     }
 
     public String getName() {

@@ -55,9 +55,15 @@ public class ConstructorModel {
         return this;
     }
 
-    public ConstructorModel addBodyStatement(String bodyStatement) {
+    public ConstructorModel body(String singleStatement) {
         //
-        this.bodyStatements.add(bodyStatement);
+        this.bodyStatements.add(singleStatement);
+        return this;
+    }
+
+    public ConstructorModel body(List<String> bodyStatements) {
+        //
+        this.bodyStatements.addAll(bodyStatements);
         return this;
     }
 

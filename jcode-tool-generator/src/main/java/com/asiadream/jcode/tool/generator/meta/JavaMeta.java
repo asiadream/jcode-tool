@@ -12,8 +12,8 @@ import java.util.Optional;
 
 public class JavaMeta {
     //
-    private String packageSuffix; // domain.entity
-    private String nameSuffix;    // Store
+    private String packageName; // domain.entity
+    private String name;    // Store
     private boolean interfaceFile;
     private List<FieldMeta> fields;
     private EachFieldMeta eachField;
@@ -25,38 +25,37 @@ public class JavaMeta {
 
     public JavaMeta replaceExp(ExpressionContext expressionContext) {
         //
+        this.packageName = expressionContext.replaceExpString(packageName);
+        this.name = expressionContext.replaceExpString(name);
+        Optional.ofNullable(fields).ifPresent(fields -> fields.forEach(field -> field.replaceExp(expressionContext)));
         Optional.ofNullable(eachField).ifPresent(eachField -> {
             List<FieldMeta> created = eachField.eachFieldsByExp(expressionContext);
             this.fields = Optional.ofNullable(fields).orElse(new ArrayList<>());
             this.fields.addAll(created);
         });
+        Optional.ofNullable(constructors).ifPresent(constructors -> constructors.forEach(constructor -> constructor.replaceExp(expressionContext)));
         Optional.ofNullable(methods).ifPresent(methods -> methods.forEach(method -> method.replaceExp(expressionContext)));
         return this;
     }
 
-    public String getSimpleClassName(String baseName) {
+    public String getSimpleClassName() {
         //
-        return StringUtil.toFirstUpperCase(baseName) + StringUtil.defaultString(nameSuffix, ""); // Hello
+        if (name.contains("${")) {
+            return name;
+        }
+        return StringUtil.toFirstUpperCase(name);
+        //return StringUtil.toFirstUpperCase(baseName) + StringUtil.defaultString(nameSuffix, ""); // Hello
     }
 
-    public String getPackageName(String groupId) {
+    public String getClassName() {
         //
-        return groupId + "." + packageSuffix;
+        //String simpleClassName = StringUtil.toFirstUpperCase(baseName) + StringUtil.defaultString(nameSuffix, ""); // Hello
+        return packageName + "." + getSimpleClassName();
     }
 
-    public String getClassName(String groupId, String baseName) {
-        //
-        String simpleClassName = StringUtil.toFirstUpperCase(baseName) + StringUtil.defaultString(nameSuffix, ""); // Hello
-        String packageName = groupId + "." + packageSuffix;
-        return packageName + "." + simpleClassName;
-    }
-
-    public JavaModel toJavaModel(String groupId, String baseName) {
+    public JavaModel toJavaModel() {
         // baseName: hello, groupId: io.naradrama, packageSuffix: domain.entity
-        String simpleClassName = getSimpleClassName(baseName);
-        String className = getClassName(groupId, baseName);
-
-        JavaModel javaModel = new JavaModel(className, interfaceFile);
+        JavaModel javaModel = new JavaModel(getClassName(), interfaceFile);
 
         Optional.ofNullable(fields).ifPresent(fileds -> fileds.forEach(field ->
                 javaModel.addFieldModel(field.toFieldModel())));
@@ -71,7 +70,7 @@ public class JavaMeta {
                 javaModel.addImplementsType(ClassType.newClassType(ci))));
 
         Optional.ofNullable(constructors).ifPresent(constructors -> constructors.forEach(constructor -> {
-            ConstructorModel constructorModel = constructor.toConstructorModel(simpleClassName, javaModel);
+            ConstructorModel constructorModel = constructor.toConstructorModel(name, javaModel);
             javaModel.addConstructorModel(constructorModel);
         }));
 
@@ -80,20 +79,20 @@ public class JavaMeta {
         return javaModel;
     }
 
-    public String getPackageSuffix() {
-        return packageSuffix;
+    public String getPackageName() {
+        return packageName;
     }
 
-    public void setPackageSuffix(String packageSuffix) {
-        this.packageSuffix = packageSuffix;
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 
-    public String getNameSuffix() {
-        return nameSuffix;
+    public String getName() {
+        return name;
     }
 
-    public void setNameSuffix(String nameSuffix) {
-        this.nameSuffix = nameSuffix;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<FieldMeta> getFields() {

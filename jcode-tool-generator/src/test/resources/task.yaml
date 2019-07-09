@@ -1,0 +1,53 @@
+packageName: ${groupId}.domain.logic.task
+name: ${ref.simpleClassName}Task
+
+classAnnotations:
+  - org.springframework.stereotype.Service
+  - javax.transaction.Transactional
+
+fields:
+  - name: ${baseName}Store
+    type: ${groupId}.${baseName}.domain.store.${ref.simpleClassName}Store
+    annotations:
+      - org.springframework.beans.factory.annotation.Autowired
+
+methods:
+  - name: find${ref.simpleClassName}
+    type: ${ref.className}
+    access: PUBLIC
+    parameters:
+      - type: String
+        varName: ${ref.name}Id
+    body: |
+      ${ref.simpleClassName} ${ref.name} = ${ref.name}Store.retrieve(talkId);
+      if(${ref.name} == null) {
+          throw new NoSuchElementException("${ref.simpleClassName} id: " + ${ref.name}Id);
+      }
+      return ${ref.name};
+
+  - name: modify${ref.simpleClassName}
+    access: PUBLIC
+    parameters:
+      - type: String
+        varName: ${ref.name}Id
+      - type: io.naraplatform.share.domain.NameValueList
+        varName: nameValues
+    body: |
+      ${ref.simpleClassName} ${ref.name} = ${ref.name}Store.retrieve(${ref.name}Id);
+      ${ref.name}.setValues(nameValues);
+      ${ref.name}Store.update(${ref.name});
+
+  - name: modify${ref.simpleClassName}
+    access: PUBLIC
+    parameters:
+      - type: ${ref.className}
+    body: ${ref.name}Store.update(${ref.name});
+
+  - name: remove${ref.simpleClassName}
+    access: PUBLIC
+    parameters:
+      - type: String
+        varName: ${ref.name}Id
+    body: |
+      ${ref.simpleClassName} ${ref.name} = ${ref.name}Store.retrieve(${ref.name}Id);
+      ${ref.name}Store.delete(${ref.name});

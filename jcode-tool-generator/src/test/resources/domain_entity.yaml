@@ -1,4 +1,5 @@
-packageSuffix: domain.entity
+packageName: ${groupId}.${appName}.domain.entity
+name: ${AppName}
 classAnnotations:
   - lombok.Getter
   - lombok.Setter
@@ -16,8 +17,10 @@ fields:
     type: String
 constructors:
   - parameters:
-      - name
-      - sequence
+      - type: String
+        varName: name
+      - type: String
+        varName: sequence
   - parameters:
 methods:
   - name: toJson

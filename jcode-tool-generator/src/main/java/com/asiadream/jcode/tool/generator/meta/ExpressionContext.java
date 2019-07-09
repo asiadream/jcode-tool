@@ -15,7 +15,21 @@ public class ExpressionContext {
 
     public String replaceExpString(String containingExpression) {
         //
-        return (String)replaceExp(containingExpression);
+        if (containingExpression == null) {
+            return null;
+        }
+
+        String replaced = containingExpression;
+
+        for (Iterator<String> iter = contextMap.keySet().iterator(); iter.hasNext(); ) {
+            String key = iter.next();
+            Object value = contextMap.get(key);
+            String exp = "${" + key + "}";
+            if (value != null && value.getClass() == String.class && containingExpression.contains(exp)) {
+                replaced = replaced.replace(exp, (String)value);
+            }
+        }
+        return replaced;
     }
 
     public Object replaceExp(String containingExpression) {
@@ -28,15 +42,22 @@ public class ExpressionContext {
             String key = iter.next();
             Object value = contextMap.get(key);
             String exp = "${" + key + "}";
-            if (containingExpression.contains(exp)) {
-                if (value != null && value.getClass() == String.class) {
-                    return containingExpression.replace(exp, (String)value);
-                } else {
-                    return value;
-                }
+            if (value.getClass() != String.class && containingExpression.contains(exp)) {
+                return value;
             }
         }
         return containingExpression;
+    }
+
+    // if value contains ${...}, replace value.
+    public void updateExpressedValue() {
+        for (Iterator<String> iter = contextMap.keySet().iterator(); iter.hasNext(); ) {
+            String key = iter.next();
+            Object value = contextMap.get(key);
+            if (value != null && value.getClass() == String.class && ((String)value).contains("${")) {
+                contextMap.put(key, replaceExpString((String)value));
+            }
+        }
     }
 
     public ExpressionContext add(String key, Object value) {
@@ -60,4 +81,21 @@ public class ExpressionContext {
         return contextMap.containsKey(key);
     }
 
+    public String show() {
+        //
+        StringBuffer sb = new StringBuffer();
+        sb.append("\n-------------- Express Context ---------------");
+        for (Iterator<String> iter = contextMap.keySet().iterator(); iter.hasNext(); ) {
+            String key = iter.next();
+            Object value = contextMap.get(key);
+            sb.append("\n").append(key).append(":").append(value);
+        }
+        sb.append("\n----------------------------------------------");
+        return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        return this.contextMap.toString();
+    }
 }

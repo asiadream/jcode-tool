@@ -1,21 +1,52 @@
-packageSuffix: store.jpa.jpo
-nameSuffix: Jpo
+packageName: ${groupId}.${appName}.store.jpa.jpo
+name: ${entity.simpleClassName}Jpo
 classAnnotations:
   - lombok.Getter
   - lombok.Setter
   - lombok.NoArgsConstructor
   - javax.persistence.Entity
   - javax.persistence.Table
-classImplements:
-  - io.naraplatform.share.util.json.JsonSerializable
+classExtends:
+  - io.naraplatform.share.domain.drama.DramaEntityJpo
+
 fields:
   - name: id
     type: String
     annotations:
       - javax.persistence.Id
 eachField:
-  items: ${refClass.fields}
+  items: ${entity.fields}
   var: f
   field:
     name: ${f.name}
     type: ${f.type}
+
+constructors:
+  - parameters:
+      - type: ${entity.className}
+    body: |
+      super(${entity.name});
+      BeanUtils.copyProperties(${entity.name}, this);
+
+methods:
+  # toDomain
+  - name: toDomain
+    type: ${entity.className}
+    access: PUBLIC
+    body: |
+      ${entity.simpleClassName} ${entity.name} = new ${entity.simpleClassName}(getId(), genPatronKey());
+      BeanUtils.copyProperties(this, ${entity.name});
+      return ${entity.name};
+
+  # static toDomains
+  - name: toDomains
+    type: java.util.List<${entity.className}>
+    access: PUBLIC
+    staticMethod: true
+    parameters:
+      - type: List<${className}>
+        varName: ${entity.name}Jpos
+
+  # toString
+  # sample
+  # static main

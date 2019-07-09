@@ -20,6 +20,12 @@ public class FieldMeta {
         this.type = type;
     }
 
+    public void replaceExp(ExpressionContext expressionContext) {
+        //
+        this.name = expressionContext.replaceExpString(name);
+        this.type = expressionContext.replaceExpString(type);
+    }
+
     public FieldModel toFieldModel() {
         //
         FieldModel model = new FieldModel(name, ClassType.newClassType(type));

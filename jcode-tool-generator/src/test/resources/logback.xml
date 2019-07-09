@@ -11,5 +11,6 @@
 	</root>
     <logger name="com.asiadream.jcode.tool.generator.source.JavaSource" level="TRACE" />
     <logger name="com.asiadream.jcode.tool.generator.source.GradleSource" level="TRACE" />
+    <logger name="com.asiadream.jcode.tool.generator.JavaService" level="TRACE" />
 
 </configuration>

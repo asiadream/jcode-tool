@@ -82,12 +82,6 @@ public class MethodModel {
         return this;
     }
 
-    public MethodModel addBodyStatement(String bodyStatement) {
-        //
-        this.bodyStatements.add(bodyStatement);
-        return this;
-    }
-
     public MethodModel body(Function<List<ParameterModel>, List<String>> bodyHandler) {
         //
         List<String> bodyStmts = bodyHandler.apply(parameterModels);
@@ -101,6 +95,11 @@ public class MethodModel {
         return this;
     }
 
+    public MethodModel body(List<String> bodyStatements) {
+        //
+        this.bodyStatements.addAll(bodyStatements);
+        return this;
+    }
 
     public boolean isVoid() {
         return returnType == null;

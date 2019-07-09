@@ -1,6 +1,5 @@
 package com.asiadream.jcode.tool.generator.meta;
 
-import com.asiadream.jcode.tool.generator.model.ClassType;
 import com.asiadream.jcode.tool.generator.model.ParameterModel;
 import com.asiadream.jcode.tool.share.util.string.ClassNameUtil;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
@@ -13,6 +12,7 @@ public class ParameterMeta {
     public ParameterMeta replaceExp(ExpressionContext expressionContext) {
         //
         this.type = expressionContext.replaceExpString(type);
+        this.varName = expressionContext.replaceExpString(varName);
         return this;
     }
 
@@ -20,7 +20,7 @@ public class ParameterMeta {
         //
         String varName = StringUtil.isEmpty(this.varName) ? ClassNameUtil.getSimpleClassName(type) : this.varName;
         String recommendedVarName = StringUtil.getRecommendedVariableName(varName);
-        return new ParameterModel(ClassType.newClassType(type), recommendedVarName);
+        return new ParameterModel(MetaHelper.toClassType(type), recommendedVarName);
     }
 
     public String getVarName() {

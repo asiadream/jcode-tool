@@ -1,0 +1,2 @@
+packageName: ${groupId}.${baseName}.store.jpa.repository
+name: ${entity.simpleClassName}Repository
