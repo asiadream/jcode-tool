@@ -1,4 +1,4 @@
-package com.asiadream.jcode.tool.source.gradle;
+package com.asiadream.jcode.tool.generator.source.gradle;
 
 import com.asiadream.jcode.tool.generator.source.gradle.GradleScript;
 import com.asiadream.jcode.tool.generator.source.gradle.GroovyDSL;

@@ -1,4 +1,4 @@
-package com.asiadream.jcode.tool.source;
+package com.asiadream.jcode.tool.generator.source;
 
 import javax.annotation.Signed;
 

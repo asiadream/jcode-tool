@@ -1,53 +1,53 @@
 packageName: ${groupId}.domain.logic.task
-name: ${ref.simpleClassName}Task
+name: ${entity.simpleClassName}Task
 
 classAnnotations:
-  - org.springframework.stereotype.Service
-  - javax.transaction.Transactional
+  - type: org.springframework.stereotype.Service
+  - type: javax.transaction.Transactional
 
 fields:
-  - name: ${baseName}Store
-    type: ${groupId}.${baseName}.domain.store.${ref.simpleClassName}Store
+  - name: ${appName}Store
+    type: ${groupId}.${appName}.domain.store.${entity.simpleClassName}Store
     annotations:
       - org.springframework.beans.factory.annotation.Autowired
 
 methods:
-  - name: find${ref.simpleClassName}
-    type: ${ref.className}
+  - name: find${entity.simpleClassName}
+    type: ${entity.className}
     access: PUBLIC
     parameters:
       - type: String
-        varName: ${ref.name}Id
+        varName: ${entity.name}Id
     body: |
-      ${ref.simpleClassName} ${ref.name} = ${ref.name}Store.retrieve(talkId);
-      if(${ref.name} == null) {
-          throw new NoSuchElementException("${ref.simpleClassName} id: " + ${ref.name}Id);
+      ${entity.simpleClassName} ${entity.name} = ${entity.name}Store.retrieve(talkId);
+      if(${entity.name} == null) {
+          throw new NoSuchElementException("${entity.simpleClassName} id: " + ${entity.name}Id);
       }
-      return ${ref.name};
+      return ${entity.name};
 
-  - name: modify${ref.simpleClassName}
+  - name: modify${entity.simpleClassName}
     access: PUBLIC
     parameters:
       - type: String
-        varName: ${ref.name}Id
+        varName: ${entity.name}Id
       - type: io.naraplatform.share.domain.NameValueList
         varName: nameValues
     body: |
-      ${ref.simpleClassName} ${ref.name} = ${ref.name}Store.retrieve(${ref.name}Id);
-      ${ref.name}.setValues(nameValues);
-      ${ref.name}Store.update(${ref.name});
+      ${entity.simpleClassName} ${entity.name} = ${entity.name}Store.retrieve(${entity.name}Id);
+      ${entity.name}.setValues(nameValues);
+      ${entity.name}Store.update(${entity.name});
 
-  - name: modify${ref.simpleClassName}
+  - name: modify${entity.simpleClassName}
     access: PUBLIC
     parameters:
-      - type: ${ref.className}
-    body: ${ref.name}Store.update(${ref.name});
+      - type: ${entity.className}
+    body: ${entity.name}Store.update(${entity.name});
 
-  - name: remove${ref.simpleClassName}
+  - name: remove${entity.simpleClassName}
     access: PUBLIC
     parameters:
       - type: String
-        varName: ${ref.name}Id
+        varName: ${entity.name}Id
     body: |
-      ${ref.simpleClassName} ${ref.name} = ${ref.name}Store.retrieve(${ref.name}Id);
-      ${ref.name}Store.delete(${ref.name});
+      ${entity.simpleClassName} ${entity.name} = ${entity.name}Store.retrieve(${entity.name}Id);
+      ${entity.name}Store.delete(${entity.name});

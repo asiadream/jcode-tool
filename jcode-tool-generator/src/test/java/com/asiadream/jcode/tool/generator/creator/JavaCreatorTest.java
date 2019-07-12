@@ -1,6 +1,5 @@
-package com.asiadream.jcode.tool.creator;
+package com.asiadream.jcode.tool.generator.creator;
 
-import com.asiadream.jcode.tool.generator.creator.JavaCreator;
 import com.asiadream.jcode.tool.generator.model.*;
 import com.asiadream.jcode.tool.share.config.ConfigurationType;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;

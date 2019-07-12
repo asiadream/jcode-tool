@@ -11,7 +11,6 @@ public class MetaHelper {
     //
     public static List<String> toMultiStatements(String body) {
         //
-        //System.out.println(body);
         boolean blockMode = false;
         String block = "";
         List<String> statements = new ArrayList<>();
@@ -49,6 +48,10 @@ public class MetaHelper {
             String typeArgNames = StringUtil.substringBetween(typeString, "<", ">");
             Arrays.asList(typeArgNames.split(",")).forEach(typeArg -> classType.addTypeArgument(typeArg));
             return classType;
+        }
+        if (typeString.endsWith("[]")) {
+            String compTypeString = StringUtil.removeSuffix(typeString, "[]");
+            return ClassType.newArrayType(ClassType.newClassType(compTypeString));
         }
         return ClassType.newClassType(typeString);
     }

@@ -1,7 +1,6 @@
-package com.asiadream.jcode.tool.model;
+package com.asiadream.jcode.tool.generator.model;
 
 import com.asiadream.jcode.tool.generator.creator.JavaCreator;
-import com.asiadream.jcode.tool.generator.model.*;
 import com.asiadream.jcode.tool.share.config.ConfigurationType;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
 import com.asiadream.jcode.tool.share.test.BaseFileTest;

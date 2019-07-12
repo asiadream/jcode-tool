@@ -17,7 +17,7 @@ public class JavaMeta {
     private boolean interfaceFile;
     private List<FieldMeta> fields;
     private EachFieldMeta eachField;
-    private List<String> classAnnotations;
+    private List<AnnotationMeta> classAnnotations;
     private List<String> classExtends;
     private List<String> classImplements;
     private List<ConstructorMeta> constructors;
@@ -44,24 +44,22 @@ public class JavaMeta {
             return name;
         }
         return StringUtil.toFirstUpperCase(name);
-        //return StringUtil.toFirstUpperCase(baseName) + StringUtil.defaultString(nameSuffix, ""); // Hello
     }
 
     public String getClassName() {
         //
-        //String simpleClassName = StringUtil.toFirstUpperCase(baseName) + StringUtil.defaultString(nameSuffix, ""); // Hello
         return packageName + "." + getSimpleClassName();
     }
 
     public JavaModel toJavaModel() {
-        // baseName: hello, groupId: io.naradrama, packageSuffix: domain.entity
+        //
         JavaModel javaModel = new JavaModel(getClassName(), interfaceFile);
 
         Optional.ofNullable(fields).ifPresent(fileds -> fileds.forEach(field ->
                 javaModel.addFieldModel(field.toFieldModel())));
 
         Optional.ofNullable(classAnnotations).ifPresent(cas -> cas.forEach(ca ->
-                javaModel.addAnnotation(new AnnotationType(ca))));
+                javaModel.addAnnotation(ca.toAnnotationType())));
 
         Optional.ofNullable(classExtends).ifPresent(ces -> ces.forEach(ce ->
                 javaModel.addExtendsType(ClassType.newClassType(ce))));
@@ -111,11 +109,11 @@ public class JavaMeta {
         this.fields = fields;
     }
 
-    public List<String> getClassAnnotations() {
+    public List<AnnotationMeta> getClassAnnotations() {
         return classAnnotations;
     }
 
-    public void setClassAnnotations(List<String> classAnnotations) {
+    public void setClassAnnotations(List<AnnotationMeta> classAnnotations) {
         this.classAnnotations = classAnnotations;
     }
 

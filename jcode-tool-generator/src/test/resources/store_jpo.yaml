@@ -1,11 +1,14 @@
 packageName: ${groupId}.${appName}.store.jpa.jpo
 name: ${entity.simpleClassName}Jpo
 classAnnotations:
-  - lombok.Getter
-  - lombok.Setter
-  - lombok.NoArgsConstructor
-  - javax.persistence.Entity
-  - javax.persistence.Table
+  - type: lombok.Getter
+  - type: lombok.Setter
+  - type: lombok.NoArgsConstructor
+  - type: javax.persistence.Entity
+  - type: javax.persistence.Table
+    elements:
+      - name: name
+        value: TALK
 classExtends:
   - io.naraplatform.share.domain.drama.DramaEntityJpo
 
@@ -44,9 +47,28 @@ methods:
     access: PUBLIC
     staticMethod: true
     parameters:
-      - type: List<${className}>
+      - type: java.util.List<${className}>
         varName: ${entity.name}Jpos
+    body: return ${entity.name}Jpos.stream().map(${simpleClassName}::toDomain).collect(Collectors.toList());
 
   # toString
+  - name: toString
+    type: String
+    access: PUBLIC
+    body: return toJson();
+
   # sample
+  - name: sample
+    type: ${className}
+    access: PUBLIC
+    staticMethod: true
+    body: return new ${simpleClassName}(${entity.simpleClassName}.sample());
+
   # static main
+  - name: main
+    staticMethod: true
+    access: PUBLIC
+    parameters:
+      - type: String[]
+        varName: args
+    body: System.out.println(sample());

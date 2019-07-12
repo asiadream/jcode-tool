@@ -1,4 +1,4 @@
-package com.asiadream.jcode.tool.source;
+package com.asiadream.jcode.tool.generator.source;
 
 public class TestClass2 {
     private String name;    // 이름

@@ -1,11 +1,12 @@
 package com.asiadream.jcode.tool.generator.ast;
 
 import com.asiadream.jcode.tool.generator.model.*;
+import com.asiadream.jcode.tool.generator.model.annotation.*;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
-import com.github.javaparser.ast.expr.Name;
+import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.*;
 
@@ -69,7 +70,9 @@ public abstract class AstMapper {
         // Type Annotation
         if (javaModel.hasAnnotation()) {
             for (AnnotationType annotation : javaModel.getAnnotations()) {
-                classType.addMarkerAnnotation(annotation.getName());
+                AnnotationExpr annotationExpr = createAnnotationExpr(annotation);
+                classType.addAnnotation(annotationExpr);
+                //classType.addMarkerAnnotation(annotation.getName());
             }
         }
 
@@ -118,6 +121,56 @@ public abstract class AstMapper {
         compilationUnit.setComment(javaModel.getNodeComment());
 
         return compilationUnit;
+    }
+
+    // Model:AnnotationType -> Ast:AnnotationExpr
+    public static AnnotationExpr createAnnotationExpr(AnnotationType annotationType) {
+        //
+        if (!annotationType.hasPair()) {
+            return new MarkerAnnotationExpr(annotationType.getName());
+        } else if (annotationType.hasSingleValue()) {
+            AnnotationValue singleValue = annotationType.getSingleValue();
+            return new SingleMemberAnnotationExpr(new Name(annotationType.getName()), createExpression(singleValue));
+        }
+
+        NodeList<MemberValuePair> pairs = new NodeList<>();
+        annotationType.getPairs().forEach(annotationPair -> pairs.add(createMemberValuePair(annotationPair)));
+        return new NormalAnnotationExpr(new Name(annotationType.getName()), pairs);
+    }
+
+    // Model: AnnotationPair -> Ast: MemberValuePair
+    public static MemberValuePair createMemberValuePair(AnnotationPair annotationPair) {
+        //
+        Expression expression = createExpression(annotationPair.getValue());
+        return new MemberValuePair(annotationPair.getMethod(), expression);
+    }
+
+    // Model: AnnotationValue -> Ast: Expression
+    public static Expression createExpression(AnnotationValue annotationValue) {
+        //
+        Class valueClass = annotationValue.getClass();
+        if (valueClass == AnnotationString.class) {
+            return new StringLiteralExpr(((AnnotationString)annotationValue).getValue());
+        }
+        if (valueClass == AnnotationArray.class) {
+            NodeList<Expression> exps = new NodeList<>();
+            ((AnnotationArray)annotationValue).getValues()
+                    .forEach(_annotationValue -> exps.add(createExpression(_annotationValue)));
+            return new ArrayInitializerExpr(exps);
+        }
+        if (valueClass == FieldAccessExpressionValue.class) {
+            FieldAccessExpressionValue value = (FieldAccessExpressionValue)annotationValue;
+            FieldAccessExpr expr = new FieldAccessExpr();
+            expr.setScope(new NameExpr(value.getAccessTarget()));
+            expr.setName(value.getAccessField());
+            return expr;
+        }
+        if (valueClass == ClassTypeValue.class) {
+            ClassTypeValue value = (ClassTypeValue)annotationValue;
+            Type type = createType(value.getValue());
+            return new ClassExpr(type);
+        }
+        throw new RuntimeException("could not find the right type..." + valueClass);
     }
 
     // Ast:MethodDeclaration -> Model:MethodModel
@@ -257,6 +310,11 @@ public abstract class AstMapper {
         //
         if (classType == null) {
             return new VoidType();
+        }
+
+        if (classType.isPrimitive() && classType.isArray()) {
+            Type componentType = new PrimitiveType(PrimitiveType.Primitive.valueOf(classType.getName().toUpperCase()));
+            return new ArrayType(componentType);
         }
 
         if (classType.isPrimitive()) {

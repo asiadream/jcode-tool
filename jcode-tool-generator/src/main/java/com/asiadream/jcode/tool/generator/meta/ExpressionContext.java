@@ -1,5 +1,7 @@
 package com.asiadream.jcode.tool.generator.meta;
 
+import com.asiadream.jcode.tool.share.util.string.StringUtil;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -29,7 +31,14 @@ public class ExpressionContext {
                 replaced = replaced.replace(exp, (String)value);
             }
         }
+        check(replaced);
         return replaced;
+    }
+
+    private void check(String replaced) {
+        if (replaced.contains("${")) {
+            throw new RuntimeException("could not found expression --> ${" + StringUtil.substringBetween(replaced, "${", "}") + "}");
+        }
     }
 
     public Object replaceExp(String containingExpression) {

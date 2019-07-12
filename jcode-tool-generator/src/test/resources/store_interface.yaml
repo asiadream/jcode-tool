@@ -1,17 +1,17 @@
-packageSuffix: domain.store
-nameSuffix: Store
+packageName: ${groupId}.${appName}.domain.store
+name: ${entity.simpleClassName}Store
 interfaceFile: true
 methods:
   - name: create
     parameters:
-      - type: ${refClassName}
+      - type: ${entity.className}
   - name: retrieve
-    type: ${refClassName}
+    type: ${entity.className}
     parameters:
       - type: String
         varName: id
   - name: retrieveAll
-    type: java.util.List<${refClassName}>
+    type: java.util.List<${entity.className}>
     parameters:
       - type: int
         varName: offset
@@ -19,10 +19,10 @@ methods:
         varName: limit
   - name: update
     parameters:
-      - type: ${refClassName}
+      - type: ${entity.className}
   - name: delete
     parameters:
-      - type: ${refClassName}
+      - type: ${entity.className}
   - name: exists
     type: boolean
     parameters:

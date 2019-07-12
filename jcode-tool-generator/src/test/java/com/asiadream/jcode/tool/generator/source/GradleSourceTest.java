@@ -1,4 +1,4 @@
-package com.asiadream.jcode.tool.source;
+package com.asiadream.jcode.tool.generator.source;
 
 import com.asiadream.jcode.tool.generator.source.GradleSource;
 import com.asiadream.jcode.tool.generator.source.gradle.GradleScript;
