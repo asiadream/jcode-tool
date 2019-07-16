@@ -1,6 +1,5 @@
 package com.asiadream.jcode.tool.generator.meta;
 
-import com.asiadream.jcode.tool.generator.model.AnnotationType;
 import com.asiadream.jcode.tool.generator.model.ClassType;
 import com.asiadream.jcode.tool.generator.model.ConstructorModel;
 import com.asiadream.jcode.tool.generator.model.JavaModel;
@@ -9,6 +8,7 @@ import com.asiadream.jcode.tool.share.util.string.StringUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class JavaMeta {
     //
@@ -27,14 +27,31 @@ public class JavaMeta {
         //
         this.packageName = expressionContext.replaceExpString(packageName);
         this.name = expressionContext.replaceExpString(name);
-        Optional.ofNullable(fields).ifPresent(fields -> fields.forEach(field -> field.replaceExp(expressionContext)));
+
+        Optional.ofNullable(fields).ifPresent(fields -> fields.forEach(field ->
+                field.replaceExp(expressionContext)));
+
         Optional.ofNullable(eachField).ifPresent(eachField -> {
             List<FieldMeta> created = eachField.eachFieldsByExp(expressionContext);
             this.fields = Optional.ofNullable(fields).orElse(new ArrayList<>());
             this.fields.addAll(created);
         });
-        Optional.ofNullable(constructors).ifPresent(constructors -> constructors.forEach(constructor -> constructor.replaceExp(expressionContext)));
-        Optional.ofNullable(methods).ifPresent(methods -> methods.forEach(method -> method.replaceExp(expressionContext)));
+
+        Optional.ofNullable(classAnnotations).ifPresent(classAnnotations -> classAnnotations.forEach(classAnnotation ->
+                classAnnotation.replaceExp(expressionContext)));
+
+        Optional.ofNullable(classExtends).ifPresent(classExtends ->
+                this.classExtends = classExtends.stream().map(expressionContext::replaceExpString).collect(Collectors.toList()));
+
+        Optional.ofNullable(classImplements).ifPresent(classImplements ->
+                this.classImplements = classImplements.stream().map(expressionContext::replaceExpString).collect(Collectors.toList()));
+
+        Optional.ofNullable(constructors).ifPresent(constructors -> constructors.forEach(constructor ->
+                constructor.replaceExp(expressionContext)));
+
+        Optional.ofNullable(methods).ifPresent(methods -> methods.forEach(method ->
+                method.replaceExp(expressionContext)));
+
         return this;
     }
 

@@ -45,7 +45,7 @@ methods:
   - name: toDomains
     type: java.util.List<${entity.className}>
     access: PUBLIC
-    staticMethod: true
+    static: true
     parameters:
       - type: java.util.List<${className}>
         varName: ${entity.name}Jpos
@@ -61,12 +61,12 @@ methods:
   - name: sample
     type: ${className}
     access: PUBLIC
-    staticMethod: true
+    static: true
     body: return new ${simpleClassName}(${entity.simpleClassName}.sample());
 
   # static main
   - name: main
-    staticMethod: true
+    static: true
     access: PUBLIC
     parameters:
       - type: String[]

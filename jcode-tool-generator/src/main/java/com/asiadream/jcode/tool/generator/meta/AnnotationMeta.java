@@ -10,6 +10,12 @@ public class AnnotationMeta {
     private String type;
     private List<AnnotationElementMeta> elements;
 
+    public void replaceExp(ExpressionContext expressionContext) {
+        //
+        this.type = expressionContext.replaceExpString(type);
+        Optional.ofNullable(elements).ifPresent(elements -> elements.forEach(element -> element.replaceExp(expressionContext)));
+    }
+
     public AnnotationType toAnnotationType() {
         //
         AnnotationType annotationType = new AnnotationType(type);

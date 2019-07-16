@@ -1,5 +1,6 @@
 package com.asiadream.jcode.tool.generator.meta;
 
+import com.asiadream.jcode.tool.generator.model.Access;
 import com.asiadream.jcode.tool.generator.model.ClassType;
 import com.asiadream.jcode.tool.generator.model.FieldModel;
 
@@ -10,12 +11,20 @@ public class FieldMeta {
     //
     private String name;
     private String type;
+    private Access access;
+    private boolean isStatic;
+    private boolean isFinal;
     private List<String> annotations;
+    private String initializer;
 
     public FieldMeta() {
+        //
+        this.access = Access.PRIVATE;
     }
 
     public FieldMeta(String name, String type) {
+        //
+        this();
         this.name = name;
         this.type = type;
     }
@@ -24,12 +33,20 @@ public class FieldMeta {
         //
         this.name = expressionContext.replaceExpString(name);
         this.type = expressionContext.replaceExpString(type);
+        this.initializer = expressionContext.replaceExpString(initializer);
     }
 
     public FieldModel toFieldModel() {
         //
-        FieldModel model = new FieldModel(name, ClassType.newClassType(type));
-        Optional.ofNullable(annotations).ifPresent(annotations -> annotations.forEach(annotation -> model.addAnnotation(annotation)));
+        FieldModel model = new FieldModel(MetaHelper.recommendVarName(name, type), ClassType.newClassType(type));
+        model.setAccess(access);
+        model.setStatic(isStatic);
+        model.setFinal(isFinal);
+
+        Optional.ofNullable(annotations).ifPresent(annotations -> annotations.forEach(model::addAnnotation));
+
+        model.setInitializer(initializer);
+
         return model;
     }
 
@@ -49,11 +66,43 @@ public class FieldMeta {
         this.type = type;
     }
 
+    public Access getAccess() {
+        return access;
+    }
+
+    public void setAccess(Access access) {
+        this.access = access;
+    }
+
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    public void setStatic(boolean aStatic) {
+        isStatic = aStatic;
+    }
+
+    public boolean isFinal() {
+        return isFinal;
+    }
+
+    public void setFinal(boolean aFinal) {
+        isFinal = aFinal;
+    }
+
     public List<String> getAnnotations() {
         return annotations;
     }
 
     public void setAnnotations(List<String> annotations) {
         this.annotations = annotations;
+    }
+
+    public String getInitializer() {
+        return initializer;
+    }
+
+    public void setInitializer(String initializer) {
+        this.initializer = initializer;
     }
 }

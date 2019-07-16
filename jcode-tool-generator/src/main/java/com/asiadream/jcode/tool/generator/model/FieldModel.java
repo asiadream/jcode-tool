@@ -8,7 +8,10 @@ public class FieldModel {
     private String name;
     private Access access;
     private ClassType type;
+    private boolean isStatic;
+    private boolean isFinal;
     private List<AnnotationType> annotations;
+    private String initializer;
 
     private FieldModel() {
         //
@@ -27,6 +30,8 @@ public class FieldModel {
         this.name = other.name;
         this.access = other.access;
         this.type = ClassType.copyOf(other.type);
+        this.isStatic = other.isStatic;
+        this.isFinal = other.isFinal;
         for (AnnotationType annotationType : other.annotations) {
             this.annotations.add(AnnotationType.copyOf(annotationType));
         }
@@ -86,5 +91,29 @@ public class FieldModel {
 
     public List<AnnotationType> getAnnotations() {
         return annotations;
+    }
+
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    public void setStatic(boolean aStatic) {
+        isStatic = aStatic;
+    }
+
+    public boolean isFinal() {
+        return isFinal;
+    }
+
+    public void setFinal(boolean aFinal) {
+        isFinal = aFinal;
+    }
+
+    public String getInitializer() {
+        return initializer;
+    }
+
+    public void setInitializer(String initializer) {
+        this.initializer = initializer;
     }
 }

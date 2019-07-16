@@ -59,7 +59,7 @@ public class JavaCreatorTest extends BaseFileTest {
 
         MethodModel fromJsonMethod = new MethodModel("fromJson", ClassType.newClassType(simpleClassName))
                 .setAccess(Access.PUBLIC)
-                .setStaticMethod(true)
+                .setStatic(true)
                 .addParameterModel(ClassType.newClassType("String"), "json")
                 .body("return (new Gson()).fromJson(json, " + simpleClassName + ".class);");
         javaModel.addMethodModel(fromJsonMethod);

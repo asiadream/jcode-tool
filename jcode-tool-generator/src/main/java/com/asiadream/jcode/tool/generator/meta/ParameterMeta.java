@@ -1,8 +1,6 @@
 package com.asiadream.jcode.tool.generator.meta;
 
 import com.asiadream.jcode.tool.generator.model.ParameterModel;
-import com.asiadream.jcode.tool.share.util.string.ClassNameUtil;
-import com.asiadream.jcode.tool.share.util.string.StringUtil;
 
 public class ParameterMeta {
     //
@@ -18,9 +16,7 @@ public class ParameterMeta {
 
     public ParameterModel toParameterModel() {
         //
-        String varName = StringUtil.isEmpty(this.varName) ? ClassNameUtil.getSimpleClassName(type) : this.varName;
-        String recommendedVarName = StringUtil.getRecommendedVariableName(varName);
-        return new ParameterModel(MetaHelper.toClassType(type), recommendedVarName);
+        return new ParameterModel(MetaHelper.toClassType(type), MetaHelper.recommendVarName(varName, type));
     }
 
     public String getVarName() {

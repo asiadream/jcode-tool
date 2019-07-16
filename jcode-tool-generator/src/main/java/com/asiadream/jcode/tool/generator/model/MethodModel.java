@@ -10,9 +10,10 @@ public class MethodModel {
     //
     private String name;
     private Access access;
-    private boolean staticMethod;
+    private boolean isStatic;
     private ClassType returnType;
     private List<ParameterModel> parameterModels;
+    private List<AnnotationType> annotations;
     private List<ClassType> throwns;
     private Comment comment;
     private List<String> bodyStatements;
@@ -20,6 +21,7 @@ public class MethodModel {
     private MethodModel() {
         //
         this.parameterModels = new ArrayList<>();
+        this.annotations = new ArrayList<>();
         this.throwns = new ArrayList<>();
         this.bodyStatements = new ArrayList<>();
     }
@@ -39,6 +41,9 @@ public class MethodModel {
         this.returnType = ClassType.copyOf(other.returnType);
         for (ParameterModel parameterModel : other.parameterModels) {
             this.parameterModels.add(new ParameterModel(parameterModel));
+        }
+        for (AnnotationType annotationType : other.annotations) {
+            this.annotations.add(AnnotationType.copyOf(annotationType));
         }
         for (ClassType thrown : other.throwns) {
             this.throwns.add(ClassType.copyOf(thrown));
@@ -130,7 +135,28 @@ public class MethodModel {
             }
         }
 
+        if (hasAnnotation()) {
+            for (AnnotationType annotation : annotations) {
+                classNames.addAll(annotation.usingClassNames());
+            }
+        }
+
         return classNames;
+    }
+
+    public void addAnnotation(AnnotationType annotation) {
+        //
+        this.annotations.add(annotation);
+    }
+
+    public void addAnnotation(String annotationClassName) {
+        //
+        addAnnotation(new AnnotationType(annotationClassName));
+    }
+
+    public boolean hasAnnotation() {
+        //
+        return this.annotations != null && this.annotations.size() > 0;
     }
 
     public String getName() {
@@ -190,13 +216,17 @@ public class MethodModel {
         this.bodyStatements = bodyStatements;
     }
 
-    public boolean isStaticMethod() {
-        return staticMethod;
+    public boolean isStatic() {
+        return isStatic;
     }
 
-    public MethodModel setStaticMethod(boolean staticMethod) {
+    public List<AnnotationType> getAnnotations() {
+        return annotations;
+    }
+
+    public MethodModel setStatic(boolean aStatic) {
         //
-        this.staticMethod = staticMethod;
+        this.isStatic = aStatic;
         return this;
     }
 }

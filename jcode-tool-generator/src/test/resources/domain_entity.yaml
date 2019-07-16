@@ -30,7 +30,7 @@ methods:
   - name: fromJson
     type: ${simpleClassName}
     access: PUBLIC
-    staticMethod: true
+    static: true
     parameters:
       - type: String
         varName: json

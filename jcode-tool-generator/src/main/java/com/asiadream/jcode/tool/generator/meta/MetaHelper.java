@@ -1,15 +1,16 @@
 package com.asiadream.jcode.tool.generator.meta;
 
 import com.asiadream.jcode.tool.generator.model.ClassType;
+import com.asiadream.jcode.tool.share.util.string.ClassNameUtil;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MetaHelper {
+class MetaHelper {
     //
-    public static List<String> toMultiStatements(String body) {
+    static List<String> toMultiStatements(String body) {
         //
         boolean blockMode = false;
         String block = "";
@@ -39,7 +40,7 @@ public class MetaHelper {
         return statements;
     }
 
-    public static ClassType toClassType(String typeString) {
+    static ClassType toClassType(String typeString) {
         //
         if (typeString == null)
             return null;
@@ -54,5 +55,11 @@ public class MetaHelper {
             return ClassType.newArrayType(ClassType.newClassType(compTypeString));
         }
         return ClassType.newClassType(typeString);
+    }
+
+    static String recommendVarName(String varName, String typeName) {
+        //
+        String name = StringUtil.isEmpty(varName) ? ClassNameUtil.getSimpleClassName(typeName) : varName;
+        return StringUtil.getRecommendedVariableName(name);
     }
 }

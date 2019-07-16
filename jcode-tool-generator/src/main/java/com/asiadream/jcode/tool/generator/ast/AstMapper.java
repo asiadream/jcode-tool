@@ -67,14 +67,9 @@ public abstract class AstMapper {
         EnumSet<Modifier> modifiers = EnumSet.of(Modifier.PUBLIC);
         ClassOrInterfaceDeclaration classType = new ClassOrInterfaceDeclaration(modifiers, javaModel.isInterface(), javaModel.getName());
 
-        // Type Annotation
-        if (javaModel.hasAnnotation()) {
-            for (AnnotationType annotation : javaModel.getAnnotations()) {
-                AnnotationExpr annotationExpr = createAnnotationExpr(annotation);
-                classType.addAnnotation(annotationExpr);
-                //classType.addMarkerAnnotation(annotation.getName());
-            }
-        }
+        // Annotation
+        Optional.ofNullable(javaModel.getAnnotations()).ifPresent(annotations -> annotations.forEach(annotation ->
+                classType.addAnnotation(createAnnotationExpr(annotation))));
 
         // Extended Type
         if (javaModel.hasExtendsType()) {
@@ -237,7 +232,7 @@ public abstract class AstMapper {
         }
 
         // Static
-        if (methodModel.isStaticMethod()) {
+        if (methodModel.isStatic()) {
             method.addModifier(Modifier.STATIC);
         }
 
@@ -251,6 +246,10 @@ public abstract class AstMapper {
         for (ClassType thrown : methodModel.getThrowns()) {
             method.addThrownException(createClassOrInterfaceType(thrown));
         }
+
+        // Annotation
+        Optional.ofNullable(methodModel.getAnnotations()).ifPresent(annotations -> annotations.forEach(annotation ->
+                method.addAnnotation(createAnnotationExpr(annotation))));
 
         // Comment
         method.setComment(methodModel.getComment());
@@ -267,15 +266,35 @@ public abstract class AstMapper {
     // Model:FieldModel -> Ast:FieldDeclaration
     public static FieldDeclaration createFieldDeclaration(FieldModel fieldModel) {
         //
-        Type fieldType = createType(fieldModel.getType());
-
         FieldDeclaration field = new FieldDeclaration();
-        field.addModifier(Modifier.PRIVATE);
-        VariableDeclarator variable = new VariableDeclarator(fieldType, fieldModel.getName());
-        field.addVariable(variable);
 
-        // Type Annotation
-        fieldModel.getAnnotations().forEach(annotationType -> field.addMarkerAnnotation(annotationType.getName()));
+        // Access
+        Optional.ofNullable(fieldModel.getAccess()).ifPresent(access ->
+                field.addModifier(Modifier.valueOf(fieldModel.getAccess().name())));
+
+        // Static
+        if (fieldModel.isStatic()) {
+            field.addModifier(Modifier.STATIC);
+        }
+
+        // Final
+        if (fieldModel.isFinal()) {
+            field.addModifier(Modifier.FINAL);
+        }
+
+        // Annotation
+        Optional.ofNullable(fieldModel.getAnnotations()).ifPresent(annotations -> annotations.forEach(annotation ->
+                field.addAnnotation(createAnnotationExpr(annotation))));
+
+        // Field type and name
+        Type fieldType = createType(fieldModel.getType());
+        VariableDeclarator variable = new VariableDeclarator(fieldType, fieldModel.getName());
+
+        // Initializer
+        Optional.ofNullable(fieldModel.getInitializer()).ifPresent(initializer ->
+                variable.setInitializer(initializer));
+
+        field.addVariable(variable);
 
         return field;
     }
