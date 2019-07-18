@@ -1,4 +1,4 @@
-package com.asiadream.jcode.tool.generator;
+package com.asiadream.jcode.tool.generator.main;
 
 import com.asiadream.jcode.tool.generator.model.ClassType;
 import com.asiadream.jcode.tool.generator.model.JavaModel;

@@ -1,4 +1,4 @@
-package com.asiadream.jcode.tool.generator;
+package com.asiadream.jcode.tool.generator.main;
 
 import com.asiadream.jcode.tool.generator.converter.JavaConverter;
 import com.asiadream.jcode.tool.generator.converter.PackageConverter;

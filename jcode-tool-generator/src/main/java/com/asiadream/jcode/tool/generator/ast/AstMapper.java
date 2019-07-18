@@ -178,7 +178,7 @@ public abstract class AstMapper {
         ClassType returnType = toClassType(methodType, fullNameProvider);
 
         MethodModel methodModel = new MethodModel(name, returnType);
-        methodModel.setAccess(Access.valueOf(access.asString()));
+        methodModel.setAccess(Access.valueOf(access.name()));
         for(Parameter parameter : method.getParameters()) {
             ClassType parameterType = toClassType(parameter.getType(), fullNameProvider);
             // FIXME parameterName check
@@ -227,7 +227,7 @@ public abstract class AstMapper {
         method.setBody(null);
 
         // Access
-        if (methodModel.getAccess() != null) {
+        if (methodModel.getAccess() != null && methodModel.getAccess() != Access.DEFAULT) {
             method.addModifier(Modifier.valueOf(methodModel.getAccess().name()));
         }
 

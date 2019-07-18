@@ -1,10 +1,12 @@
 package com.asiadream.jcode.tool.generator.meta;
 
 import com.asiadream.jcode.tool.generator.model.Access;
+import com.asiadream.jcode.tool.generator.model.ClassType;
 import com.asiadream.jcode.tool.generator.model.MethodModel;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MethodMeta {
     //
@@ -16,6 +18,23 @@ public class MethodMeta {
     private List<AnnotationMeta> annotations;
     private String body;
 
+    public MethodMeta() {
+        //
+    }
+
+    public MethodMeta(MethodModel model) {
+        // TODO : incomplete
+        this.name = model.getName();
+        this.type = Optional.ofNullable(model.getReturnType()).map(ClassType::toString).orElse(null);
+        this.access = model.getAccess();
+        this.isStatic = model.isStatic();
+        Optional.ofNullable(model.getParameterModels()).ifPresent(parameterModels ->
+                this.parameters = parameterModels.stream().map(ParameterMeta::new).collect(Collectors.toList()));
+        Optional.ofNullable(model.getAnnotations()).ifPresent(annotationTypes ->
+                this.annotations = annotationTypes.stream().map(AnnotationMeta::new).collect(Collectors.toList()));
+        //this.body = model
+    }
+
     public MethodMeta replaceExp(ExpressionContext expressionContext) {
         //
         this.name = expressionContext.replaceExpString(name);
@@ -23,7 +42,6 @@ public class MethodMeta {
 
         Optional.ofNullable(parameters).ifPresent(parameters -> parameters.forEach(parameter ->
                 parameter.replaceExp(expressionContext)));
-
         Optional.ofNullable(annotations).ifPresent(annotations -> annotations.forEach(annotation ->
                 annotation.replaceExp(expressionContext)));
 

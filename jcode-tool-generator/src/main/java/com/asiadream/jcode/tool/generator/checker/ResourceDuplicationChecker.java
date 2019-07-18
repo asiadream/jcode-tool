@@ -21,20 +21,21 @@ public class ResourceDuplicationChecker extends ProjectItemConverter {
     }
 
     @Override
-    public void convert(String sourceFileName) throws IOException {
+    public String convert(String sourceFileName) throws IOException {
         //
         Pair<String, String> pathName = PathUtil.devideResourceName(sourceFileName);
         String shortName = pathName.y;
-        
+
         List<String> group = findOrCreateGroup(shortName);
         group.add(sourceFileName);
+        return sourceFileName;
     }
 
     private List<String> findOrCreateGroup(String shortName) {
         //
         List<String> group = nameGroup.get(shortName);
         if (group != null) return group;
-        
+
         group = new ArrayList<>();
         nameGroup.put(shortName, group);
         return nameGroup.get(shortName);

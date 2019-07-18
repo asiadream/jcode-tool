@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClassType {
     //
@@ -247,7 +248,14 @@ public class ClassType {
     @Override
     public String toString() {
         //
-        return getClassName();
+        StringBuffer sb = new StringBuffer();
+        sb.append(getClassName());
+        if (hasTypeArgument()) {
+            sb.append("<");
+            sb.append(typeArguments.stream().map(Object::toString).collect(Collectors.joining(",")));
+            sb.append(">");
+        }
+        return sb.toString();
     }
 
     public static void main(String[] args) {

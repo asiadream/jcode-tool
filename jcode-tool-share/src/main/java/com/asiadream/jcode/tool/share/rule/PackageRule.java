@@ -25,6 +25,7 @@ public class PackageRule {
     private List<ClassNameStatement> classNameStatements;
     private List<String> removeImports;
     private List<ChangeImport> changeImports;
+    private boolean skipChangeImports;
 
     public static PackageRule newInstance() {
         //
@@ -85,7 +86,7 @@ public class PackageRule {
         this.statements.add(new Statement(fromIndex, fromPackage, toIndex));
         return this;
     }
-    
+
     public PackageRule set(int fromIndex, String fromPackage, int toIndex) {
         //
         Statement exists = find(fromIndex, fromPackage);
@@ -361,6 +362,14 @@ public class PackageRule {
             this.fromClassNamePostFix = other.fromClassNamePostFix;
             this.additionalPackage = other.additionalPackage;
         }
+    }
+
+    public boolean isSkipChangeImports() {
+        return skipChangeImports;
+    }
+
+    public void setSkipChangeImports(boolean skipChangeImports) {
+        this.skipChangeImports = skipChangeImports;
     }
 
     @SuppressWarnings("unused")

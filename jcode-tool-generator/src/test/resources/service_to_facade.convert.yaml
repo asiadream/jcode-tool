@@ -1,0 +1,16 @@
+convertMarkAnnotation: FacadeService
+deleteMarkAnnotation: DoNotOpen
+annotationsToRemove:
+  - FacadeService
+
+nameRule:
+  changePostfixes:
+    - from: Service
+      to: Facade
+
+packageRule:
+  skipChangeImports: true
+  changeElements:
+    - from: spec
+      fromIndex: 3
+      to: facade

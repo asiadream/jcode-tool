@@ -1,4 +1,4 @@
-package com.asiadream.jcode.tool.generator;
+package com.asiadream.jcode.tool.generator.javaparser;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;

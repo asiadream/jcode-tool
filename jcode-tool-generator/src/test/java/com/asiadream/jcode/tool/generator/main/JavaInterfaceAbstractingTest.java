@@ -1,7 +1,6 @@
-package com.asiadream.jcode.tool.generator;
+package com.asiadream.jcode.tool.generator.main;
 
 import com.asiadream.jcode.tool.share.test.BaseFileTest;
-import org.junit.Test;
 
 import java.io.IOException;
 

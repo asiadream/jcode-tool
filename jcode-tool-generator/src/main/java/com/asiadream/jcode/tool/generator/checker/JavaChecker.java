@@ -21,13 +21,14 @@ public class JavaChecker extends ProjectItemConverter {
         this.checker = checker;
         this.extChecker = extChecker;
     }
-    
+
     @Override
-    public void convert(String sourceFilePath) throws IOException {
+    public String convert(String sourceFilePath) throws IOException {
         //
         JavaSource source = javaReader.read(sourceFilePath);
         checker.checkAndWarn(source);
         extChecker.checkAndWarn(source);
+        return source.getClassName();
     }
 
 }

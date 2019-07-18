@@ -86,4 +86,10 @@ public class AnnotationType extends ClassType {
     public List<AnnotationPair> getPairs() {
         return pairs;
     }
+
+    @Override
+    public String toString() {
+        //
+        return super.toString();
+    }
 }

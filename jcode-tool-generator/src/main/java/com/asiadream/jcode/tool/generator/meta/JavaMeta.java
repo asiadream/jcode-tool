@@ -22,6 +22,7 @@ public class JavaMeta {
     private List<String> classImplements;
     private List<ConstructorMeta> constructors;
     private List<MethodMeta> methods;
+    private EachMethodMeta eachMethod;
 
     public JavaMeta replaceExp(ExpressionContext expressionContext) {
         //
@@ -51,6 +52,12 @@ public class JavaMeta {
 
         Optional.ofNullable(methods).ifPresent(methods -> methods.forEach(method ->
                 method.replaceExp(expressionContext)));
+
+        Optional.ofNullable(eachMethod).ifPresent(eachMethod -> {
+            List<MethodMeta> created = eachMethod.eachMethodsByExp(expressionContext);
+            this.methods = Optional.ofNullable(methods).orElse(new ArrayList<>());
+            this.methods.addAll(created);
+        });
 
         return this;
     }
@@ -172,5 +179,13 @@ public class JavaMeta {
 
     public void setInterfaceFile(boolean interfaceFile) {
         this.interfaceFile = interfaceFile;
+    }
+
+    public EachMethodMeta getEachMethod() {
+        return eachMethod;
+    }
+
+    public void setEachMethod(EachMethodMeta eachMethod) {
+        this.eachMethod = eachMethod;
     }
 }

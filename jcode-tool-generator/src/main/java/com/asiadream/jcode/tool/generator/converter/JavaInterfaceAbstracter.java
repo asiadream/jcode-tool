@@ -90,7 +90,7 @@ public class JavaInterfaceAbstracter extends ProjectItemConverter {
         return stubDtoInfo;
     }
 
-    public void convert(String sourceFileName) throws IOException {
+    public String convert(String sourceFileName) throws IOException {
         //
         JavaSource source = javaReader.read(sourceFileName);
 
@@ -126,6 +126,8 @@ public class JavaInterfaceAbstracter extends ProjectItemConverter {
         // update local proxy
         JavaSource localProxy = readAndUpdateLocalProxy(interfaceModel, proxySource, logicSource);
         javaWriterForSkeleton.write(localProxy);
+
+        return localProxy.getClassName();
     }
 
     private JavaModel changeToJavaInterfaceModel(JavaSource source) {

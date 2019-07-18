@@ -7,6 +7,16 @@ public class ParameterMeta {
     private String varName;
     private String type;
 
+    public ParameterMeta() {
+        //
+    }
+
+    public ParameterMeta(ParameterModel model) {
+        //
+        this.varName = model.getVarName();
+        this.type = model.getType().toString();
+    }
+
     public ParameterMeta replaceExp(ExpressionContext expressionContext) {
         //
         this.type = expressionContext.replaceExpString(type);

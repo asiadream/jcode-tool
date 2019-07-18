@@ -1,4 +1,4 @@
-package com.asiadream.jcode.tool.generator;
+package com.asiadream.jcode.tool.generator.main;
 
 import com.asiadream.jcode.tool.generator.converter.JavaAbstractParam;
 import com.asiadream.jcode.tool.generator.converter.JavaInterfaceAbstracter;

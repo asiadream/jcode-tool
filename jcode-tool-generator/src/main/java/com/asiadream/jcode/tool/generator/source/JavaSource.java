@@ -233,6 +233,15 @@ public class JavaSource {
         }).collect(Collectors.toList());
     }
 
+    public List<MethodModel> getMethodsAsModel() {
+        //
+        return compilationUnit.getType(0).getMethods().stream().map(methodDec -> {
+            MethodModel methodModel = AstMapper.toMethodModel(methodDec, this::findFullName);
+            //MethodModel methodModel = new MethodModel(methodDec.getNameAsString(), ClassType.newClassType(methodDec.getTypeAsString()));
+            return methodModel;
+        }).collect(Collectors.toList());
+    }
+
     public void addAnnotation(ClassType classType) {
         //
         addAnnotation(classType.getName(), classType.getPackageName());
@@ -279,6 +288,24 @@ public class JavaSource {
         classType.addAnnotation(expr);
 
         compilationUnit.addImport(annotation.getClassName());
+    }
+
+    public void removeAnnotations(List<String> annotationsToRemove) {
+        //
+        if (annotationsToRemove == null) return;
+        annotationsToRemove.forEach(annotationName -> findAnnotation(annotationName).ifPresent(Node::remove));
+    }
+
+    private Optional<AnnotationExpr> findAnnotation(String annotationName) {
+        //
+        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        return classType.getAnnotationByName(annotationName);
+    }
+
+    public boolean containsAnnotation(String annotationClassName) {
+        //
+        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        return classType.isAnnotationPresent(annotationClassName);
     }
 
     public void addImport(String name, String packageName) {
@@ -395,6 +422,21 @@ public class JavaSource {
         if (method != null) {
             method.remove();
         }
+    }
+
+    public void removeMethodsByAnnotation(String annotationName) {
+        //
+        if (StringUtil.isEmpty(annotationName)) {
+            return;
+        }
+
+        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        List<MethodDeclaration> methodDeclarations = classType.getMethods();
+        methodDeclarations.forEach(methodDeclaration -> {
+            if (methodDeclaration.isAnnotationPresent(annotationName)) {
+                methodDeclaration.remove();
+            }
+        });
     }
 
     private MethodDeclaration findGetter(String varName) {

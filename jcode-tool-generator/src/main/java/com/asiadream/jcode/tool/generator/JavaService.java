@@ -1,16 +1,21 @@
 package com.asiadream.jcode.tool.generator;
 
+import com.asiadream.jcode.tool.generator.converter.JavaConverter;
+import com.asiadream.jcode.tool.generator.converter.config.ConverterConfig;
 import com.asiadream.jcode.tool.generator.creator.JavaCreator;
 import com.asiadream.jcode.tool.generator.meta.ExpressionContext;
 import com.asiadream.jcode.tool.generator.meta.GeneratorMeta;
 import com.asiadream.jcode.tool.generator.meta.JavaMeta;
 import com.asiadream.jcode.tool.generator.model.JavaModel;
 import com.asiadream.jcode.tool.generator.reader.JavaReader;
-import com.asiadream.jcode.tool.generator.sdo.ClassReference;
+import com.asiadream.jcode.tool.generator.sdo.ReferenceSdo;
 import com.asiadream.jcode.tool.generator.source.JavaSource;
 import com.asiadream.jcode.tool.share.config.ConfigurationType;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
+import com.asiadream.jcode.tool.share.rule.NameRule;
+import com.asiadream.jcode.tool.share.rule.PackageRule;
 import com.asiadream.jcode.tool.share.util.file.PathUtil;
+import com.asiadream.jcode.tool.share.util.string.ClassNameUtil;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +24,6 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Optional;
 
 public class JavaService {
@@ -43,8 +47,14 @@ public class JavaService {
         //
         Yaml yaml = new Yaml(new Constructor(JavaMeta.class));
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(template + ".yaml");
-        JavaMeta javaMeta = yaml.load(inputStream);
-        return javaMeta;
+        return yaml.load(inputStream);
+    }
+
+    private ConverterConfig loadConverterConfig(String configName) {
+        //
+        Yaml yaml = new Yaml(new Constructor((ConverterConfig.class)));
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(configName + ".convert.yaml");
+        return yaml.load(inputStream);
     }
 
     public String create(String appName, String template, String targetProjectPath) {
@@ -52,13 +62,13 @@ public class JavaService {
         return create(appName, null, template, targetProjectPath);
     }
 
-    public String create(String appName, List<ClassReference> refs, String template, String targetProjectPath) {
+    public String create(String appName, ReferenceSdo referenceSdo, String template, String targetProjectPath) {
         // baseName: hello
         // Create a Domain Entity
         String groupId = generatorMeta.getGroupId();
 
         JavaMeta javaMeta = loadJavaMeta(template);
-        ExpressionContext expressionContext = constructExpressionContext(groupId, appName, refs, javaMeta);
+        ExpressionContext expressionContext = constructExpressionContext(groupId, appName, referenceSdo, javaMeta);
         JavaModel javaModel = javaMeta
                 .replaceExp(expressionContext)   // replace expression with context (${...})
                 .toJavaModel(); // create java model
@@ -74,7 +84,25 @@ public class JavaService {
         }
     }
 
-    private ExpressionContext constructExpressionContext(String groupId, String appName, List<ClassReference> refs, JavaMeta javaMeta) {
+    public String convert(String sourceClassName, String sourceProjectPath, String configName, String targetProjectPath) {
+        //
+        ConverterConfig converterConfig = loadConverterConfig(configName);
+
+        ProjectConfiguration sourceConfig = new ProjectConfiguration(ConfigurationType.Source, sourceProjectPath, true);
+        ProjectConfiguration targetConfig = new ProjectConfiguration(ConfigurationType.Target, targetProjectPath, true);
+
+        PackageRule packageRule = converterConfig.toPackageRule();
+        NameRule nameRule = converterConfig.toNameRule();
+
+        JavaConverter javaConverter = new JavaConverter(sourceConfig, targetConfig, nameRule, packageRule, converterConfig);
+        try {
+            return javaConverter.convert(ClassNameUtil.toSourceFileName(sourceClassName));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private ExpressionContext constructExpressionContext(String groupId, String appName, ReferenceSdo referenceSdo, JavaMeta javaMeta) {
         //
         ExpressionContext expressionContext = new ExpressionContext();
         expressionContext.add("groupId", groupId);
@@ -84,12 +112,13 @@ public class JavaService {
         expressionContext.add("packageName", javaMeta.getPackageName());
         expressionContext.add("className", javaMeta.getClassName());
 
-        Optional.ofNullable(refs).ifPresent(_refs -> _refs.forEach(ref -> {
+        Optional.ofNullable(referenceSdo).ifPresent(_refSdo -> _refSdo.getReferences().forEach(ref -> {
             expressionContext.add(ref.getName() + ".className", ref.getClassName());
             expressionContext.add(ref.getName() + ".simpleClassName", ref.getSimpleClassName());
             expressionContext.add(ref.getName() + ".name", StringUtil.toFirstLowerCase(ref.getSimpleClassName()));
             JavaSource javaSource = ref.read(this::readJavaSource);
             expressionContext.add(ref.getName() + ".fields", javaSource.getFieldsAsModel());
+            expressionContext.add(ref.getName() + ".methods", javaSource.getMethodsAsModel());
         }));
 
         expressionContext.updateExpressedValue();

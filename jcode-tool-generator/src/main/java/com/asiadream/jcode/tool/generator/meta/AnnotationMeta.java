@@ -10,6 +10,16 @@ public class AnnotationMeta {
     private String type;
     private List<AnnotationElementMeta> elements;
 
+    public AnnotationMeta() {
+        //
+    }
+
+    public AnnotationMeta(AnnotationType model) {
+        //
+        this.type = model.getClassName();
+        // TODO : AnnotationPair -> AnnotationElementMeta
+    }
+
     public void replaceExp(ExpressionContext expressionContext) {
         //
         this.type = expressionContext.replaceExpString(type);

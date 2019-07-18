@@ -75,9 +75,10 @@ public class ComplexProjectConverter {
         // update packageRule for stub dto
         new PackageConverter(new ProjectItemConverter(sourceConfig, ProjectItemType.Java) {
             @Override
-            public void convert(String sourceFileName) throws IOException {
+            public String convert(String sourceFileName) throws IOException {
                 //
                 updatePackageRuleUsingExtService(sourceFileName, extServiceAbstracter);
+                return null;
             }
         }).convert(param.getSourcePackage());
 

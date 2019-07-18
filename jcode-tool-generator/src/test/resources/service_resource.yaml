@@ -1,0 +1,12 @@
+packageName: ${groupId}.${appName}.restapi.crud
+name: ${entity.simpleClassName}Resource
+
+# Iterate MethodMeta by collection of MethodModel.
+eachMethod:
+  items: ${facade.methods}
+  methodOverrides:
+    access: PUBLIC
+#  var: f
+#  methodMapping:
+#    name: ${f.name}
+#    type: ${f.returnType}

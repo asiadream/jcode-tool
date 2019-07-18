@@ -21,17 +21,17 @@ public class SAXParseChecker extends ProjectItemConverter {
     }
 
     @Override
-    public void convert(String sourceFilePath) throws IOException {
+    public String convert(String sourceFilePath) throws IOException {
         //
         if (sourceFilePath.endsWith(".out.xml")) {
             System.err.println("Skip convert '.out.xml' --> " + sourceFilePath);
-            return;
+            return null;
         }
-        
+
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setValidating(true);
-        
+
         try {
             SAXParser parser = factory.newSAXParser();
             XMLReader reader = parser.getXMLReader();
@@ -40,26 +40,28 @@ public class SAXParseChecker extends ProjectItemConverter {
                 public void warning(SAXParseException exception) throws SAXException {
                     logger.warn(sourceFilePath + "["+exception.getLineNumber() + ", " + exception.getColumnNumber() + "] " + exception.getMessage());
                 }
-                
+
                 @Override
                 public void fatalError(SAXParseException exception) throws SAXException {
                     logger.warn(sourceFilePath + "["+exception.getLineNumber() + ", " + exception.getColumnNumber() + "] " + exception.getMessage());
                 }
-                
+
                 @Override
                 public void error(SAXParseException exception) throws SAXException {
                     logger.warn(sourceFilePath + "["+exception.getLineNumber() + ", " + exception.getColumnNumber() + "] " + exception.getMessage());
                 }
             });
-            
+
             String physicalSourceFilePath = sourceConfiguration.makePhysicalResourceFilePath(sourceFilePath);
             reader.parse(new InputSource(physicalSourceFilePath));
-            
+
         } catch (SAXException e) {
             throw new IOException(e);
         } catch (ParserConfigurationException e) {
             throw new IOException(e);
         }
+
+        return null;
     }
 
 }

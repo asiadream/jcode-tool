@@ -20,7 +20,7 @@ import java.util.List;
 public class MyBatisMapperCreator extends ProjectItemConverter {
     //
     private static final String MAPPER_SUFFIX = "Mapper";
-    
+
     private XmlReader xmlReader;
     private XmlWriter xmlWriter;
     private JavaReader daoReader;
@@ -57,11 +57,11 @@ public class MyBatisMapperCreator extends ProjectItemConverter {
     }
 
     @Override
-    public void convert(String sourceFilePath) throws IOException {
+    public String convert(String sourceFilePath) throws IOException {
         //
         if (sourceFilePath.endsWith(".out.xml")) {
             System.err.println("Skip convert '.out.xml' --> " + sourceFilePath);
-            return;
+            return null;
         }
 
         // SqlMap xml read
@@ -79,6 +79,8 @@ public class MyBatisMapperCreator extends ProjectItemConverter {
         javaSource.changePackageAndName(javaNameRule, javaPackageRule);
         javaSource.changeImports(javaNameRule, javaPackageRule);
         javaWriter.write(javaSource);
+
+        return javaSource.getClassName();
     }
 
     private JavaModel findDaoModel(String xmlSourceFilePath) throws IOException {
@@ -128,7 +130,7 @@ public class MyBatisMapperCreator extends ProjectItemConverter {
                 javaModel.addMethodModel(createMyBatisMapperMethodModel(element, daoModel));
             }
         }
-        
+
         // Copy dao Comment if exists.
         if (daoModel != null) {
             javaModel.setNodeComment(daoModel.getNodeComment());

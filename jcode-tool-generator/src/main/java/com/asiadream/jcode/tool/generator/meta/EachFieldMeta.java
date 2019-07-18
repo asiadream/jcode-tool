@@ -2,12 +2,16 @@ package com.asiadream.jcode.tool.generator.meta;
 
 import com.asiadream.jcode.tool.share.util.reflection.ObjectCallUtil;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class EachFieldMeta {
     //
+    private static Logger logger = LoggerFactory.getLogger(EachFieldMeta.class);
+
     private String items;
     private String var;
     private FieldMeta field;
@@ -24,7 +28,7 @@ public class EachFieldMeta {
 
     private FieldMeta createFieldMetaWithObject(Object object) {
         //
-        System.out.println("createFieldMetaWithObject --> "+object);
+        logger.debug("createFieldMetaWithObject --> {}", object);
         String nameExp = field.getName(); // ${f.name}
         String typeExp = field.getType(); // ${f.type}
 
@@ -35,7 +39,6 @@ public class EachFieldMeta {
             // call by reflection --> getName(), getType()
             String name = ObjectCallUtil.invokeStringGetMethod(object, "get" + StringUtil.toFirstUpperCase(nameProp));
             String type = ObjectCallUtil.invokeStringGetMethod(object, "get" + StringUtil.toFirstUpperCase(typeProp));
-            System.out.println("name:" + name + ", type:" + type);
             return new FieldMeta(name, type);
         } catch (Exception e) {
             throw new RuntimeException(e);

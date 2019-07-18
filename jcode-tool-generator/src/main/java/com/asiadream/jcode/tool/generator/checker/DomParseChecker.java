@@ -17,7 +17,7 @@ import java.io.IOException;
 public class DomParseChecker extends ProjectItemConverter {
     //
     private static Logger logger = LoggerFactory.getLogger("sqlmap-checker");
-    
+
     private static Logger loggerError = LoggerFactory.getLogger("sqlmap-error-checker");
 
     public DomParseChecker(ProjectConfiguration sourceConfiguration) {
@@ -25,45 +25,47 @@ public class DomParseChecker extends ProjectItemConverter {
     }
 
     @Override
-    public void convert(String sourceFilePath) throws IOException {
+    public String convert(String sourceFilePath) throws IOException {
         //
         if (sourceFilePath.endsWith(".out.xml")) {
             System.err.println("Skip convert '.out.xml' --> " + sourceFilePath);
-            return;
+            return null;
         }
-        
+
         String physicalSourceFilePath = sourceConfiguration.makePhysicalResourceFilePath(sourceFilePath);
-        
+
         File file = new File(physicalSourceFilePath);
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(true);
         factory.setNamespaceAware(true);
-        
+
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
-            
+
             builder.setErrorHandler(new ErrorHandler() {
                 @Override
                 public void warning(SAXParseException exception) throws SAXException {
                     logger.warn(sourceFilePath + "["+exception.getLineNumber() + ", " + exception.getColumnNumber() + "] " + exception.getMessage());
                 }
-                
+
                 @Override
                 public void fatalError(SAXParseException exception) throws SAXException {
                     loggerError.warn(sourceFilePath + "["+exception.getLineNumber() + ", " + exception.getColumnNumber() + "] " + exception.getMessage());
                 }
-                
+
                 @Override
                 public void error(SAXParseException exception) throws SAXException {
                     logger.warn(sourceFilePath + "["+exception.getLineNumber() + ", " + exception.getColumnNumber() + "] " + exception.getMessage());
                 }
             });
-            
+
             builder.parse(file);
         } catch (Exception e) {
             //loggerError.warn(sourceFilePath + " : " + e.getMessage());
         }
-        
+
+        return null;
+
     }
 
 }

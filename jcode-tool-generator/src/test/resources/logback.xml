@@ -12,5 +12,7 @@
     <logger name="com.asiadream.jcode.tool.generator.source.JavaSource" level="TRACE" />
     <logger name="com.asiadream.jcode.tool.generator.source.GradleSource" level="TRACE" />
     <logger name="com.asiadream.jcode.tool.generator.JavaService" level="TRACE" />
+	<logger name="com.asiadream.jcode.tool.generator.converter.JavaConverter" level="TRACE" />
+	<logger name="com.asiadream.jcode.tool.generator.meta" level="DEBUG" />
 
 </configuration>

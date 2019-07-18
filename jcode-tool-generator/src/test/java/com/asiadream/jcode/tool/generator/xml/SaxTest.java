@@ -1,4 +1,4 @@
-package com.asiadream.jcode.tool.generator;
+package com.asiadream.jcode.tool.generator.xml;
 
 import org.junit.Test;
 import org.xml.sax.*;

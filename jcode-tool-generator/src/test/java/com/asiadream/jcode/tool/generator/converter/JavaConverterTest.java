@@ -1,6 +1,5 @@
-package com.asiadream.jcode.tool.generator;
+package com.asiadream.jcode.tool.generator.converter;
 
-import com.asiadream.jcode.tool.generator.converter.JavaConverter;
 import com.asiadream.jcode.tool.share.config.ConfigurationType;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
 import com.asiadream.jcode.tool.share.rule.PackageRule;
@@ -11,10 +10,10 @@ import java.io.IOException;
 
 public class JavaConverterTest extends BaseFileTest {
     //
-    private static final String SOURCE_PROJECT_HOME = "../source-project";
+    private static final String SOURCE_PROJECT_HOME = "src/test/resources/sample-project";
     private static final String SOURCE_FILE_NAME = "com/foo/bar/service/SampleService.java";
 
-    //@Test
+    @Test
     public void testConvert() throws IOException {
         //
         ProjectConfiguration sourceConfig = new ProjectConfiguration(ConfigurationType.Source, SOURCE_PROJECT_HOME, false);

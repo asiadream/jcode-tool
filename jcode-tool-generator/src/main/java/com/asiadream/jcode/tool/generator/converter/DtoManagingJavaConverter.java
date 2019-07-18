@@ -11,7 +11,7 @@ import java.io.IOException;
 public class DtoManagingJavaConverter extends ProjectItemConverter {
     //
     private static Logger logger = LoggerFactory.getLogger(DtoManagingJavaConverter.class);
-    
+
     private PackageRule packageRule;
     private JavaConverter serviceJavaConverter;
     private JavaConverter stubJavaConverter;
@@ -26,21 +26,22 @@ public class DtoManagingJavaConverter extends ProjectItemConverter {
     }
 
     @Override
-    public void convert(String dtoSourceFileName) {
+    public String convert(String dtoSourceFileName) {
         //
         try {
             String dtoClassName = PathUtil.toClassName(dtoSourceFileName);
             if (packageRule.containsChangeImport(dtoClassName)) {
-                stubJavaConverter
+                return stubJavaConverter
                         .customCodeHandle(this::makeDtoCustomCode)
                         .convert(dtoSourceFileName);
             } else {
-                serviceJavaConverter
+                return serviceJavaConverter
                         .customCodeHandle(this::makeDtoCustomCode)
                         .convert(dtoSourceFileName);
             }
         } catch (IOException e) {
             logger.error("Can't convert dto --> {}, {}", dtoSourceFileName, e.getMessage());
+            return null;
         }
     }
 

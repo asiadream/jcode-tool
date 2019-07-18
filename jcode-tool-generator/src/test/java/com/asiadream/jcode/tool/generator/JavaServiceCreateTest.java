@@ -1,6 +1,7 @@
 package com.asiadream.jcode.tool.generator;
 
 import com.asiadream.jcode.tool.generator.sdo.ClassReference;
+import com.asiadream.jcode.tool.generator.sdo.ReferenceSdo;
 import com.asiadream.jcode.tool.share.test.BaseFileTest;
 import org.junit.Test;
 
@@ -8,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class JavaServiceTest extends BaseFileTest {
+public class JavaServiceCreateTest extends BaseFileTest {
     //
     private final String appName = "talk";
     private JavaService javaService = new JavaService();
@@ -55,11 +56,11 @@ public class JavaServiceTest extends BaseFileTest {
         javaService.create(appName, newClassRefs(new String[][]{{"entity", domainEntityClassName}, {"serviceInterface", serviceInterfaceName}}), "service_client", super.testDirName);
     }
 
-    private List<ClassReference> newClassRefs(String[][] refArrays) {
+    private ReferenceSdo newClassRefs(String[][] refArrays) {
         //
         List<ClassReference> refs = Arrays.stream(refArrays)
                 .map(names -> new ClassReference(names[0], names[1], super.testDirName))
                 .collect(Collectors.toList());
-        return refs;
+        return new ReferenceSdo(refs);
     }
 }
