@@ -1,0 +1,71 @@
+packageName: ${groupId}.${appName}${preBizName}.store.jpa${postBizName}
+name: ${entity.simpleClassName}JpaStore
+classAnnotations:
+  - type: org.springframework.stereotype.Repository
+classImplements:
+  - ${storeInterface.className}
+fields:
+  - type: ${groupId}.${appName}${preBizName}.store.jpa${postBizName}.repository.${entity.simpleClassName}Repository
+    annotations:
+      - type: org.springframework.beans.factory.annotation.Autowired
+methods:
+  - name: create
+    access: PUBLIC
+    parameters:
+      - type: ${entity.className}
+    annotations:
+      - type: Override
+    body: ${entity.name}Repository.save(new ${entity.simpleClassName}Jpo(${entity.name}));
+
+  - name: retrieve
+    access: PUBLIC
+    type: ${entity.className}
+    parameters:
+      - type: String
+        varName: id
+    annotations:
+      - type: Override
+    body: |
+      Optional<${entity.simpleClassName}Jpo> optional${entity.simpleClassName}Jpo = ${entity.name}Repository.findById(id);
+      return optional${entity.simpleClassName}Jpo.map(${entity.simpleClassName}Jpo::toDomain).orElse(null);
+
+  - name: retrieveAll
+    type: java.util.List<${entity.className}>
+    access: PUBLIC
+    parameters:
+      - type: int
+        varName: offset
+      - type: int
+        varName: limit
+    annotations:
+      - type: Override
+    body: |
+      Pageable pageable = PageRequest.of(offset.page(), offset.limit(), Sort.Direction.ASC, "name");
+      Page<${entity.simpleClassName}Jpo> ${entity.name}JpoPage = ${entity.name}Repository.findAll(pageable);
+      return ${entity.name}JpoPage.stream().map(${entity.simpleClassName}Jpo::toDomains).collect(Collectors.toList());
+
+  - name: update
+    access: PUBLIC
+    parameters:
+      - type: ${entity.className}
+    annotations:
+      - type: Override
+    body: ${entity.name}Repository.save(new ${entity.simpleClassName}Jpo(${entity.name}));
+
+  - name: delete
+    access: PUBLIC
+    parameters:
+      - type: ${entity.className}
+    annotations:
+      - type: Override
+    body: ${entity.name}Repository.deleteById(${entity.name}.getId());
+
+  - name: exists
+    access: PUBLIC
+    type: boolean
+    parameters:
+      - type: String
+        varName: id
+    annotations:
+      - type: Override
+    body: return ${entity.name}Repository.existsById(id);

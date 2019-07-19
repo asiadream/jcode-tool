@@ -62,7 +62,7 @@ public class JavaConverter extends ProjectItemConverter {
     /**
      * Convert Java File
      * @param sourceFilePath ex) com/foo/bar/SampleService.java
-     * @throws IOException
+     * @throws IOException If the file does not exist.
      */
     @Override
     public String convert(String sourceFilePath) throws IOException {

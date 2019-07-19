@@ -52,6 +52,15 @@ public class PackageNameUtilTest {
     }
 
     @Test
+    public void testRemovePartCase4() {
+        //
+        String packageName = "com.foo.bar.kkk.foo";
+        String s1 = PackageNameUtil.removePart(packageName, "foo");
+        System.out.println(s1);
+        Assert.assertEquals("com.bar.kkk.foo", s1);
+    }
+
+    @Test
     public void testRemoveFirstElement() {
         //
         String packageName = "com.foo.bar.kkk.mmm";

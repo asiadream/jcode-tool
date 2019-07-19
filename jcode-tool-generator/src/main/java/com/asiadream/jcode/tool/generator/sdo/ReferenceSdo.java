@@ -1,6 +1,7 @@
 package com.asiadream.jcode.tool.generator.sdo;
 
 import com.asiadream.jcode.tool.generator.meta.BizNameLocation;
+import com.asiadream.jcode.tool.share.data.Pair;
 import com.asiadream.jcode.tool.share.util.string.PackageNameUtil;
 
 import java.util.ArrayList;
@@ -9,13 +10,18 @@ import java.util.List;
 public class ReferenceSdo {
     //
     private List<ClassReference> references;
+    private List<Pair<String, String>> customContext;
 
     public ReferenceSdo() {
+        //
         this.references = new ArrayList<>();
+        this.customContext = new ArrayList<>();
     }
 
     public ReferenceSdo(List<ClassReference> references) {
+        //
         this.references = references;
+        this.customContext = new ArrayList<>();
     }
 
     public ReferenceSdo(String referenceName, String className, String projectPath) {
@@ -43,7 +49,7 @@ public class ReferenceSdo {
     }
 
     private String getBizName(BizNameLocation location, String groupId, String appName) {
-        //
+        // className: io.naradrama.talk.domain.entity.town.TalkTown -> bizName: town
         if (references == null || references.size() <= 0) {
             return null;
         }
@@ -74,11 +80,25 @@ public class ReferenceSdo {
         return this;
     }
 
+    public ReferenceSdo addCustomContext(String key, String value) {
+        //
+        this.customContext.add(new Pair<>(key, value));
+        return this;
+    }
+
     public List<ClassReference> getReferences() {
         return references;
     }
 
     public void setReferences(List<ClassReference> references) {
         this.references = references;
+    }
+
+    public List<Pair<String, String>> getCustomContext() {
+        return customContext;
+    }
+
+    public void setCustomContext(List<Pair<String, String>> customContext) {
+        this.customContext = customContext;
     }
 }

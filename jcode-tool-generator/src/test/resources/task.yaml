@@ -1,4 +1,4 @@
-packageName: ${groupId}.domain.logic.task
+packageName: ${groupId}.${appName}${preBizName}.domain.logic.task${postBizName}
 name: ${entity.simpleClassName}Task
 
 classAnnotations:

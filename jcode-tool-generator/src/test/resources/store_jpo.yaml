@@ -1,4 +1,4 @@
-packageName: ${groupId}.${appName}.store.jpa.jpo
+packageName: ${groupId}.${appName}${preBizName}.store.jpa${postBizName}.jpo
 name: ${entity.simpleClassName}Jpo
 classAnnotations:
   - type: lombok.Getter

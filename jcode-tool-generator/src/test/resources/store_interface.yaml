@@ -1,4 +1,4 @@
-packageName: ${groupId}.${appName}.domain.store
+packageName: ${groupId}.${appName}${preBizName}.domain.store${postBizName}
 name: ${entity.simpleClassName}Store
 interfaceFile: true
 methods:

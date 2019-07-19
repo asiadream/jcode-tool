@@ -14,7 +14,7 @@ public class FieldMeta {
     private Access access;
     private boolean isStatic;
     private boolean isFinal;
-    private List<String> annotations;
+    private List<AnnotationMeta> annotations;
     private String initializer;
 
     public FieldMeta() {
@@ -34,16 +34,23 @@ public class FieldMeta {
         this.name = expressionContext.replaceExpString(name);
         this.type = expressionContext.replaceExpString(type);
         this.initializer = expressionContext.replaceExpString(initializer);
+
+        Optional.ofNullable(annotations).ifPresent(annotations -> annotations.forEach(annotation ->
+                annotation.replaceExp(expressionContext)));
     }
 
     public FieldModel toFieldModel() {
         //
+        if (this.type == null) {
+            throw new IllegalArgumentException("field type is required in FieldMeta.");
+        }
         FieldModel model = new FieldModel(MetaHelper.recommendVarName(name, type), ClassType.newClassType(type));
         model.setAccess(access);
         model.setStatic(isStatic);
         model.setFinal(isFinal);
 
-        Optional.ofNullable(annotations).ifPresent(annotations -> annotations.forEach(model::addAnnotation));
+        Optional.ofNullable(annotations).ifPresent(annotations -> annotations.forEach(annotation ->
+                model.addAnnotation(annotation.toAnnotationType())));
 
         model.setInitializer(initializer);
 
@@ -90,11 +97,11 @@ public class FieldMeta {
         isFinal = aFinal;
     }
 
-    public List<String> getAnnotations() {
+    public List<AnnotationMeta> getAnnotations() {
         return annotations;
     }
 
-    public void setAnnotations(List<String> annotations) {
+    public void setAnnotations(List<AnnotationMeta> annotations) {
         this.annotations = annotations;
     }
 

@@ -6,7 +6,7 @@ public class PackageNameUtil {
 
     /**
      * Get the first element of the Package name.
-     * Ex) com.foo.bar.kkk -> com
+     * Ex) com.foo.bar.kkk - com
      * @param packageName A package name
      * @return The first element of the package name
      */
@@ -17,7 +17,7 @@ public class PackageNameUtil {
 
     /**
      * Get the last element of the Package name.
-     * Ex) com.foo.bar.kkk -> kkk
+     * Ex) com.foo.bar.kkk - kkk
      * @param packageName A package name
      * @return The last element of the package name
      */
@@ -28,8 +28,8 @@ public class PackageNameUtil {
     }
 
     /**
-     * Remove the part of the package name.
-     * Ex) com.foo.bar.kkk, foo.bar -> com.kkk
+     * Remove the first part of the package name.
+     * Ex) com.foo.bar.kkk, foo.bar - com.kkk
      * @param packageName A package name
      * @param partPackageNameToRemove A part package name to remove
      * @return The package name after removal.
@@ -37,7 +37,7 @@ public class PackageNameUtil {
     public static String removePart(String packageName, String partPackageNameToRemove) {
         //
         String part = packageName
-                .replace(partPackageNameToRemove, "")
+                .replaceFirst(partPackageNameToRemove, "")
                 .replace("..", ".");
 
         if (part.startsWith(".")) {
@@ -53,7 +53,7 @@ public class PackageNameUtil {
 
     /**
      * Remove the first element of the package name.
-     * Ex) com.foo.bar.kkk -> foo.bar.kkk
+     * Ex) com.foo.bar.kkk - foo.bar.kkk
      * @param packageName A package name
      * @return The package name after removal.
      */
@@ -67,7 +67,7 @@ public class PackageNameUtil {
 
     /**
      * Remove the last element of the package name.
-     * Ex) com.foo.bar.kkk -> com.foo.bar
+     * Ex) com.foo.bar.kkk - com.foo.bar
      * @param packageName A package name
      * @return The package name after removal.
      */

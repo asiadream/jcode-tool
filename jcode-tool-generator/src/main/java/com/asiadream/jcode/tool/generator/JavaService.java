@@ -30,7 +30,20 @@ public class JavaService {
     //
     private static Logger logger = LoggerFactory.getLogger(JavaService.class);
 
-    private GeneratorMeta generatorMeta = loadGeneratorMeta();
+    private GeneratorMeta generatorMeta;
+
+    public JavaService() {
+        //
+        this.generatorMeta = loadGeneratorMeta();
+    }
+
+    public JavaService(GeneratorMeta generatorMeta) {
+        //
+        this.generatorMeta = generatorMeta;
+        if (this.generatorMeta == null) {
+            this.generatorMeta = loadGeneratorMeta();
+        }
+    }
 
     private GeneratorMeta loadGeneratorMeta() {
         //
@@ -106,6 +119,7 @@ public class JavaService {
     private ExpressionContext constructExpressionContext(String groupId, String appName, ReferenceSdo referenceSdo, JavaMeta javaMeta) {
         //
         ExpressionContext expressionContext = new ExpressionContext();
+
         expressionContext.add("groupId", groupId);
         expressionContext.add("appName", appName);
         expressionContext.add("AppName", StringUtil.toFirstUpperCase(appName));
@@ -128,6 +142,8 @@ public class JavaService {
             expressionContext.add(ref.getName() + ".fields", javaSource.getFieldsAsModel());
             expressionContext.add(ref.getName() + ".methods", javaSource.getMethodsAsModel());
         }));
+
+        expressionContext.addAll(referenceSdo.getCustomContext());
 
         expressionContext.updateExpressedValue();
 

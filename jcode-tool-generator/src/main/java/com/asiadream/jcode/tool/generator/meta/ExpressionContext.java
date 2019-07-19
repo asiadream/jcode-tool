@@ -1,9 +1,11 @@
 package com.asiadream.jcode.tool.generator.meta;
 
+import com.asiadream.jcode.tool.share.data.Pair;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class ExpressionContext {
@@ -72,6 +74,12 @@ public class ExpressionContext {
     public ExpressionContext add(String key, Object value) {
         //
         this.contextMap.put(key, value);
+        return this;
+    }
+
+    public ExpressionContext addAll(List<Pair<String, String>> keyValues) {
+        //
+        keyValues.forEach(keyValue -> this.contextMap.put(keyValue.x, keyValue.y));
         return this;
     }
 
