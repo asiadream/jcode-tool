@@ -16,7 +16,7 @@ class MetaHelper {
         String block = "";
         List<String> statements = new ArrayList<>();
         for (String str : body.split("\n")) {
-            System.out.println("["+str+"]");
+            //System.out.println("["+str+"]");
 
             //
             if (str.startsWith("if")) {

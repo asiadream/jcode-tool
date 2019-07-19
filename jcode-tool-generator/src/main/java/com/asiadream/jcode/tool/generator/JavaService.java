@@ -57,15 +57,16 @@ public class JavaService {
         return yaml.load(inputStream);
     }
 
-    public String create(String appName, String template, String targetProjectPath) {
+    public String create(String template, String targetProjectPath) {
         //
-        return create(appName, null, template, targetProjectPath);
+        return create(null, template, targetProjectPath);
     }
 
-    public String create(String appName, ReferenceSdo referenceSdo, String template, String targetProjectPath) {
+    public String create(ReferenceSdo referenceSdo, String template, String targetProjectPath) {
         // baseName: hello
         // Create a Domain Entity
         String groupId = generatorMeta.getGroupId();
+        String appName = generatorMeta.getAppName();
 
         JavaMeta javaMeta = loadJavaMeta(template);
         ExpressionContext expressionContext = constructExpressionContext(groupId, appName, referenceSdo, javaMeta);
@@ -111,6 +112,13 @@ public class JavaService {
         expressionContext.add("simpleClassName", javaMeta.getSimpleClassName());
         expressionContext.add("packageName", javaMeta.getPackageName());
         expressionContext.add("className", javaMeta.getClassName());
+
+        if (referenceSdo != null) {
+            String preBizName = referenceSdo.getPreBizName(generatorMeta.getBizNameLocation(), groupId, appName);
+            expressionContext.add("preBizName", preBizName != null ? "." + preBizName : "");
+            String postBizName = referenceSdo.getPostBizName(generatorMeta.getBizNameLocation(), groupId, appName);
+            expressionContext.add("postBizName", postBizName != null ? "." + postBizName : "");
+        }
 
         Optional.ofNullable(referenceSdo).ifPresent(_refSdo -> _refSdo.getReferences().forEach(ref -> {
             expressionContext.add(ref.getName() + ".className", ref.getClassName());

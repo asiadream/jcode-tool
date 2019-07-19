@@ -11,49 +11,48 @@ import java.util.stream.Collectors;
 
 public class JavaServiceCreateTest extends BaseFileTest {
     //
-    private final String appName = "talk";
     private JavaService javaService = new JavaService();
 
     @Test
     public void testCreateEntity() {
         //
-        javaService.create(appName, "domain_entity", super.testDirName);
+        javaService.create("domain_entity", super.testDirName);
     }
 
     @Test
     public void testCreateStoreInterface() {
         //
-        String domainEntityClassName = javaService.create(appName, "domain_entity", super.testDirName);
-        javaService.create(appName, newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "store_interface", super.testDirName);
+        String domainEntityClassName = javaService.create("domain_entity", super.testDirName);
+        javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "store_interface", super.testDirName);
     }
 
     @Test
     public void testCreateTask() {
         //
-        String domainEntityClassName = javaService.create(appName, "domain_entity", super.testDirName);
-        javaService.create(appName, newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "task", super.testDirName);
+        String domainEntityClassName = javaService.create("domain_entity", super.testDirName);
+        javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "task", super.testDirName);
     }
 
     @Test
     public void testCreateJpo() {
         //
-        String domainEntityClassName = javaService.create(appName, "domain_entity", super.testDirName);
-        javaService.create(appName, newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "store_jpo", super.testDirName);
+        String domainEntityClassName = javaService.create("domain_entity", super.testDirName);
+        javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "store_jpo", super.testDirName);
     }
 
     @Test
     public void testCreateServiceInterface() {
         //
-        String domainEntityClassName = javaService.create(appName, "domain_entity", super.testDirName);
-        javaService.create(appName, newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "service_interface", super.testDirName);
+        String domainEntityClassName = javaService.create("domain_entity", super.testDirName);
+        javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "service_interface", super.testDirName);
     }
 
     @Test
     public void testCreateServiceClient() {
         //
-        String domainEntityClassName = javaService.create(appName, "domain_entity", super.testDirName);
-        String serviceInterfaceName = javaService.create(appName, newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "service_interface", super.testDirName);
-        javaService.create(appName, newClassRefs(new String[][]{{"entity", domainEntityClassName}, {"serviceInterface", serviceInterfaceName}}), "service_client", super.testDirName);
+        String domainEntityClassName = javaService.create("domain_entity", super.testDirName);
+        String serviceInterfaceName = javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "service_interface", super.testDirName);
+        javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}, {"serviceInterface", serviceInterfaceName}}), "service_client", super.testDirName);
     }
 
     private ReferenceSdo newClassRefs(String[][] refArrays) {

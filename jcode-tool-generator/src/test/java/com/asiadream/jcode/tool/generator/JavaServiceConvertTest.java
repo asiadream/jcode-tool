@@ -19,7 +19,7 @@ public class JavaServiceConvertTest extends BaseFileTest {
         // create resource
         ReferenceSdo referenceSdo = new ReferenceSdo("entity", ENTITY_CLASS_NAME, SOURCE_PROJECT_HOME);
         referenceSdo.addClassReference("facade", facadeClassName, super.testDirName);
-        javaService.create("talk", referenceSdo, "service_resource", super.testDirName);
+        javaService.create(referenceSdo, "service_resource", super.testDirName);
     }
 
 
