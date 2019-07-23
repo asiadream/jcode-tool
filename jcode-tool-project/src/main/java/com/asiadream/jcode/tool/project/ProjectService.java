@@ -13,10 +13,15 @@ public class ProjectService {
     private ProjectMeta projectMeta = loadProjectMeta();
 
     public void createNestedProject(String name, String baseName, String workspace) {
+        //
+        createNestedProject(name, baseName, workspace, false);
+    }
+
+    public void createNestedProject(String name, String baseName, String workspace, boolean isGradle) {
         // ProjectMeta -> ProjectModel -> Project
         ProjectModel projectModel = projectMeta.toProjectModel(name, baseName, workspace);
         NestedProjectCreator projectCreator = new NestedProjectCreator(workspace);
-        projectCreator.create(projectModel);
+        projectCreator.create(projectModel, isGradle);
     }
 
     private ProjectMeta loadProjectMeta() {

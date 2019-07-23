@@ -14,17 +14,22 @@ public class NestedProjectCreator {
 
     public void create(ProjectModel model) {
         //
-        createProject(model, targetHomePath);
+        createProject(model, targetHomePath, false);
     }
 
-    private void createProject(ProjectModel model, String targetHomePath) {
+    public void create(ProjectModel model, boolean isGradle) {
+        //
+        createProject(model, targetHomePath, isGradle);
+    }
+
+    private void createProject(ProjectModel model, String targetHomePath, boolean isGradle) {
         //
         ProjectCreator creator = new ProjectCreator(targetHomePath);
-        creator.create(model);
+        creator.create(model, isGradle);
 
         if (model.hasChildren()) {
             for (ProjectModel child : model.getChildren()) {
-                createProject(child, targetHomePath + ProjectSources.PATH_DELIM + model.getName());
+                createProject(child, targetHomePath + ProjectSources.PATH_DELIM + model.getName(), isGradle);
             }
         }
     }

@@ -12,6 +12,11 @@ public class ReferenceSdo {
     private List<ClassReference> references;
     private List<Pair<String, String>> customContext;
 
+    public static ReferenceSdo create() {
+        //
+        return new ReferenceSdo();
+    }
+
     public ReferenceSdo() {
         //
         this.references = new ArrayList<>();

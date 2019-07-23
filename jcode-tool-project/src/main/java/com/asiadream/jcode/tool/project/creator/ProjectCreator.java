@@ -18,6 +18,11 @@ public class ProjectCreator {
 
     public void create(ProjectModel model) {
         //
+        create(model, false);
+    }
+
+    public void create(ProjectModel model, boolean isGradle) {
+        //
         ProjectConfiguration configuration = new ProjectConfiguration(ConfigurationType.Target, targetHomePath, model.getName(), false);
 
         // make project home
@@ -28,10 +33,13 @@ public class ProjectCreator {
             makeSourceFolder(configuration);
         }
 
-        // make pom
-        makePom(model, configuration);
-        // make build.gradle, settings.gradle
-        makeGradle(model, configuration);
+        if (isGradle) {
+            // make build.gradle, settings.gradle
+            makeGradle(model, configuration);
+        } else {
+            // make pom
+            makePom(model, configuration);
+        }
     }
 
     private void makeProjectHome(ProjectConfiguration configuration) {

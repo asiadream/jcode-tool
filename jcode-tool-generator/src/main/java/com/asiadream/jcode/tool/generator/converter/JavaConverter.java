@@ -110,6 +110,7 @@ public class JavaConverter extends ProjectItemConverter {
         if (convertAnnotation == null) {
             return true;
         }
+        logger.trace("Need mark annotation({}) to convert.", convertAnnotation);
         return source.containsAnnotation(convertAnnotation);
     }
 

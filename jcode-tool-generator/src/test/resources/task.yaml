@@ -9,7 +9,7 @@ fields:
   - name: ${appName}Store
     type: ${groupId}.${appName}.domain.store.${entity.simpleClassName}Store
     annotations:
-      - org.springframework.beans.factory.annotation.Autowired
+      - type: org.springframework.beans.factory.annotation.Autowired
 
 methods:
   - name: find${entity.simpleClassName}

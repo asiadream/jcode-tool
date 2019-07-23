@@ -143,7 +143,7 @@ public class JavaService {
             expressionContext.add(ref.getName() + ".methods", javaSource.getMethodsAsModel());
         }));
 
-        expressionContext.addAll(referenceSdo.getCustomContext());
+        Optional.ofNullable(referenceSdo).ifPresent(_refSdo -> expressionContext.addAll(_refSdo.getCustomContext()));
 
         expressionContext.updateExpressedValue();
 

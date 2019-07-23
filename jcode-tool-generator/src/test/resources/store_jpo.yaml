@@ -16,7 +16,7 @@ fields:
   - name: id
     type: String
     annotations:
-      - javax.persistence.Id
+      - type: javax.persistence.Id
 eachField:
   items: ${entity.fields}
   var: f
