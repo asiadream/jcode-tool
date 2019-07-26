@@ -25,7 +25,7 @@ public class GradleSource {
         //
         File file = new File(physicalTargetFilePath);
         if (logger.isTraceEnabled()) {
-            logger.trace(gradleScript.toString());
+            logger.trace("\n" + gradleScript.toString() + "\n");
         }
         FileUtils.writeStringToFile(file, gradleScript.toString(), "UTF-8");
     }

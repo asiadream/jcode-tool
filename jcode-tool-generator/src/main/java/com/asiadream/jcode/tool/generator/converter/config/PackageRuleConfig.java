@@ -14,6 +14,7 @@ public class PackageRuleConfig {
         //
         PackageRule packageRule = PackageRule.newInstance();
 
+        packageRule.setSkipChangeImports(skipChangeImports);
         Optional.ofNullable(changeElements).ifPresent(changeElements -> changeElements.forEach(element ->
                 packageRule.add(element.fromIndex, element.from, element.to)));
 

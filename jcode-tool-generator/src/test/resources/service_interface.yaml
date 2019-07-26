@@ -1,7 +1,8 @@
-packageName: ${groupId}.${appName}.spec.crud
+packageName: ${groupId}.${appName}${preBizName}.spec.task${postBizName}
 name: ${entity.simpleClassName}Service
 interfaceFile: true
 classAnnotations:
+  - type: io.naraplatform.share.domain.FacadeService
   - type: io.naraplatform.share.domain.drama.ServiceFeature
     elements:
       - name: name
@@ -19,23 +20,30 @@ methods:
   - name: register${entity.simpleClassName}
     type: String
     parameters:
-      - type: ${groupId}.${appName}.spec.sdo.${entity.simpleClassName}Cdo
+      - type: ${groupId}.${appName}${preBizName}.spec.task${postBizName}.sdo.${entity.simpleClassName}Cdo
+    annotations:
+      - type: io.naraplatform.share.domain.DoNotOpen
+
   - name: find${entity.simpleClassName}
     type: ${entity.className}
     parameters:
       - type: String
         varName: ${entity.simpleClassName}Id
+
   - name: findAll${entity.simpleClassName}s
     type: java.util.List<${entity.className}>
+
   - name: modify${entity.simpleClassName}
     parameters:
       - type: String
         varName: ${entity.simpleClassName}Id
       - type: io.naraplatform.share.domain.NameValueList
         varName: nameValues
+
   - name: remove${entity.simpleClassName}
     parameters:
       - type: String
         varName: ${entity.simpleClassName}Id
+
   - name: countAll${entity.simpleClassName}
     type: long

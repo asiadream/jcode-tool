@@ -11,9 +11,9 @@ public class StringUtil extends org.apache.commons.lang3.StringUtils {
     }
 
     private static final String[] JAVA_KEYWORDS = {"abstract","boolean","break","byte","catch","char","class","continue",
-        "default","do","double","else","extends","finally","float","for","if","implements","import","instanceof",
-        "int","interface","long","native","new","null","package","private","protected","public","return","short",
-        "static","super","switch","sychronized","this","throw","throws","try","void","while"};
+            "default","do","double","else","extends","finally","float","for","if","implements","import","instanceof",
+            "int","interface","long","native","new","null","package","private","protected","public","return","short",
+            "static","super","switch","sychronized","this","throw","throws","try","void","while"};
 
     private static boolean isJavaKeyword(String name) {
         //
@@ -42,6 +42,14 @@ public class StringUtil extends org.apache.commons.lang3.StringUtils {
     public static String toFirstUpperCase(String str) {
         //
         if (str == null) return null;
+
+        if (str.length() <= 0) {
+            return str;
+        }
+
+        if (!Character.isLetter(str.charAt(0))) {
+            return str;
+        }
 
         if (Character.isUpperCase(str.charAt(0))) {
             return str;

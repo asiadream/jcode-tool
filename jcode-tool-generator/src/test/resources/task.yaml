@@ -6,8 +6,8 @@ classAnnotations:
   - type: javax.transaction.Transactional
 
 fields:
-  - name: ${appName}Store
-    type: ${groupId}.${appName}.domain.store.${entity.simpleClassName}Store
+  - name: ${entity.name}Store
+    type: ${groupId}.${appName}${preBizName}.domain.store${postBizName}.${entity.simpleClassName}Store
     annotations:
       - type: org.springframework.beans.factory.annotation.Autowired
 
@@ -19,11 +19,13 @@ methods:
       - type: String
         varName: ${entity.name}Id
     body: |
-      ${entity.simpleClassName} ${entity.name} = ${entity.name}Store.retrieve(talkId);
+      ${entity.simpleClassName} ${entity.name} = ${entity.name}Store.retrieve(${entity.name}Id);
       if(${entity.name} == null) {
           throw new NoSuchElementException("${entity.simpleClassName} id: " + ${entity.name}Id);
       }
       return ${entity.name};
+    imports:
+      - java.util.NoSuchElementException
 
   - name: modify${entity.simpleClassName}
     access: PUBLIC

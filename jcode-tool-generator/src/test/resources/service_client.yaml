@@ -1,5 +1,5 @@
-packageName: ${groupId}.${appName}.client.crud
-name: ${entity.simpleClassName}RestClient
+packageName: ${groupId}.${appName}${preBizName}.client.crud${postBizName}
+name: ${entity.simpleClassName}WebClient
 classAnnotations:
   - type: org.springframework.stereotype.Component
 
@@ -11,72 +11,27 @@ fields:
     type: String
     static: true
     final: true
-    initializer: RestTemplateConfig.RESOURCE_URL + "/talktowns"
-  - type: org.springframework.web.client.RestTemplate
+    initializer: '"/${appName}/${entity.name}s"'
+  - type: org.springframework.web.reactive.function.client.WebClient
 
 constructors:
-  - body: restTemplate = new RestTemplateConfig().restTemplate();
+  - parameters:
+    - type: org.springframework.web.reactive.function.client.WebClient
 
-methods:
-  - name: register${entity.simpleClassName}
-    type: String
-    parameters:
-      - type: ${groupId}.${appName}.spec.sdo.${entity.simpleClassName}Cdo
+eachMethod:
+  items: ${serviceInterface.methods}
+  methodOverrides:
+    access: PUBLIC
     annotations:
       - type: Override
-    body : |
-      return restTemplate.postForObject(url, ${entity.simpleClassName}Cdo, String.class);
-
-  - name: find${entity.simpleClassName}
-    type: ${entity.className}
-    parameters:
-      - type: String
-        varName: ${entity.simpleClassName}Id
-    annotations:
-      - type: Override
-    body: |
-      String uri = url +"/{${entity.name}Id}";
-      Map<String, String> params = new HashMap<>();
-      params.put("${entity.name}Id", ${entity.name}Id);
-      return restTemplate.getForObject(uri, ${entity.simpleClassName}.class, params);
-
-  - name: findAll${entity.simpleClassName}s
-    type: java.util.List<${entity.className}>
-    annotations:
-      - type: Override
-    body: |
-      return restTemplate.getForObject(url, List.class);
-
-  - name: modify${entity.simpleClassName}
-    parameters:
-      - type: String
-        varName: ${entity.simpleClassName}Id
-      - type: io.naraplatform.share.domain.NameValueList
-        varName: nameValues
-    annotations:
-      - type: Override
-    body: |
-      String uri = url +"/{${entity.name}Id}";
-      Map<String, String> params = new HashMap<>();
-      params.put("${entity.name}Id", ${entity.name}Id);
-      restTemplate.put(uri, nameValues, params);
-
-  - name: remove${entity.simpleClassName}
-    parameters:
-      - type: String
-        varName: ${entity.simpleClassName}Id
-    annotations:
-      - type: Override
-    body: |
-      String uri = url +"/{${entity.name}Id}";
-      Map<String, String> params = new HashMap<>();
-      params.put("${entity.name}Id", ${entity.name}Id);
-      restTemplate.delete (uri, params);
-
-  - name: countAll${entity.simpleClassName}
-    type: long
-    annotations:
-      - type: Override
-    body: |
-      String uri = url + "/count";
-      return restTemplate.getForObject(uri, Long.class);
+    matches:
+      - when: find${entity.simpleClassName}
+        body: return null;
+      - when: findAll${entity.simpleClassName}s
+        body: return null;
+      - when: modify${entity.simpleClassName}
+        body: return;
+      - when: remove${entity.simpleClassName}
+        body: return;
+      - when: countAll${entity.simpleClassName}
+        body: return 0l;

@@ -13,10 +13,8 @@ methods:
   - name: retrieveAll
     type: java.util.List<${entity.className}>
     parameters:
-      - type: int
+      - type: io.naraplatform.share.domain.Offset
         varName: offset
-      - type: int
-        varName: limit
   - name: update
     parameters:
       - type: ${entity.className}

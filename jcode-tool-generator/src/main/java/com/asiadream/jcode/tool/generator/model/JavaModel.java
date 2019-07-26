@@ -7,6 +7,7 @@ import com.github.javaparser.ast.comments.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JavaModel implements SourceModel {
     //
@@ -275,9 +276,11 @@ public class JavaModel implements SourceModel {
         //
         List<String> usingClassNames = extractUsingClassNames();
         usingClassNames = removeDuplicate(usingClassNames);
+        usingClassNames = removeSelfClassName(usingClassNames);
         return removePrimitiveType(usingClassNames);
     }
 
+    @Deprecated
     public List<String> computeMethodUsingClasses() {
         //
         List<String> usingClassNames = extractMethodUsingClassNames();
@@ -318,6 +321,13 @@ public class JavaModel implements SourceModel {
             }
         }
         return resultList;
+    }
+
+    private List<String> removeSelfClassName(List<String> nameList) {
+        //
+        return nameList.stream()
+                .filter(name -> !name.equals(getClassName()))
+                .collect(Collectors.toList());
     }
 
     private List<String> extractUsingClassNames() {

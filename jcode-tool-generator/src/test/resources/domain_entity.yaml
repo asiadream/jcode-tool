@@ -1,13 +1,13 @@
 packageName: ${groupId}.${appName}${preBizName}.domain.entity${postBizName}
-name: ${AppName}
+name: ${Name}
 classAnnotations:
   - type: lombok.Getter
   - type: lombok.Setter
   - type: lombok.NoArgsConstructor
 classExtends:
-  - io.naraplatform.share.domain.nara.NaraEntity
+  - io.naraplatform.share.domain.drama.DramaEntity
 classImplements:
-  - io.naraplatform.share.domain.nara.NaraAggregate
+  - io.naraplatform.share.domain.ddd.DomainAggregate
 fields:
   - name: name
     type: String
@@ -15,18 +15,21 @@ fields:
     type: int
   - name: email
     type: String
+
 constructors:
   - parameters:
-      - type: String
-        varName: name
-      - type: String
-        varName: sequence
-  - parameters:
+    - type: String
+      varName: id
+    - type: io.naraplatform.share.domain.patron.PatronKey
+      varName: patronKey
+    body: super(id, patronKey);
+
 methods:
-  - name: toJson
+  - name: toString
     type: String
     access: PUBLIC
-    body: return (new Gson()).toJson(this);
+    body: return toJson();
+
   - name: fromJson
     type: ${simpleClassName}
     access: PUBLIC
@@ -34,4 +37,18 @@ methods:
     parameters:
       - type: String
         varName: json
-    body: return (new Gson()).fromJson(json, ${simpleClassName}.class);
+    body: return JsonUtil.fromJson(json, ${simpleClassName}.class);
+    imports:
+      - io.naraplatform.share.util.json.JsonUtil
+
+  - name: setValues
+    access: PUBLIC
+    parameters:
+      - type: io.naraplatform.share.domain.NameValueList
+        varName: nameValues
+
+  - name: sample
+    access: PUBLIC
+    static: true
+    type: ${simpleClassName}
+    body: return null;

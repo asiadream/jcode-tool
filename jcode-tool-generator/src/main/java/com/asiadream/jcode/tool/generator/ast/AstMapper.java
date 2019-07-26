@@ -74,7 +74,7 @@ public abstract class AstMapper {
         // Extended Type
         if (javaModel.hasExtendsType()) {
             for (ClassType extendsType : javaModel.getExtendsTypes()) {
-                classType.addExtendedType(extendsType.getName());
+                classType.addExtendedType(createClassOrInterfaceType(extendsType));
             }
         }
 

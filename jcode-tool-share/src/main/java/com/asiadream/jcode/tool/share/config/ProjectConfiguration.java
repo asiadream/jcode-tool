@@ -14,19 +14,19 @@ public class ProjectConfiguration {
     private final String physicalResourcesPath;
     private final String physicalTestPath;
     private final String physicalTestResourcesPath;
-    
+
     private final boolean lexicalPreserving;
 
     // - Terms
     // sourceFolder         : 소스 폴더                                      : src/main/java
     // sourcePath           : 소스 폴더 내의 Path                             : com/foo/bar
     // sourceFile           : 소스 폴더 내의 File(Path 포함)                   : com/foo/bar/SampleService.java
-    // sourceFilePath       : 소스 폴더 내의 Path or File
+    // sourceFilePath       : 소스 폴더 내의 Path or File                     : com/foo/bar/SampleService.java
     // fileName             : 파일명(Path 미포함)                             : SampleService.java
     // physicalJavaPath     : 프로젝트 자바소스 물리적 절대경로                    : C://Users/user/Documents/.../src/main/java
     // physicalSourcePath   : 소스가 되는 Path 의 물리적 절대경로                 : C://Users/user/Documents/.../src/main/java/com/foo/bar
     // physicalSourceFile   : 소스가 되는 File 의 물리적 절대경로                 : C://Users/user/Documents/.../src/main/java/com/foo/bar/SampleService.java
-    // physicalSourceFilePath   : 소스가 되는 Path or File 의 물리적 절대경로
+    // physicalSourceFilePath   : 소스가 되는 Path or File 의 물리적 절대경로     : C://Users/user/Documents/.../src/main/java/com/foo/bar/SampleService.java
 
     public ProjectConfiguration(ConfigurationType type, String workspacePath, String projectName, boolean lexicalPreserving) {
         //
@@ -100,7 +100,7 @@ public class ProjectConfiguration {
     public SourceFolders getSourceFolders() {
         return sourceFolders;
     }
-    
+
     public boolean isLexicalPreserving() {
         return lexicalPreserving;
     }

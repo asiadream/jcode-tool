@@ -1,0 +1,3 @@
+packageName: ${groupId}.${appName}${preBizName}.facade.task${postBizName}
+name: ${entity.simpleClassName}Facade
+interfaceFile: true

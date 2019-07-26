@@ -28,21 +28,28 @@ methods:
     body: |
       Optional<${entity.simpleClassName}Jpo> optional${entity.simpleClassName}Jpo = ${entity.name}Repository.findById(id);
       return optional${entity.simpleClassName}Jpo.map(${entity.simpleClassName}Jpo::toDomain).orElse(null);
+    imports:
+      - ${groupId}.${appName}${preBizName}.store.jpa${postBizName}.jpo.${entity.simpleClassName}Jpo
+      - java.util.Optional
 
   - name: retrieveAll
     type: java.util.List<${entity.className}>
     access: PUBLIC
     parameters:
-      - type: int
+      - type: io.naraplatform.share.domain.Offset
         varName: offset
-      - type: int
-        varName: limit
     annotations:
       - type: Override
     body: |
       Pageable pageable = PageRequest.of(offset.page(), offset.limit(), Sort.Direction.ASC, "name");
       Page<${entity.simpleClassName}Jpo> ${entity.name}JpoPage = ${entity.name}Repository.findAll(pageable);
-      return ${entity.name}JpoPage.stream().map(${entity.simpleClassName}Jpo::toDomains).collect(Collectors.toList());
+      return ${entity.name}JpoPage.stream().map(${entity.simpleClassName}Jpo::toDomain).collect(Collectors.toList());
+    imports:
+      - org.springframework.data.domain.Pageable
+      - org.springframework.data.domain.Page
+      - org.springframework.data.domain.PageRequest
+      - org.springframework.data.domain.Sort
+      - java.util.stream.Collectors
 
   - name: update
     access: PUBLIC

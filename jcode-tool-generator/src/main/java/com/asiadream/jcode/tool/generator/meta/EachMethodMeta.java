@@ -17,8 +17,15 @@ public class EachMethodMeta {
 
     private String items;
     private String var;
-    private MethodMeta methodOverrides;
-    private MethodMeta methodMapping;
+    private MethodOverrideMeta methodOverrides;
+
+    private MethodMeta methodMapping; // TODO
+
+    public EachMethodMeta replaceExp(ExpressionContext expressionContext) {
+        //
+        Optional.ofNullable(methodOverrides).ifPresent(methodOverrides -> methodOverrides.replaceExp(expressionContext));
+        return this;
+    }
 
     public List<MethodMeta> eachMethodsByExp(ExpressionContext expressionContext) {
         //
@@ -41,18 +48,9 @@ public class EachMethodMeta {
             throw new RuntimeException("can not convert to Meta with this object --> " + object.getClass());
         }
         MethodMeta methodMeta = new MethodMeta((MethodModel) object);
-        overrideMethodMeta(methodMeta);
+        // override methodMeta
+        Optional.ofNullable(methodOverrides).ifPresent(methodOverrides -> methodOverrides.override(methodMeta));
         return methodMeta;
-    }
-
-    private void overrideMethodMeta(MethodMeta methodMeta) {
-        //
-        if (methodOverrides == null) {
-            return;
-        }
-
-        methodMeta.setAccess(methodOverrides.getAccess());
-        // TODO : add the others
     }
 
     private MethodMeta createMethodMetaWithMapping(Object object, MethodMeta methodMapping) {
@@ -102,11 +100,11 @@ public class EachMethodMeta {
         this.methodMapping = methodMapping;
     }
 
-    public MethodMeta getMethodOverrides() {
+    public MethodOverrideMeta getMethodOverrides() {
         return methodOverrides;
     }
 
-    public void setMethodOverrides(MethodMeta methodOverrides) {
+    public void setMethodOverrides(MethodOverrideMeta methodOverrides) {
         this.methodOverrides = methodOverrides;
     }
 }

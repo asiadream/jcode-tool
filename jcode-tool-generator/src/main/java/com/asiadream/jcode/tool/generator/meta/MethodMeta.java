@@ -4,6 +4,7 @@ import com.asiadream.jcode.tool.generator.model.Access;
 import com.asiadream.jcode.tool.generator.model.ClassType;
 import com.asiadream.jcode.tool.generator.model.MethodModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ public class MethodMeta {
     private List<ParameterMeta> parameters;
     private List<AnnotationMeta> annotations;
     private String body;
+    private List<String> imports;
 
     public MethodMeta() {
         //
@@ -46,6 +48,11 @@ public class MethodMeta {
                 annotation.replaceExp(expressionContext)));
 
         this.body = expressionContext.replaceExpString(body);
+
+        Optional.ofNullable(imports).ifPresent(imports ->
+                this.imports = imports.stream()
+                        .map(expressionContext::replaceExpString)
+                        .collect(Collectors.toList()));
         return this;
     }
 
@@ -65,7 +72,21 @@ public class MethodMeta {
             methodModel.body(MetaHelper.toMultiStatements(body));
         }
 
+        methodModel.setCustomImports(imports);
+
         return methodModel;
+    }
+
+    public void addAnnotations(List<AnnotationMeta> annotationMetas) {
+        //
+        if (annotationMetas == null) {
+            return;
+        }
+
+        if (this.annotations == null) {
+            this.annotations = new ArrayList<>();
+        }
+        this.annotations.addAll(annotationMetas);
     }
 
     public String getName() {
@@ -122,5 +143,13 @@ public class MethodMeta {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public List<String> getImports() {
+        return imports;
+    }
+
+    public void setImports(List<String> imports) {
+        this.imports = imports;
     }
 }

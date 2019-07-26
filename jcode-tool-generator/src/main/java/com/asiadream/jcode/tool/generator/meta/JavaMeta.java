@@ -54,6 +54,7 @@ public class JavaMeta {
                 method.replaceExp(expressionContext)));
 
         Optional.ofNullable(eachMethod).ifPresent(eachMethod -> {
+            eachMethod.replaceExp(expressionContext);
             List<MethodMeta> created = eachMethod.eachMethodsByExp(expressionContext);
             this.methods = Optional.ofNullable(methods).orElse(new ArrayList<>());
             this.methods.addAll(created);
@@ -86,7 +87,9 @@ public class JavaMeta {
                 javaModel.addAnnotation(ca.toAnnotationType())));
 
         Optional.ofNullable(classExtends).ifPresent(ces -> ces.forEach(ce ->
-                javaModel.addExtendsType(ClassType.newClassType(ce))));
+                javaModel.addExtendsType(MetaHelper.toClassType(ce))));
+//        Optional.ofNullable(classExtends).ifPresent(ces -> ces.forEach(ce ->
+//                javaModel.addExtendsType(ClassType.newClassType(ce))));
 
         Optional.ofNullable(classImplements).ifPresent(cis -> cis.forEach(ci ->
                 javaModel.addImplementsType(ClassType.newClassType(ci))));

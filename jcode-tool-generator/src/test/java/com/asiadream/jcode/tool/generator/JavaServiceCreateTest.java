@@ -2,6 +2,7 @@ package com.asiadream.jcode.tool.generator;
 
 import com.asiadream.jcode.tool.generator.sdo.ClassReference;
 import com.asiadream.jcode.tool.generator.sdo.ReferenceSdo;
+import com.asiadream.jcode.tool.share.exception.ClassFileNotFoundException;
 import com.asiadream.jcode.tool.share.test.BaseFileTest;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,9 +22,20 @@ public class JavaServiceCreateTest extends BaseFileTest {
         Assert.assertEquals("io.naradrama.talk.domain.entity.talk.Talk", className);
     }
 
+    @Test
+    public void testCreateCdo() {
+        //
+        ReferenceSdo referenceSdo = new ReferenceSdo();
+        referenceSdo.addCustomContext("name", "talk");
+        referenceSdo.addCustomContext("preBizName", "");
+        referenceSdo.addCustomContext("postBizName", ".talk");
+        javaService.create(referenceSdo, "cdo", super.testDirName);
+    }
+
     private String createEntity() {
         //
         ReferenceSdo referenceSdo = new ReferenceSdo();
+        referenceSdo.addCustomContext("name", "talk");
         referenceSdo.addCustomContext("preBizName", "");
         referenceSdo.addCustomContext("postBizName", ".talk");
         return javaService.create(referenceSdo, "domain_entity", super.testDirName);
@@ -47,6 +59,44 @@ public class JavaServiceCreateTest extends BaseFileTest {
     }
 
     @Test
+    public void testCreateJpaStoreWithPredictStoreInterfaceAndStoreInterfaceExist() {
+        // Entity is required
+        String domainEntityClassName = createEntity();
+        // Create store interface
+        javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "store_interface", super.testDirName);
+
+        //
+        String predictStoreInterfaceClassName = javaService.predictClassName(ReferenceSdo.create()
+                        .addClassReference("entity", domainEntityClassName, super.testDirName)
+                , "store_interface");
+        String className = javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}, {"storeInterface", predictStoreInterfaceClassName}}), "store_jpa", super.testDirName);
+        Assert.assertEquals("io.naradrama.talk.store.jpa.talk.TalkJpaStore", className);
+    }
+
+    @Test(expected = ClassFileNotFoundException.class)
+    public void testCreateJpaStoreWithPredictStoreInterfaceAndStoreInterfaceNotExist() {
+        // Entity is required
+        String domainEntityClassName = createEntity();
+        // Store interface not exists.
+
+        //
+        String predictStoreInterfaceClassName = javaService.predictClassName(ReferenceSdo.create()
+                        .addClassReference("entity", domainEntityClassName, super.testDirName)
+                , "store_interface");
+
+        // expect RuntimeException
+        javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}, {"storeInterface", predictStoreInterfaceClassName}}), "store_jpa", super.testDirName);
+    }
+
+    @Test
+    public void testCreateJpaRepository() {
+        // ex) io.naradrama.talk.store.jpa.talk.repository.TalkRepository
+        String domainEntityClassName = createEntity();
+        String className = javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "store_jpa_repository", super.testDirName);
+        Assert.assertEquals("io.naradrama.talk.store.jpa.talk.repository.TalkRepository", className);
+    }
+
+    @Test
     public void testCreateTask() {
         // ex) io.naradrama.talk.domain.logic.task.talk.TalkTask
         String domainEntityClassName = createEntity();
@@ -64,9 +114,21 @@ public class JavaServiceCreateTest extends BaseFileTest {
 
     @Test
     public void testCreateServiceInterface() {
-        //
+        // ex) io.naradrama.talk.spec.task.talk.TalkService
         String domainEntityClassName = createEntity();
-        javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "service_interface", super.testDirName);
+        String className = javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "service_interface", super.testDirName);
+        Assert.assertEquals("io.naradrama.talk.spec.task.talk.TalkService", className);
+    }
+
+    @Test
+    public void testCreateFacade() {
+        // ex) io.naradrama.talk.facade.task.talk.TalkFacade
+        // create entity
+        String domainEntityClassName = createEntity();
+        // create service interface
+        String serviceClassName = javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "service_interface", super.testDirName);
+        String facadeClassName = javaService.convert(serviceClassName, super.testDirName, "service_to_facade", super.testDirName);
+        Assert.assertEquals("io.naradrama.talk.facade.task.talk.TalkFacade", facadeClassName);
     }
 
     @Test
@@ -77,11 +139,49 @@ public class JavaServiceCreateTest extends BaseFileTest {
         javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}, {"serviceInterface", serviceInterfaceName}}), "service_client", super.testDirName);
     }
 
+    @Test
+    public void testCreateServiceCodes() {
+        // entity -> service interface -> facade -> resource, client
+
+        // create entity
+        String entityClassName = createEntity();
+
+        // create service interface
+        String serviceInterfaceClassName = javaService.create(ReferenceSdo.create()
+                .addClassReference("entity", entityClassName, super.testDirName), "service_interface", super.testDirName);
+
+        // convert to facade
+        String facadeClassName = javaService.convert(serviceInterfaceClassName, super.testDirName, "service_to_facade", super.testDirName);
+
+        // create a resource with facade
+        javaService.create(ReferenceSdo.create()
+                        .addClassReference("entity", entityClassName, super.testDirName)
+                        .addClassReference("serviceInterface", facadeClassName, super.testDirName)
+                , "service_resource", super.testDirName);
+
+        // create a client with facade
+        javaService.create(ReferenceSdo.create()
+                        .addClassReference("entity", entityClassName, super.testDirName)
+                        .addClassReference("serviceInterface", facadeClassName, super.testDirName)
+                , "service_client", super.testDirName);
+    }
+
     private ReferenceSdo newClassRefs(String[][] refArrays) {
         //
         List<ClassReference> refs = Arrays.stream(refArrays)
                 .map(names -> new ClassReference(names[0], names[1], super.testDirName))
                 .collect(Collectors.toList());
         return new ReferenceSdo(refs);
+    }
+
+    @Test
+    public void testPredictClassName() {
+        //
+        String domainEntityClassName = createEntity();
+        String storeInterfaceClassName = javaService.predictClassName(ReferenceSdo.create()
+                        .addClassReference("entity", domainEntityClassName, super.testDirName)
+                , "store_interface");
+        System.out.println(storeInterfaceClassName);
+        Assert.assertEquals("io.naradrama.talk.domain.store.talk.TalkStore", storeInterfaceClassName);
     }
 }

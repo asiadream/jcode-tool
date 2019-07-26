@@ -1,11 +1,38 @@
 packageName: ${groupId}.${appName}.restapi.crud
 name: ${entity.simpleClassName}Resource
 
+classImplements:
+  - ${serviceInterface.className}
+
+classAnnotations:
+  - type: org.springframework.web.bind.annotation.RestController
+  - type: org.springframework.web.bind.annotation.RequestMapping
+    elements:
+      - value: /${appName}/${entity.name}s
+
 # Iterate MethodMeta by collection of MethodModel.
 eachMethod:
-  items: ${facade.methods}
+  items: ${serviceInterface.methods}
   methodOverrides:
     access: PUBLIC
+    annotations:
+      - type: Override
+    matches:
+      - when: find${entity.simpleClassName}
+        body: return null;
+        annotations:
+          - type: org.springframework.web.bind.annotation.GetMapping
+            elements:
+              - value: "{${entity.name}Id}"
+      - when: findAll${entity.simpleClassName}s
+        body: return null;
+        annotations:
+          - type: org.springframework.web.bind.annotation.GetMapping
+      - when: countAll${entity.simpleClassName}
+        body: return 0l;
+
+
+
 #  var: f
 #  methodMapping:
 #    name: ${f.name}

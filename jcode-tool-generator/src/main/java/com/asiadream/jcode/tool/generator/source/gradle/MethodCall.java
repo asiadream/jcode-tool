@@ -3,6 +3,7 @@ package com.asiadream.jcode.tool.generator.source.gradle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MethodCall implements GradleElement, Argument {
     //
@@ -45,6 +46,24 @@ public class MethodCall implements GradleElement, Argument {
         this.arguments.add(argument);
     }
 
+    public MethodCall addArgument(Argument argument) {
+        //
+        this.arguments.add(argument);
+        return this;
+    }
+
+    public MethodCall addArgument(String stringArgument) {
+        //
+        this.arguments.add(new GroovyString(stringArgument));
+        return this;
+    }
+
+    public MethodCall addArgument(int numberArgument) {
+        //
+        this.arguments.add(new GroovyNumber(numberArgument));
+        return this;
+    }
+
     @Override
     public String print(int level) {
         //
@@ -58,7 +77,10 @@ public class MethodCall implements GradleElement, Argument {
             sb.append(" ");
         }
 
-        this.arguments.forEach(a -> sb.append(a.print()));
+        String argumentsPrint = this.arguments.stream()
+                .map(GroovyPrintable::print)
+                .collect(Collectors.joining(","));
+        sb.append(argumentsPrint);
 
         if (printBracket || !existArguments()) {
             sb.append(BRACKET_CLOSE);

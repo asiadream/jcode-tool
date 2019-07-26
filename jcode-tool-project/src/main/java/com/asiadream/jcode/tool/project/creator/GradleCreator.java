@@ -8,6 +8,7 @@ import com.asiadream.jcode.tool.project.model.ProjectModel;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class GradleCreator {
@@ -53,15 +54,16 @@ public class GradleCreator {
 
     private GradleScript createSubBuildGradle(ProjectModel model) {
         //
-        GradleScript gradleScript = new GradleScript(BUILD_GRADLE_FILE);
+        return new GradleScript(BUILD_GRADLE_FILE)
+                .addElement(toGradleDependencies(model.getDependencies()));
+    }
 
-        GroovyDSL groovyDSL = new GroovyDSL("dependencies");
-        groovyDSL.addAllElement(model.getDependencies().stream()
-                .map(this::toGradleDependency)
-                .collect(Collectors.toList()));
-
-        gradleScript.addElement(groovyDSL);
-        return gradleScript;
+    private GroovyDSL toGradleDependencies(List<Dependency> dependencies) {
+        //
+        return new GroovyDSL("dependencies")
+                .addAllElement(dependencies.stream()
+                        .map(this::toGradleDependency)
+                        .collect(Collectors.toList()));
     }
 
     private MethodCall toGradleDependency(Dependency dependency) {
@@ -87,14 +89,14 @@ public class GradleCreator {
                 methodCall = new MethodCall("runtime", dependency.toColonSeparatedString()).setPrintBracket(true);
                 break;
             default:
-                methodCall = new MethodCall("complie", dependency.toColonSeparatedString()).setPrintBracket(true);
+                methodCall = new MethodCall("compile", dependency.toColonSeparatedString()).setPrintBracket(true);
         }
 
         return methodCall;
     }
 
     private GradleScript createMainBuildGradle(ProjectModel model) {
-        //
+        // TODO : Remove hardcode
         AssignmentStatement talkVersion = new AssignmentStatement("talkVersion", "0.2.1-SNAPSHOT");
         AssignmentStatement nexususer = new AssignmentStatement("nexususer", "admin");
         AssignmentStatement nexuspassword = new AssignmentStatement("nexuspassword", "password");
@@ -104,13 +106,14 @@ public class GradleCreator {
         gradleScript.addElement(createPlugins(model));
         gradleScript.addElement(createExt(model, talkVersion));
         gradleScript.addElement(createAllProjects(model, talkVersion));
+        gradleScript.addElement(createConfigurationsAll(model));
         gradleScript.addElement(createSubprojects(model, nexususer, nexuspassword));
 
         return gradleScript;
     }
 
     private GroovyDSL createPlugins(ProjectModel model) {
-        //
+        // TODO : Remove hardcode
         GroovyDSL groovyDSL = new GroovyDSL("plugins");
         groovyDSL.addElement(new MethodCall("id", "io.spring.dependency-management", new MethodCall("version", "1.0.7.RELEASE")));
         groovyDSL.addElement(new MethodCall("id", "maven"));
@@ -132,8 +135,18 @@ public class GradleCreator {
         return groovyDSL;
     }
 
-    private GroovyDSL createSubprojects(ProjectModel model, AssignmentStatement nexususer, AssignmentStatement nexuspassword) {
+    private GroovyDSL createConfigurationsAll(ProjectModel model) {
         //
+        GroovyDSL groovyDSL = new GroovyDSL("configurations.all");
+        groovyDSL.addElement(new MethodCall("resolutionStrategy.cacheChangingModulesFor")
+                .addArgument(0)
+                .addArgument("seconds")
+                .setPrintBracket(false));
+        return groovyDSL;
+    }
+
+    private GroovyDSL createSubprojects(ProjectModel model, AssignmentStatement nexususer, AssignmentStatement nexuspassword) {
+        // TODO : Remove hardcode
         GroovyDSL groovyDSL = new GroovyDSL("subprojects");
         groovyDSL.addElement(new MethodCall("apply", new GroovyMap("plugin", "java-library")));
         groovyDSL.addElement(new MethodCall("apply", new GroovyMap("plugin", "io.spring.dependency-management")));
@@ -150,6 +163,11 @@ public class GradleCreator {
                                         .addElement(new MethodCall("url", "${nexusbaseurl}/nara-public/")))
                         .addElement(new MethodCall("mavenLocal"))
                         .addElement(new MethodCall("jcenter")));
+        groovyDSL.addElement(
+                new GroovyDSL("dependencyManagement")
+                        .addElement(new GroovyDSL("imports")
+                                .addElement(new MethodCall("mavenBom", "org.springframework.boot:spring-boot-dependencies:2.1.5.RELEASE"))));
+        groovyDSL.addElement(toGradleDependencies(model.getDependencies()));
         return groovyDSL;
     }
 }

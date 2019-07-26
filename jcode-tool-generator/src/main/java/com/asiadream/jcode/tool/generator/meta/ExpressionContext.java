@@ -83,6 +83,16 @@ public class ExpressionContext {
         return this;
     }
 
+    public ExpressionContext addAllWithFirstUpperCase(List<Pair<String, String>> keyValues) {
+        //
+        keyValues.forEach(keyValue -> {
+            String key = StringUtil.toFirstUpperCase(keyValue.x);
+            String value = StringUtil.toFirstUpperCase(keyValue.y);
+            this.contextMap.put(key, value);
+        });
+        return this;
+    }
+
     public Object get(String key) {
         //
         return contextMap.get(key);
@@ -98,10 +108,16 @@ public class ExpressionContext {
         return contextMap.containsKey(key);
     }
 
-    public String show() {
+    public String show(String title) {
         //
         StringBuffer sb = new StringBuffer();
-        sb.append("\n-------------- Express Context ---------------");
+
+        if (StringUtil.isNotEmpty(title)) {
+            sb.append("\n-------------- " + title + " ---------------");
+        } else {
+            sb.append("\n-------------- Express Context ---------------");
+        }
+
         for (Iterator<String> iter = contextMap.keySet().iterator(); iter.hasNext(); ) {
             String key = iter.next();
             Object value = contextMap.get(key);

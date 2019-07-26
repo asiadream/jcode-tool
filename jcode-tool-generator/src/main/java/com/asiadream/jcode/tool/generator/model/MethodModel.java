@@ -4,6 +4,7 @@ import com.github.javaparser.ast.comments.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class MethodModel {
@@ -17,6 +18,7 @@ public class MethodModel {
     private List<ClassType> throwns;
     private Comment comment;
     private List<String> bodyStatements;
+    private List<String> customImports;
 
     private MethodModel() {
         //
@@ -24,6 +26,7 @@ public class MethodModel {
         this.annotations = new ArrayList<>();
         this.throwns = new ArrayList<>();
         this.bodyStatements = new ArrayList<>();
+        this.customImports = new ArrayList<>();
     }
 
     public MethodModel(String name, ClassType returnType) {
@@ -51,6 +54,9 @@ public class MethodModel {
         this.comment = other.comment;
         for (String bodyStmt : other.bodyStatements) {
             this.bodyStatements.add(bodyStmt);
+        }
+        for (String str : other.customImports) {
+            this.customImports.add(str);
         }
     }
 
@@ -125,21 +131,10 @@ public class MethodModel {
         //
         List<String> classNames = new ArrayList<>();
 
-        if (returnType != null) {
-            classNames.addAll(returnType.usingClassNames());
-        }
-
-        if (hasParameter()) {
-            for (ParameterModel parameter : parameterModels) {
-                classNames.addAll(parameter.usingClassNames());
-            }
-        }
-
-        if (hasAnnotation()) {
-            for (AnnotationType annotation : annotations) {
-                classNames.addAll(annotation.usingClassNames());
-            }
-        }
+        Optional.ofNullable(returnType).ifPresent(returnType -> classNames.addAll(returnType.usingClassNames()));
+        Optional.ofNullable(parameterModels).ifPresent(parameterModels -> parameterModels.forEach(parameter -> classNames.addAll(parameter.usingClassNames())));
+        Optional.ofNullable(annotations).ifPresent(annotations -> annotations.forEach(annotation -> classNames.addAll(annotation.usingClassNames())));
+        Optional.ofNullable(customImports).ifPresent(classNames::addAll);
 
         return classNames;
     }
@@ -222,6 +217,14 @@ public class MethodModel {
 
     public List<AnnotationType> getAnnotations() {
         return annotations;
+    }
+
+    public List<String> getCustomImports() {
+        return customImports;
+    }
+
+    public void setCustomImports(List<String> customImports) {
+        this.customImports = customImports;
     }
 
     public MethodModel setStatic(boolean aStatic) {

@@ -40,6 +40,8 @@ methods:
       ${entity.simpleClassName} ${entity.name} = new ${entity.simpleClassName}(getId(), genPatronKey());
       BeanUtils.copyProperties(this, ${entity.name});
       return ${entity.name};
+    imports:
+      - org.springframework.beans.BeanUtils
 
   # static toDomains
   - name: toDomains
@@ -50,6 +52,8 @@ methods:
       - type: java.util.List<${className}>
         varName: ${entity.name}Jpos
     body: return ${entity.name}Jpos.stream().map(${simpleClassName}::toDomain).collect(Collectors.toList());
+    imports:
+      - java.util.stream.Collectors
 
   # toString
   - name: toString

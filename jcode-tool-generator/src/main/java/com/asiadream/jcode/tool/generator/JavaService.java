@@ -12,6 +12,7 @@ import com.asiadream.jcode.tool.generator.sdo.ReferenceSdo;
 import com.asiadream.jcode.tool.generator.source.JavaSource;
 import com.asiadream.jcode.tool.share.config.ConfigurationType;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
+import com.asiadream.jcode.tool.share.exception.ClassFileNotFoundException;
 import com.asiadream.jcode.tool.share.rule.NameRule;
 import com.asiadream.jcode.tool.share.rule.PackageRule;
 import com.asiadream.jcode.tool.share.util.file.PathUtil;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
@@ -76,8 +78,7 @@ public class JavaService {
     }
 
     public String create(ReferenceSdo referenceSdo, String template, String targetProjectPath) {
-        // baseName: hello
-        // Create a Domain Entity
+        //
         String groupId = generatorMeta.getGroupId();
         String appName = generatorMeta.getAppName();
 
@@ -98,6 +99,16 @@ public class JavaService {
         }
     }
 
+    public String predictClassName(ReferenceSdo referenceSdo, String template) {
+        //
+        JavaMeta javaMeta = loadJavaMeta(template);
+        ExpressionContext expressionContext = constructExpressionContext(generatorMeta.getGroupId(), generatorMeta.getAppName(), referenceSdo, javaMeta);
+        JavaModel javaModel = javaMeta
+                .replaceExp(expressionContext)   // replace expression with context (${...})
+                .toJavaModel();
+        return javaModel.getClassName();
+    }
+
     public String convert(String sourceClassName, String sourceProjectPath, String configName, String targetProjectPath) {
         //
         ConverterConfig converterConfig = loadConverterConfig(configName);
@@ -116,6 +127,7 @@ public class JavaService {
         }
     }
 
+    // TODO : ExpressionContextBuilder
     private ExpressionContext constructExpressionContext(String groupId, String appName, ReferenceSdo referenceSdo, JavaMeta javaMeta) {
         //
         ExpressionContext expressionContext = new ExpressionContext();
@@ -128,6 +140,7 @@ public class JavaService {
         expressionContext.add("className", javaMeta.getClassName());
 
         if (referenceSdo != null) {
+            // Set bizName with their className.
             String preBizName = referenceSdo.getPreBizName(generatorMeta.getBizNameLocation(), groupId, appName);
             expressionContext.add("preBizName", preBizName != null ? "." + preBizName : "");
             String postBizName = referenceSdo.getPostBizName(generatorMeta.getBizNameLocation(), groupId, appName);
@@ -143,23 +156,31 @@ public class JavaService {
             expressionContext.add(ref.getName() + ".methods", javaSource.getMethodsAsModel());
         }));
 
+        // custom expression context
         Optional.ofNullable(referenceSdo).ifPresent(_refSdo -> expressionContext.addAll(_refSdo.getCustomContext()));
+        Optional.ofNullable(referenceSdo).ifPresent(_refSdo -> expressionContext.addAllWithFirstUpperCase(_refSdo.getCustomContext()));
+
+        if (logger.isTraceEnabled()) {
+            logger.trace(expressionContext.show("Before update"));
+        }
 
         expressionContext.updateExpressedValue();
 
         if (logger.isTraceEnabled()) {
-            logger.trace(expressionContext.show());
+            logger.trace(expressionContext.show(null));
         }
 
         return expressionContext;
     }
 
-    private JavaSource readJavaSource(String refClassProjectPath, String className) {
+    public JavaSource readJavaSource(String projectPath, String className) {
         //
-        JavaReader reader = new JavaReader(new ProjectConfiguration(ConfigurationType.Source, refClassProjectPath));
+        JavaReader reader = new JavaReader(new ProjectConfiguration(ConfigurationType.Source, projectPath));
         try {
             JavaSource javaSource = reader.read(PathUtil.toSourceFileName(className, "java"));
             return javaSource;
+        } catch (FileNotFoundException fnf) {
+            throw new ClassFileNotFoundException("Class file does not exist: " + className, fnf);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

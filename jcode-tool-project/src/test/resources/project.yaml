@@ -1,92 +1,119 @@
-group: "io.naradrama"
-version: "1.0-SNAPSHOT"
+group: io.naradrama
+version: 1.0-SNAPSHOT
+
 dependencies:
-  - group: "io.naraplatform"
-    name: "accent"
-    version: "0.3.1-SNAPSHOT"
-  - group: "org.projectlombok"
-    name: "lombok"
-    version: "1.18.6"
+  - group: io.naraplatform
+    name: accent
+    version: 0.3.1-SNAPSHOT
+  - group: org.projectlombok
+    name: lombok
+    version: 1.18.6
+    type: CompileOnly
+  - group: org.projectlombok
+    name: lombok
+    version: 1.18.6
+    type: AnnotationProcessor
+
 properties:
-  - key: "spring.boot.version"
-    value: "2.1.3.RELEASE"
-  - key: "spring.cloud.version"
-    value: "Greenwich.RELEASE"
-  - key: "spring.cloud.stream.version"
-    value: "Fishtown.RELEASE"
+  - key: spring.boot.version
+    value: 2.1.3.RELEASE
+  - key: spring.cloud.version
+    value: Greenwich.RELEASE
+  - key: spring.cloud.stream.version
+    value: Fishtown.RELEASE
+
 modules:
-  - name: "${baseName}-domain-entity"
+  # spec
+  - name: ${baseName}-spec
     types:
       - Entity
     dependencies:
-      - group: "io.naraplatform"
-        name: "share-domain"
-        version: "0.2.2-SNAPSHOT"
-  - name: "${baseName}-client"
+
+  # store
+  - name: ${baseName}-store
+    types:
+      - Store
+    dependencies:
+      - ref: ${baseName}-spec
+        type: Project
+      - group: org.springframework.boot
+        name: spring-boot-starter-data-jpa
+        type: Implementation
+      - group: org.projectlombok
+        name: lombok
+        version: 1.18.8
+        type: CompileOnly
+      - group: org.projectlombok
+        name: lombok
+        version: 1.18.8
+        type: AnnotationProcessor
+
+  # service
+  - name: ${baseName}-service
+    types:
+      - Service
+    dependencies:
+      - ref: ${baseName}-store
+        type: Project
+      - group: javax.transaction
+        name: transaction-api
+        version: 1.3
+        type: Implementation
+      - group: org.springframework.boot
+        name: spring-boot-starter-web
+        type: Implementation
+      - group: org.springframework.boot
+        name: spring-boot-starter-data-jpa
+        type: Implementation
+
+  # boot
+  - name: ${baseName}-boot
+    types:
+      - Boot
+    dependencies:
+      - ref: ${baseName}-service
+        type: Project
+      - group: io.springfox
+        name: springfox-swagger2
+        version: 2.5.0
+        type: Implementation
+      - group: io.springfox
+        name: springfox-swagger-ui
+        version: 2.5.0
+        type: Implementation
+      - group: org.mariadb.jdbc
+        name: mariadb-java-client
+        type: Implementation
+      - group: org.springframework.boot
+        name: spring-boot-starter-web
+        type: Implementation
+
+  # test
+  - name: ${baseName}-test
+    types:
+      - Test
+    dependencies:
+      - ref: ${baseName}-service
+        type: Project
+      - group: javax.transaction
+        name: javax.transaction-api
+        version: 1.3
+      - group: org.springframework.boot
+        name: spring-boot-starter-test
+        type: TestCompile
+      - group: com.h2database
+        name: h2
+        type: Runtime
+
+  # client
+  - name: ${baseName}-client
     types:
       - Client
     dependencies:
-      - ref: "${baseName}-domain-entity"
-      - group: "org.apache.httpcomponents"
-        name: "httpclient"
-        version: "4.5.9"
-  - name: "${baseName}-domain-logic"
-    dependencies:
-      - ref: "${baseName}-domain-entity"
-  - name: "${baseName}-domain-test"
-    types:
-      - Test
-  - name: "${baseName}-local-boot"
-    types:
-      - Boot
-  - name: "${baseName}-proxy"
-  - name: "${baseName}-service"
-    types:
-      - Service
-  - name: "${baseName}-service-comp-test"
-    types:
-      - Service
-      - Test
-  - name: "${baseName}-service-restapi-test"
-    dependencies:
-      - ref: "${baseName}-service"
+      - ref: ${baseName}-spec
         type: Project
-      - group: "io.rest-assured"
-        name: "json-path"
-        version: "4.0.0"
-      - group: "io.rest-assured"
-        name: "xml-path"
-        version: "4.0.0"
-      - group: "io.rest-assured"
-        name: "rest-assured"
-        version: "4.0.0"
-        type: TestCompile
-      - group: "io.rest-assured"
-        name: "json-schema-validator"
-        version: "4.0.0"
-        type: TestCompile
-      - group: "org.springframework.boot"
-        name: "sprint-boot-starter-test"
-        type: TestCompile
-      - group: "junit"
-        name: "junit"
-        type: TestCompile
-      - group: "com.h2database"
-        name: "h2"
-        type: Runtime
-  - name: "${baseName}-store-jpa"
-    dependencies:
-      - ref: "${baseName}-domain-logic"
-        type: Project
-      - group: "org.springframework.boot"
-        name: "spring-boot-starter-data-jpa"
-        type: Implementation
-      - group: "org.projectlombok"
-        name: "lombok"
-        version: "1.18.8"
-        type: CompileOnly
-      - group: "org.projectlombok"
-        name: "lombok"
-        version: "1.18.8"
-        type: AnnotationProcessor
-  - name: "${baseName}-store-jpa-test"
+      - group: org.springframework.boot
+        name: spring-boot-starter-webflux
+      - group: org.projectreactor
+        name: reactor-spring
+        version: 1.0.1.RELEASE

@@ -29,7 +29,7 @@ public abstract class PathUtil {
 
         return new Pair<>(sb.toString(), packageFrags[length - 1]);
     }
-    
+
     // com/foo/bar/SampleDto.xml -> com/foo/bar, SampleDto.xml
     public static Pair<String, String> devideResourceName(String sourceFilePath) {
         //
@@ -93,6 +93,29 @@ public abstract class PathUtil {
         return sb.toString();
     }
 
+    // /Users/danielhan/IdeaProjects/foo/foo-client/src/main/java/io/naradrama/foo/client/crud/FooRestClient.java
+    // --> /Users/danielhan/IdeaProjects/foo/foo-client
+    public static String toProjectPath(String physicalSourceFilePath) {
+        //
+        int index = physicalSourceFilePath.indexOf("/src/main/java/");
+        if (index < 0) {
+            throw new RuntimeException("Not project path --> " + physicalSourceFilePath);
+        }
+        return physicalSourceFilePath.substring(0, index);
+    }
+
+    // /Users/danielhan/IdeaProjects/foo/foo-client/src/main/java/io/naradrama/foo/client/crud/FooRestClient.java
+    // --> io/naradrama/foo/client/crud/FooRestClient.java
+    public static String toSourceFilePath(String physicalSourceFilePath) {
+        //
+        int index = physicalSourceFilePath.indexOf("/src/main/java/");
+        int startIndex = index + "/src/main/java".length() + 1;
+        if (index < 0 || startIndex > physicalSourceFilePath.length() - 1) {
+            throw new RuntimeException("Not project path --> " + physicalSourceFilePath);
+        }
+        return physicalSourceFilePath.substring(startIndex);
+    }
+
     // SampleService -> SampleLogic
     public static String changeName(String name, String skipPostFix, String addPostFix) {
         //
@@ -143,18 +166,18 @@ public abstract class PathUtil {
         //
         return changePath(sourceFilePath, 0, null, namePostFix, extension);
     }
-    
+
     public static String changeFileName(String sourceFilePath, String skipNamePostFix, String namePostFix, String extension) {
         //
         return changePath(sourceFilePath, 0, null, skipNamePostFix, namePostFix, extension);
     }
-    
+
     // [folder with skipFolder]/[addFolders]/[name][namePostFix].[extension]
     public static String changePath(String sourceFilePath, int skipFolderCount, String[] addFolders, String namePostFix, String extension) {
         //
         return changePath(sourceFilePath, skipFolderCount, addFolders, null, namePostFix, extension);
     }
-    
+
     public static String changePath(String sourceFilePath, int skipFolderCount, String[] addFolders, String skipNamePostFix, String namePostFix, String extension) {
         //
         String[] paths = sourceFilePath.split(ProjectSources.PATH_DELIM.equals("\\") ? "\\\\" : ProjectSources.PATH_DELIM); // for Windows
@@ -178,7 +201,7 @@ public abstract class PathUtil {
                 sb.append(ProjectSources.PATH_DELIM);
             }
         }
-        
+
         // skipNamePostFix
         if (StringUtil.isNotEmpty(skipNamePostFix)) {
             if (name.endsWith(skipNamePostFix)) {

@@ -1,0 +1,31 @@
+packageName: ${groupId}.${appName}${preBizName}.spec.task${postBizName}.sdo
+name: ${entity.simpleClassName}Cdo
+classAnnotations:
+  - type: lombok.Getter
+  - type: lombok.Setter
+  - type: lombok.AllArgsConstructor
+  - type: lombok.NoArgsConstructor
+classImplements:
+  - io.naraplatform.share.util.json.JsonSerializable
+fields:
+  - name: id
+    type: String
+  - name: name
+    type: String
+
+methods:
+  - name: toString
+    type: String
+    access: PUBLIC
+    body: return toJson();
+
+  - name: fromJson
+    type: ${className}
+    access: PUBLIC
+    static: true
+    parameters:
+      - type: String
+        varName: json
+    body: return JsonUtil.fromJson(json, ${simpleClassName}.class);
+    imports:
+      - io.naraplatform.share.util.json.JsonUtil
