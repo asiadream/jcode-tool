@@ -142,9 +142,15 @@ public class JavaSource {
         return getPackageName() + "." + getName();
     }
 
+    public boolean isInterface() {
+        //
+        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        return classType.isInterface();
+    }
+
     public void setName(String name) {
         //
-        TypeDeclaration<?> classType = (TypeDeclaration<?>) compilationUnit.getType(0);
+        TypeDeclaration<?> classType = compilationUnit.getType(0);
         classType.setName(name);
 
         if (classType instanceof ClassOrInterfaceDeclaration) {
@@ -206,6 +212,14 @@ public class JavaSource {
             return classType.getExtendedTypes(0).getNameAsString();
         }
         return null;
+    }
+
+    public boolean isExtends(String simpleClassName) {
+        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (classType.getExtendedTypes().size() <= 0) {
+            return false;
+        }
+        return classType.getExtendedTypes(0).getNameAsString().equals(simpleClassName);
     }
 
     public void addField(JavaSource fieldType, String varName, ClassType annotation) {

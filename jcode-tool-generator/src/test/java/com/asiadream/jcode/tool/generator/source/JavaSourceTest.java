@@ -1,16 +1,35 @@
 package com.asiadream.jcode.tool.generator.source;
 
-import com.asiadream.jcode.tool.generator.source.JavaSource;
+import com.asiadream.jcode.tool.generator.JavaService;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
 
 public class JavaSourceTest {
     //
     private static final String DELIM = File.separator;
-    
+    private static final String SOURCE_PROJECT_HOME = "src/test/resources/sample-project";
+
+    private JavaService javaService = new JavaService();
+
+    @Test
+    public void testIsExtends() {
+        //
+        JavaSource javaSource = javaService.readJavaSource(SOURCE_PROJECT_HOME, "io.naradrama.talk.domain.entity.town.TalkTown");
+        System.out.println(javaSource.isExtends("DramaEntity"));
+        Assert.assertTrue(javaSource.isExtends("DramaEntity"));
+    }
+
+    @Test
+    public void testIsInterface() {
+        JavaSource entitySource = javaService.readJavaSource(SOURCE_PROJECT_HOME, "io.naradrama.talk.domain.entity.town.TalkTown");
+        Assert.assertFalse(entitySource.isInterface());
+
+        JavaSource serviceSource = javaService.readJavaSource(SOURCE_PROJECT_HOME, "io.naradrama.talk.spec.task.town.TalkTownService");
+        Assert.assertTrue(serviceSource.isInterface());
+    }
+
     //@Test
     public void testRemoveGetterAndSetter() throws Exception {
         //
@@ -22,7 +41,7 @@ public class JavaSourceTest {
 
         System.out.println(javaSource.toString());
     }
- 
+
     //@Test
     public void testLexicalPrint() throws Exception {
         //

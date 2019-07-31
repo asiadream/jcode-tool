@@ -5,6 +5,7 @@ import com.asiadream.jcode.tool.generator.reader.JavaReader;
 import com.asiadream.jcode.tool.generator.source.JavaSource;
 import com.asiadream.jcode.tool.generator.writer.JavaWriter;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
+import com.asiadream.jcode.tool.share.exception.ConversionCancelException;
 import com.asiadream.jcode.tool.share.rule.NameRule;
 import com.asiadream.jcode.tool.share.rule.PackageRule;
 import org.slf4j.Logger;
@@ -70,7 +71,7 @@ public class JavaConverter extends ProjectItemConverter {
         JavaSource source = javaReader.read(sourceFilePath);
         if (!determineConversion(source)) {
             logger.warn("The conversion was canceled.");
-            return null;
+            throw new ConversionCancelException("The conversion was canceled.");
         }
 
         // Save original class name.
@@ -107,6 +108,7 @@ public class JavaConverter extends ProjectItemConverter {
     private boolean determineConversion(JavaSource source) {
         //
         String convertAnnotation = config.getConvertMarkAnnotation();
+        logger.trace("[Config] Convert Mark annotation --> " + convertAnnotation);
         if (convertAnnotation == null) {
             return true;
         }
