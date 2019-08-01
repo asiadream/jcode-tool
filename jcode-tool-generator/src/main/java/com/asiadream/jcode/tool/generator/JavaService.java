@@ -99,6 +99,12 @@ public class JavaService {
         }
     }
 
+    public String getPath(String projectPath, String className) {
+        //
+        ProjectConfiguration configuration = new ProjectConfiguration(ConfigurationType.Target, projectPath);
+        return configuration.makePhysicalJavaSourceFilePath(ClassNameUtil.toSourceFileName(className));
+    }
+
     public String predictClassName(ReferenceSdo referenceSdo, String template) {
         //
         JavaMeta javaMeta = loadJavaMeta(template);

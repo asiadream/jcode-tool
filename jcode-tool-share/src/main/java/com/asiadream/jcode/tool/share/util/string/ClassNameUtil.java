@@ -22,6 +22,14 @@ public class ClassNameUtil {
         return className;
     }
 
+    // (com.foo.bar.SomeService, Service) -> some
+    public static String getShortSimpleName(String className, String suffix) {
+        //
+        String simpleClassName = ClassNameUtil.getSimpleClassName(className);
+        String removedSuffix = StringUtil.removeSuffix(simpleClassName, suffix);
+        return StringUtil.toFirstLowerCase(removedSuffix);
+    }
+
     // com.foo.bar.SampleDto -> com/foo/bar/SampleDto.java
     public static String toSourceFileName(String className) {
         //
