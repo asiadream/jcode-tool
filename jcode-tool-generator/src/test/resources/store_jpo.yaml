@@ -1,5 +1,6 @@
-packageName: ${groupId}.${appName}${preBizName}.store.jpa${postBizName}.jpo
-name: ${entity.simpleClassName}Jpo
+packageName: ${jpo.packageName}
+name: ${jpo.name}
+
 classAnnotations:
   - type: lombok.Getter
   - type: lombok.Setter
@@ -10,7 +11,7 @@ classAnnotations:
       - name: name
         value: TALK
 classExtends:
-  - io.naraplatform.share.domain.drama.DramaEntityJpo
+  - ${DramaEntityJpo}
 
 fields:
   - name: id
@@ -45,15 +46,15 @@ methods:
 
   # static toDomains
   - name: toDomains
-    type: java.util.List<${entity.className}>
+    type: ${List}<${entity.className}>
     access: PUBLIC
     static: true
     parameters:
-      - type: java.util.List<${className}>
+      - type: ${List}<${className}>
         varName: ${entity.name}Jpos
     body: return ${entity.name}Jpos.stream().map(${simpleClassName}::toDomain).collect(Collectors.toList());
     imports:
-      - java.util.stream.Collectors
+      - ${Collectors}
 
   # toString
   - name: toString

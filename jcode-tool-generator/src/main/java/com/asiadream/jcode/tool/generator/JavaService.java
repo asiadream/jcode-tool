@@ -26,6 +26,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class JavaService {
@@ -33,10 +35,12 @@ public class JavaService {
     private static Logger logger = LoggerFactory.getLogger(JavaService.class);
 
     private GeneratorMeta generatorMeta;
+    private Map<String, String> settings;
 
     public JavaService() {
         //
         this.generatorMeta = loadGeneratorMeta();
+        this.settings = loadSettingsParameters();
     }
 
     public JavaService(GeneratorMeta generatorMeta) {
@@ -45,6 +49,7 @@ public class JavaService {
         if (this.generatorMeta == null) {
             this.generatorMeta = loadGeneratorMeta();
         }
+        this.settings = loadSettingsParameters();
     }
 
     private GeneratorMeta loadGeneratorMeta() {
@@ -72,6 +77,36 @@ public class JavaService {
         return yaml.load(inputStream);
     }
 
+    private Map<String, Object> loadSettings() {
+        //
+        Yaml yaml = new Yaml();
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("settings.yaml");
+        if (inputStream == null) {
+            throw new RuntimeException("settings.yaml not exists.");
+        }
+        return yaml.load(inputStream);
+    }
+
+    private Map<String, String> loadSettingsParameters() {
+        //
+        Map<String, Object> settings = loadSettings();
+        return toParameter(settings, new HashMap<>(), null);
+    }
+
+    private static Map<String, String> toParameter(Map<String, Object> srcMap, HashMap<String, String> targetMap, String keyPrefix) {
+        //
+        for (String key : srcMap.keySet()) {
+            Object value = srcMap.get(key);
+            String showKey = keyPrefix != null ? keyPrefix + "." + key : key;
+            if (value.getClass() == String.class) {
+                targetMap.put(showKey, (String) value);
+            } else if (value instanceof Map) {
+                toParameter((Map<String, Object>) value, targetMap, showKey);
+            }
+        }
+        return targetMap;
+    }
+
     public String create(String template, String targetProjectPath) {
         //
         return create(null, template, targetProjectPath);
@@ -83,6 +118,7 @@ public class JavaService {
         String appName = generatorMeta.getAppName();
 
         JavaMeta javaMeta = loadJavaMeta(template);
+
         ExpressionContext expressionContext = constructExpressionContext(groupId, appName, referenceSdo, javaMeta);
         JavaModel javaModel = javaMeta
                 .replaceExp(expressionContext)   // replace expression with context (${...})
@@ -108,6 +144,7 @@ public class JavaService {
     public String predictClassName(ReferenceSdo referenceSdo, String template) {
         //
         JavaMeta javaMeta = loadJavaMeta(template);
+
         ExpressionContext expressionContext = constructExpressionContext(generatorMeta.getGroupId(), generatorMeta.getAppName(), referenceSdo, javaMeta);
         JavaModel javaModel = javaMeta
                 .replaceExp(expressionContext)   // replace expression with context (${...})
@@ -136,7 +173,7 @@ public class JavaService {
     // TODO : ExpressionContextBuilder
     private ExpressionContext constructExpressionContext(String groupId, String appName, ReferenceSdo referenceSdo, JavaMeta javaMeta) {
         //
-        ExpressionContext expressionContext = new ExpressionContext();
+        ExpressionContext expressionContext = new ExpressionContext(settings);
 
         expressionContext.add("groupId", groupId);
         expressionContext.add("appName", appName);
@@ -153,7 +190,9 @@ public class JavaService {
             expressionContext.add("postBizName", postBizName != null ? "." + postBizName : "");
         }
 
+        // Register reference
         Optional.ofNullable(referenceSdo).ifPresent(_refSdo -> _refSdo.getReferences().forEach(ref -> {
+            expressionContext.add(ref.getName() + ".packageName", ClassNameUtil.getPackageName(ref.getClassName()));
             expressionContext.add(ref.getName() + ".className", ref.getClassName());
             expressionContext.add(ref.getName() + ".simpleClassName", ref.getSimpleClassName());
             expressionContext.add(ref.getName() + ".name", StringUtil.toFirstLowerCase(ref.getSimpleClassName()));

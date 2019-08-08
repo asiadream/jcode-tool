@@ -23,6 +23,7 @@ public class MethodOverrideMeta extends MethodMeta {
         matchMeta.ifPresent(_matchMeta -> {
             methodMeta.setBody(_matchMeta.getBody());
             methodMeta.addAnnotations(_matchMeta.getAnnotations());
+            methodMeta.setImports(_matchMeta.getImports());
         });
     }
 

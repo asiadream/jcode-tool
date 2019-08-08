@@ -1,6 +1,6 @@
-packageName: ${groupId}.${appName}${preBizName}.store.jpa${postBizName}.repository
-name: ${entity.simpleClassName}Repository
+packageName: ${jpaRepository.packageName}
+name: ${jpaRepository.name}
 interfaceFile: true
 
 classExtends:
-  - org.springframework.data.repository.PagingAndSortingRepository<${groupId}.${appName}${preBizName}.store.jpa${postBizName}.jpo.${entity.simpleClassName}Jpo, String>
+  - ${PagingAndSortingRepository}<${jpo.className}, String>

@@ -1,0 +1,84 @@
+# Type Aliases
+DramaEntity: io.naraplatform.share.domain.drama.DramaEntity
+DomainAggregate: io.naraplatform.share.domain.ddd.DomainAggregate
+DramaEntityJpo: io.naraplatform.share.domain.drama.DramaEntityJpo
+PatronKey: io.naraplatform.share.domain.patron.PatronKey
+JsonUtil: io.naraplatform.share.util.json.JsonUtil
+NameValueList: io.naraplatform.share.domain.NameValueList
+JsonSerializable: io.naraplatform.share.util.json.JsonSerializable
+Offset: io.naraplatform.share.domain.Offset
+FacadeCandidate: io.naraplatform.share.domain.FacadeCandidate
+ServiceFeature: io.naraplatform.share.domain.drama.ServiceFeature
+DoNotOpen: io.naraplatform.share.domain.DoNotOpen
+
+List: java.util.List
+Optional: java.util.Optional
+Collectors: java.util.stream.Collectors
+NoSuchElementException: java.util.NoSuchElementException
+
+Repository: org.springframework.stereotype.Repository
+Autowired: org.springframework.beans.factory.annotation.Autowired
+Pageable: org.springframework.data.domain.Pageable
+Page: org.springframework.data.domain.Page
+PageRequest: org.springframework.data.domain.PageRequest
+Sort: org.springframework.data.domain.Sort
+PagingAndSortingRepository: org.springframework.data.repository.PagingAndSortingRepository
+Service: org.springframework.stereotype.Service
+Component: org.springframework.stereotype.Component
+RestController: org.springframework.web.bind.annotation.RestController
+RequestMapping: org.springframework.web.bind.annotation.RequestMapping
+GetMapping: org.springframework.web.bind.annotation.GetMapping
+WebClient: org.springframework.web.reactive.function.client.WebClient
+
+Transactional: javax.transaction.Transactional
+
+# Naming conventions by type
+entity:
+  packageName: ${groupId}.${appName}${preBizName}.domain.entity${postBizName}
+  name: ${Name}
+  className: ${groupId}.${appName}${preBizName}.domain.entity${postBizName}.${Name}
+
+cdo:
+  packageName: ${groupId}.${appName}.domain.sdo
+  name: ${entity.simpleClassName}Cdo
+  className: ${groupId}.${appName}.domain.sdo.${entity.simpleClassName}Cdo
+
+storeInterface:
+  packageName: ${groupId}.${appName}${preBizName}.domain.store${postBizName}
+  name: ${entity.simpleClassName}Store
+  className: ${groupId}.${appName}${preBizName}.domain.store${postBizName}.${entity.simpleClassName}Store
+
+jpo:
+  packageName: ${groupId}.${appName}${preBizName}.store.jpa${postBizName}.jpo
+  name: ${entity.simpleClassName}Jpo
+  className: ${groupId}.${appName}${preBizName}.store.jpa${postBizName}.jpo.${entity.simpleClassName}Jpo
+
+jpa:
+  packageName: ${groupId}.${appName}${preBizName}.store.jpa${postBizName}
+  name: ${entity.simpleClassName}JpaStore
+  className: ${groupId}.${appName}${preBizName}.store.jpa${postBizName}.${entity.simpleClassName}JpaStore
+
+jpaRepository:
+  packageName: ${groupId}.${appName}${preBizName}.store.jpa${postBizName}.repository
+  name: ${entity.simpleClassName}Repository
+  className: ${groupId}.${appName}${preBizName}.store.jpa${postBizName}.repository.${entity.simpleClassName}Repository
+
+serviceInterface:
+  packageName: ${groupId}.${appName}${preBizName}.domain.spec.task${postBizName}
+  name: ${entity.simpleClassName}TaskService
+  className: ${groupId}.${appName}${preBizName}.domain.spec.task${postBizName}.${entity.simpleClassName}TaskService
+
+task:
+  packageName: ${groupId}.${appName}${preBizName}.domain.logic.task${postBizName}
+  name: ${entity.simpleClassName}Task
+  className: ${groupId}.${appName}${preBizName}.domain.logic.task${postBizName}.${entity.simpleClassName}Task
+
+resource:
+  packageName: ${groupId}.${appName}.restapi.crud
+  name: ${entity.simpleClassName}Resource
+  className: ${groupId}.${appName}.restapi.crud.${entity.simpleClassName}Resource
+
+client:
+  packageName: ${groupId}.${appName}${preBizName}.client.crud${postBizName}
+  name: ${entity.simpleClassName}WebClient
+  className: ${groupId}.${appName}${preBizName}.client.crud${postBizName}.${entity.simpleClassName}WebClient

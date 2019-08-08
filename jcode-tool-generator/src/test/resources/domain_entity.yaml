@@ -1,13 +1,14 @@
-packageName: ${groupId}.${appName}${preBizName}.domain.entity${postBizName}
-name: ${Name}
+packageName: ${entity.packageName}
+name: ${entity.name}
+
 classAnnotations:
   - type: lombok.Getter
   - type: lombok.Setter
   - type: lombok.NoArgsConstructor
 classExtends:
-  - io.naraplatform.share.domain.drama.DramaEntity
+  - ${DramaEntity}
 classImplements:
-  - io.naraplatform.share.domain.ddd.DomainAggregate
+  - ${DomainAggregate}
 fields:
   - name: name
     type: String
@@ -20,7 +21,7 @@ constructors:
   - parameters:
     - type: String
       varName: id
-    - type: io.naraplatform.share.domain.patron.PatronKey
+    - type: ${PatronKey}
       varName: patronKey
     body: super(id, patronKey);
 
@@ -39,12 +40,12 @@ methods:
         varName: json
     body: return JsonUtil.fromJson(json, ${simpleClassName}.class);
     imports:
-      - io.naraplatform.share.util.json.JsonUtil
+      - ${JsonUtil}
 
   - name: setValues
     access: PUBLIC
     parameters:
-      - type: io.naraplatform.share.domain.NameValueList
+      - type: ${NameValueList}
         varName: nameValues
 
   - name: sample

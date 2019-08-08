@@ -11,10 +11,19 @@ import java.util.Map;
 public class ExpressionContext {
     //
     private Map<String, Object> contextMap;
+    // Value in the Map may contain expressions.
+    private Map<String, String> expressedParameterMap;
 
     public ExpressionContext() {
         //
         this.contextMap = new HashMap<>();
+        this.expressedParameterMap = new HashMap<>();
+    }
+
+    public ExpressionContext(Map<String, String> expressedParameterMap) {
+        //
+        this.contextMap = new HashMap<>();
+        this.expressedParameterMap = expressedParameterMap;
     }
 
     public String replaceExpString(String containingExpression) {
@@ -23,17 +32,42 @@ public class ExpressionContext {
             return null;
         }
 
-        String replaced = containingExpression;
+        // Replace 'containingExpression' with contextMap.
+        String replaced = replaceWithContextMap(containingExpression);
 
-        for (Iterator<String> iter = contextMap.keySet().iterator(); iter.hasNext(); ) {
-            String key = iter.next();
+        // Replace 'containingExpression' with expressedParameterMap.
+        replaced = replaceWithExpressedParameterMap(replaced);
+
+        // Check that all expressions have been replaced.
+        check(replaced);
+
+        return replaced;
+    }
+
+    private String replaceWithContextMap(String containingExpression) {
+        //
+        String replaced = containingExpression;
+        for (String key : contextMap.keySet()) {
             Object value = contextMap.get(key);
             String exp = "${" + key + "}";
             if (value != null && value.getClass() == String.class && containingExpression.contains(exp)) {
-                replaced = replaced.replace(exp, (String)value);
+                replaced = replaced.replace(exp, (String) value);
             }
         }
-        check(replaced);
+        return replaced;
+    }
+
+    private String replaceWithExpressedParameterMap(String containingExpression) {
+        //
+        String replaced = containingExpression;
+        for (String key : expressedParameterMap.keySet()) {
+            String valueMayContainExpression = expressedParameterMap.get(key);
+            String exp = "${" + key + "}";
+            if (valueMayContainExpression != null && replaced.contains(exp)) {
+                String value = replaceWithContextMap(valueMayContainExpression);
+                replaced = replaced.replace(exp, value);
+            }
+        }
         return replaced;
     }
 
@@ -77,6 +111,12 @@ public class ExpressionContext {
         return this;
     }
 
+    public ExpressionContext addAll(Map<String, String> map) {
+        //
+        this.contextMap.putAll(map);
+        return this;
+    }
+
     public ExpressionContext addAll(List<Pair<String, String>> keyValues) {
         //
         keyValues.forEach(keyValue -> this.contextMap.put(keyValue.x, keyValue.y));
@@ -106,6 +146,10 @@ public class ExpressionContext {
     public boolean contains(String key) {
         //
         return contextMap.containsKey(key);
+    }
+
+    public void setExpressedParameterMap(Map<String, String> expressedParameterMap) {
+        this.expressedParameterMap = expressedParameterMap;
     }
 
     public String show(String title) {

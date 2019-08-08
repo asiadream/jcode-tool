@@ -1,7 +1,7 @@
-packageName: ${groupId}.${appName}${preBizName}.client.crud${postBizName}
-name: ${entity.simpleClassName}WebClient
+packageName: ${client.packageName}
+name: ${client.name}
 classAnnotations:
-  - type: org.springframework.stereotype.Component
+  - type: ${Component}
 
 classImplements:
   - ${serviceInterface.className}
@@ -12,11 +12,11 @@ fields:
     static: true
     final: true
     initializer: '"/${appName}/${entity.name}s"'
-  - type: org.springframework.web.reactive.function.client.WebClient
+  - type: ${WebClient}
 
 constructors:
   - parameters:
-    - type: org.springframework.web.reactive.function.client.WebClient
+    - type: ${WebClient}
 
 eachMethod:
   items: ${serviceInterface.methods}

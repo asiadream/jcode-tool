@@ -1,13 +1,14 @@
-packageName: ${groupId}.${appName}${preBizName}.store.jpa${postBizName}
-name: ${entity.simpleClassName}JpaStore
+packageName: ${jpa.packageName}
+name: ${jpa.name}
+
 classAnnotations:
-  - type: org.springframework.stereotype.Repository
+  - type: ${Repository}
 classImplements:
   - ${storeInterface.className}
 fields:
-  - type: ${groupId}.${appName}${preBizName}.store.jpa${postBizName}.repository.${entity.simpleClassName}Repository
+  - type: ${jpaRepository.className}
     annotations:
-      - type: org.springframework.beans.factory.annotation.Autowired
+      - type: ${Autowired}
 methods:
   - name: create
     access: PUBLIC
@@ -29,14 +30,14 @@ methods:
       Optional<${entity.simpleClassName}Jpo> optional${entity.simpleClassName}Jpo = ${entity.name}Repository.findById(id);
       return optional${entity.simpleClassName}Jpo.map(${entity.simpleClassName}Jpo::toDomain).orElse(null);
     imports:
-      - ${groupId}.${appName}${preBizName}.store.jpa${postBizName}.jpo.${entity.simpleClassName}Jpo
-      - java.util.Optional
+      - ${jpo.className}
+      - ${Optional}
 
   - name: retrieveAll
-    type: java.util.List<${entity.className}>
+    type: ${List}<${entity.className}>
     access: PUBLIC
     parameters:
-      - type: io.naraplatform.share.domain.Offset
+      - type: ${Offset}
         varName: offset
     annotations:
       - type: Override
@@ -45,11 +46,11 @@ methods:
       Page<${entity.simpleClassName}Jpo> ${entity.name}JpoPage = ${entity.name}Repository.findAll(pageable);
       return ${entity.name}JpoPage.stream().map(${entity.simpleClassName}Jpo::toDomain).collect(Collectors.toList());
     imports:
-      - org.springframework.data.domain.Pageable
-      - org.springframework.data.domain.Page
-      - org.springframework.data.domain.PageRequest
-      - org.springframework.data.domain.Sort
-      - java.util.stream.Collectors
+      - ${Pageable}
+      - ${Page}
+      - ${PageRequest}
+      - ${Sort}
+      - ${Collectors}
 
   - name: update
     access: PUBLIC

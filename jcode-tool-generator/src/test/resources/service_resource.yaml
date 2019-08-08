@@ -1,12 +1,12 @@
-packageName: ${groupId}.${appName}.restapi.crud
-name: ${entity.simpleClassName}Resource
+packageName: ${resource.packageName}
+name: ${resource.name}
 
 classImplements:
   - ${serviceInterface.className}
 
 classAnnotations:
-  - type: org.springframework.web.bind.annotation.RestController
-  - type: org.springframework.web.bind.annotation.RequestMapping
+  - type: ${RestController}
+  - type: ${RequestMapping}
     elements:
       - value: /${appName}/${entity.name}s
 
@@ -21,13 +21,13 @@ eachMethod:
       - when: find${entity.simpleClassName}
         body: return null;
         annotations:
-          - type: org.springframework.web.bind.annotation.GetMapping
+          - type: ${GetMapping}
             elements:
               - value: "{${entity.name}Id}"
       - when: findAll${entity.simpleClassName}s
         body: return null;
         annotations:
-          - type: org.springframework.web.bind.annotation.GetMapping
+          - type: ${GetMapping}
       - when: countAll${entity.simpleClassName}
         body: return 0l;
 

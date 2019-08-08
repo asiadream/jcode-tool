@@ -1,9 +1,10 @@
-packageName: ${groupId}.${appName}${preBizName}.spec.task${postBizName}
-name: ${entity.simpleClassName}Service
+packageName: ${serviceInterface.packageName}
+name: ${serviceInterface.name}
+
 interfaceFile: true
 classAnnotations:
-  - type: io.naraplatform.share.domain.FacadeService
-  - type: io.naraplatform.share.domain.drama.ServiceFeature
+  - type: ${FacadeCandidate}
+  - type: ${ServiceFeature}
     elements:
       - name: name
         value: ${entity.simpleClassName}
@@ -13,16 +14,14 @@ classAnnotations:
       - name: authorizedRoles
         value: Admin
         valueType: Array
-classExtends:
-  - io.naraplatform.share.domain.drama.FeatureTarget
 
 methods:
   - name: register${entity.simpleClassName}
     type: String
     parameters:
-      - type: ${groupId}.${appName}${preBizName}.spec.task${postBizName}.sdo.${entity.simpleClassName}Cdo
+      - type: ${cdo.className}
     annotations:
-      - type: io.naraplatform.share.domain.DoNotOpen
+      - type: ${DoNotOpen}
 
   - name: find${entity.simpleClassName}
     type: ${entity.className}
@@ -31,13 +30,13 @@ methods:
         varName: ${entity.simpleClassName}Id
 
   - name: findAll${entity.simpleClassName}s
-    type: java.util.List<${entity.className}>
+    type: ${List}<${entity.className}>
 
   - name: modify${entity.simpleClassName}
     parameters:
       - type: String
         varName: ${entity.simpleClassName}Id
-      - type: io.naraplatform.share.domain.NameValueList
+      - type: ${NameValueList}
         varName: nameValues
 
   - name: remove${entity.simpleClassName}

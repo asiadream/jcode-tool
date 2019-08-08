@@ -1,7 +1,7 @@
-convertMarkAnnotation: FacadeService
+convertMarkAnnotation: FacadeCandidate
 deleteMarkAnnotation: DoNotOpen
 annotationsToRemove:
-  - FacadeService
+  - FacadeCandidate
 
 nameRule:
   changePostfixes:

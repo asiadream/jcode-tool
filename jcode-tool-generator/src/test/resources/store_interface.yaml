@@ -1,6 +1,8 @@
-packageName: ${groupId}.${appName}${preBizName}.domain.store${postBizName}
-name: ${entity.simpleClassName}Store
+packageName: ${storeInterface.packageName}
+name: ${storeInterface.name}
+
 interfaceFile: true
+
 methods:
   - name: create
     parameters:
@@ -11,10 +13,9 @@ methods:
       - type: String
         varName: id
   - name: retrieveAll
-    type: java.util.List<${entity.className}>
+    type: ${List}<${entity.className}>
     parameters:
-      - type: io.naraplatform.share.domain.Offset
-        varName: offset
+      - type: ${Offset}
   - name: update
     parameters:
       - type: ${entity.className}

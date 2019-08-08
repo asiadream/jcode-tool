@@ -1,55 +1,104 @@
-packageName: ${groupId}.${appName}${preBizName}.domain.logic.task${postBizName}
-name: ${entity.simpleClassName}Task
+packageName: ${task.packageName}
+name: ${task.name}
 
 classAnnotations:
-  - type: org.springframework.stereotype.Service
-  - type: javax.transaction.Transactional
+  - type: ${Service}
+  - type: ${Transactional}
+
+classImplements:
+  - ${serviceInterface.className}
 
 fields:
-  - name: ${entity.name}Store
-    type: ${groupId}.${appName}${preBizName}.domain.store${postBizName}.${entity.simpleClassName}Store
+  - type: ${storeInterface.className}
     annotations:
-      - type: org.springframework.beans.factory.annotation.Autowired
+      - type: ${Autowired}
 
-methods:
-  - name: find${entity.simpleClassName}
-    type: ${entity.className}
+eachMethod:
+  items: ${serviceInterface.methods}
+  methodOverrides:
     access: PUBLIC
-    parameters:
-      - type: String
-        varName: ${entity.name}Id
-    body: |
-      ${entity.simpleClassName} ${entity.name} = ${entity.name}Store.retrieve(${entity.name}Id);
-      if(${entity.name} == null) {
-          throw new NoSuchElementException("${entity.simpleClassName} id: " + ${entity.name}Id);
-      }
-      return ${entity.name};
-    imports:
-      - java.util.NoSuchElementException
+    annotations:
+      - type: Override
+    matches:
+      - when: register${entity.simpleClassName}
+        body: |
+          ${entity.simpleClassName} ${entity.name} = new ${entity.simpleClassName}();
+          ${entity.name}Store.create(${entity.name});
+          return ${entity.name}.getId();
 
-  - name: modify${entity.simpleClassName}
-    access: PUBLIC
-    parameters:
-      - type: String
-        varName: ${entity.name}Id
-      - type: io.naraplatform.share.domain.NameValueList
-        varName: nameValues
-    body: |
-      ${entity.simpleClassName} ${entity.name} = ${entity.name}Store.retrieve(${entity.name}Id);
-      ${entity.name}.setValues(nameValues);
-      ${entity.name}Store.update(${entity.name});
+      - when: find${entity.simpleClassName}
+        body: |
+          ${entity.simpleClassName} ${entity.name} = ${entity.name}Store.retrieve(${entity.name}Id);
+          if(${entity.name} == null) {
+              throw new NoSuchElementException("${entity.simpleClassName} id: " + ${entity.name}Id);
+          }
+          return ${entity.name};
+        imports:
+          - ${NoSuchElementException}
 
-  - name: modify${entity.simpleClassName}
-    access: PUBLIC
-    parameters:
-      - type: ${entity.className}
-    body: ${entity.name}Store.update(${entity.name});
+      - when: findAll${entity.simpleClassName}s
+        body: |
+          List<${entity.simpleClassName}> ${entity.name}s = ${entity.name}Store.retrieveAll(Offset.newOne(0,100));
+          if(${entity.name}s.isEmpty()) {
+              throw new NoSuchElementException("${entity.simpleClassName}");
+          }
+          return ${entity.name}s;
+        imports:
+          - ${NoSuchElementException}
 
-  - name: remove${entity.simpleClassName}
-    access: PUBLIC
-    parameters:
-      - type: String
-        varName: ${entity.name}Id
-    body: |
-      ${entity.simpleClassName} ${entity.name} = ${entity.name}Store.retrieve(${entity.name}Id);
-      ${entity.name}Store.delete(${entity.name});
+      - when: modify${entity.simpleClassName}
+        body: |
+          ${entity.simpleClassName} ${entity.name} = ${entity.name}Store.retrieve(${entity.name}Id);
+          ${entity.name}.setValues(nameValues);
+          ${entity.name}Store.update(${entity.name});
+
+      - when: remove${entity.simpleClassName}
+        body: |
+          ${entity.simpleClassName} ${entity.name} = ${entity.name}Store.retrieve(${entity.name}Id);
+          ${entity.name}Store.delete(${entity.name});
+
+      - when: countAll${entity.simpleClassName}
+        body: return ${entity.name}Store.countAll();
+
+#methods:
+#  - name: find${entity.simpleClassName}
+#    type: ${entity.className}
+#    access: PUBLIC
+#    parameters:
+#      - type: String
+#        varName: ${entity.name}Id
+#    body: |
+#      ${entity.simpleClassName} ${entity.name} = ${entity.name}Store.retrieve(${entity.name}Id);
+#      if(${entity.name} == null) {
+#          throw new NoSuchElementException("${entity.simpleClassName} id: " + ${entity.name}Id);
+#      }
+#      return ${entity.name};
+#    imports:
+#      - ${NoSuchElementException}
+#
+#  - name: modify${entity.simpleClassName}
+#    access: PUBLIC
+#    parameters:
+#      - type: String
+#        varName: ${entity.name}Id
+#      - type: ${NameValueList}
+#        varName: nameValues
+#    body: |
+#      ${entity.simpleClassName} ${entity.name} = ${entity.name}Store.retrieve(${entity.name}Id);
+#      ${entity.name}.setValues(nameValues);
+#      ${entity.name}Store.update(${entity.name});
+#
+#  - name: modify${entity.simpleClassName}
+#    access: PUBLIC
+#    parameters:
+#      - type: ${entity.className}
+#    body: ${entity.name}Store.update(${entity.name});
+#
+#  - name: remove${entity.simpleClassName}
+#    access: PUBLIC
+#    parameters:
+#      - type: String
+#        varName: ${entity.name}Id
+#    body: |
+#      ${entity.simpleClassName} ${entity.name} = ${entity.name}Store.retrieve(${entity.name}Id);
+#      ${entity.name}Store.delete(${entity.name});
