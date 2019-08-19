@@ -27,3 +27,6 @@ methods:
     parameters:
       - type: String
         varName: id
+
+  - name: countAll
+    type: long

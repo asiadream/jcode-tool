@@ -133,13 +133,17 @@ public class JavaServiceCreateTest extends BaseFileTest {
 
     @Test
     public void testCreateFacade() {
+        // Service: io.naradrama.talk.domain.spec.task.talk
+        // Facade : io.naradrama.talk.facade.task.talk
         // ex) io.naradrama.talk.domain.spec.task.talk.TalkTaskFacade
         // create entity
         String domainEntityClassName = createEntity();
         // create service interface
         String serviceClassName = javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "service_interface", super.testDirName);
+        Assert.assertEquals("io.naradrama.talk.domain.spec.task.talk.TalkTaskService", serviceClassName);
+
         String facadeClassName = javaService.convert(serviceClassName, super.testDirName, "service_to_facade", super.testDirName);
-        Assert.assertEquals("io.naradrama.talk.domain.spec.task.talk.TalkTaskFacade", facadeClassName);
+        Assert.assertEquals("io.naradrama.talk.facade.task.talk.TalkTaskFacade", facadeClassName);
     }
 
     @Test

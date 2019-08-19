@@ -39,6 +39,9 @@ public class PackageRuleTest {
                 .add(2, "oo", "order")
                 .add(4, "controller", "rest");
 
+        // amis3.mc.oo.od.controller
+        // -->
+        // kr.amc.amis.mc.order.od.rest
         String changedName = packageRule.changePackage("amis3.mc.oo.od.controller");
         System.out.println(changedName);
         Assert.assertEquals("kr.amc.amis.mc.order.od.rest", changedName);
@@ -76,7 +79,7 @@ public class PackageRuleTest {
         System.out.println(changedName2);
         Assert.assertEquals("kr.amc.amis.mc.order.ext.logic", changedName2);
     }
-    
+
     @Test
     public void testComplexRule() {
         // amis3.vo.mc.oo.od -> amis3.mc.oo.ext.spec.sdo.od
@@ -86,9 +89,29 @@ public class PackageRuleTest {
         // amis3.mc.oo.vo.od --> amis3.mc.oo.ext.spec.sdo.od
         packageRule.set(3, "vo", "ext.spec.sdo");
 
+        // amis3.vo.mc.oo.od
+        // -->
+        // amis3.mc.oo.vo.od (packageRule.set(1, "vo", 3))
+        // -->
+        // amis3.mc.oo.ext.spec.sdo.od (packageRule.set(3, "vo", "ext.spec.sdo"))
         String changed = packageRule.changePackage("amis3.vo.mc.oo.od");
         System.out.println(changed);
         Assert.assertEquals(changed, "amis3.mc.oo.ext.spec.sdo.od");
+    }
+
+    @Test
+    public void testPackageRule() {
+        //
+        PackageRule packageRule = PackageRule.newInstance();
+        packageRule.add(3, "domain", "facade");
+        packageRule.add(4, "spec", null);
+
+        // io.naradrama.talk.domain.spec.task.talk
+        // -->
+        // io.naradrama.talk.facade.task.talk
+        String changed = packageRule.changePackage("io.naradrama.talk.domain.spec.task.talk");
+        System.out.printf(changed);
+        Assert.assertEquals(changed, "io.naradrama.talk.facade.task.talk");
     }
 
     @Test

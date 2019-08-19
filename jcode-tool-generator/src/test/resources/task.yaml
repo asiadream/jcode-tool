@@ -45,6 +45,7 @@ eachMethod:
           return ${entity.name}s;
         imports:
           - ${NoSuchElementException}
+          - ${Offset}
 
       - when: modify${entity.simpleClassName}
         body: |

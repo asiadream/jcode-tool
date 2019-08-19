@@ -1,5 +1,7 @@
 package com.asiadream.jcode.tool.share.util.string;
 
+import com.google.common.base.CaseFormat;
+
 public class StringUtil extends org.apache.commons.lang3.StringUtils {
     //
     public static String getRecommendedVariableName(String name) {
@@ -66,5 +68,18 @@ public class StringUtil extends org.apache.commons.lang3.StringUtils {
             return s.substring(0, s.length() - suffix.length());
         }
         return s;
+    }
+
+    public static String removePrefix(String s, String prefix) {
+        //
+        if (s != null && prefix != null && s.startsWith(prefix)) {
+            return s.substring(prefix.length());
+        }
+        return s;
+    }
+
+    public static String toCamelCase(String upperUnderscoreString) {
+        // HELLO_CAMEL_CASE --> helloCamelCase
+        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, upperUnderscoreString);
     }
 }

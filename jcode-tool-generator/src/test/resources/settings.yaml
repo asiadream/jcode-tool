@@ -74,11 +74,11 @@ task:
   className: ${groupId}.${appName}${preBizName}.domain.logic.task${postBizName}.${entity.simpleClassName}Task
 
 resource:
-  packageName: ${groupId}.${appName}.restapi.crud
-  name: ${entity.simpleClassName}Resource
-  className: ${groupId}.${appName}.restapi.crud.${entity.simpleClassName}Resource
+  packageName: ${groupId}.${appName}${preBizName}.restapi.task${postBizName}
+  name: ${entity.simpleClassName}TaskResource
+  className: ${groupId}.${appName}${preBizName}.restapi.task${postBizName}.${entity.simpleClassName}TaskResource
 
 client:
-  packageName: ${groupId}.${appName}${preBizName}.client.crud${postBizName}
-  name: ${entity.simpleClassName}WebClient
-  className: ${groupId}.${appName}${preBizName}.client.crud${postBizName}.${entity.simpleClassName}WebClient
+  packageName: ${groupId}.${appName}${preBizName}.client.task${postBizName}
+  name: ${entity.simpleClassName}TaskClient
+  className: ${groupId}.${appName}${preBizName}.client.task${postBizName}.${entity.simpleClassName}TaskClient

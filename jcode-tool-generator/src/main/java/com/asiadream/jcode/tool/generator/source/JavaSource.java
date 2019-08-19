@@ -222,6 +222,36 @@ public class JavaSource {
         return classType.getExtendedTypes(0).getNameAsString().equals(simpleClassName);
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public void addFieldAll(List<FieldModel> fieldModels) {
+        //
+        Optional.ofNullable(fieldModels).ifPresent(_fieldModels -> _fieldModels.forEach(this::addField));
+    }
+
+    public void addFieldAll(List<FieldModel> fieldModels, int index) {
+        //
+        if (fieldModels == null) {
+            return;
+        }
+
+        for (int i = 0; i < fieldModels.size(); i++) {
+            addField(fieldModels.get(i), index + i);
+        }
+    }
+
+    public void addField(FieldModel fieldModel) {
+        //
+        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        classType.addMember(AstMapper.createFieldDeclaration(fieldModel));
+    }
+
+    public void addField(FieldModel fieldModel, int index) {
+        //
+        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        classType.getMembers().add(index, AstMapper.createFieldDeclaration(fieldModel));
+    }
+
     public void addField(JavaSource fieldType, String varName, ClassType annotation) {
         //
         addField(fieldType.getName(), fieldType.getPackageName(), varName, annotation.getName(), annotation.getPackageName());
@@ -237,6 +267,11 @@ public class JavaSource {
             field.addMarkerAnnotation(annotationName);
             compilationUnit.addImport(annotationPackageName + "." + annotationName);
         }
+    }
+
+    public int getFieldsSize() {
+        //
+        return compilationUnit.getType(0).getFields().size();
     }
 
     public List<FieldModel> getFieldsAsModel() {

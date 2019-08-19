@@ -25,6 +25,10 @@ public class ClassType {
     public static final String PRIMITIVE_FLOAT = "FLOAT";
     public static final String PRIMITIVE_DOUBLE = "DOUBLE";
 
+    public static ClassType String = newClassType("String");
+    public static ClassType Int = newClassType("int");
+    public static ClassType Date = newClassType("java.util.Date");
+
     private String name;
     private String packageName;
     private boolean primitive;

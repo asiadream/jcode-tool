@@ -77,3 +77,10 @@ methods:
     annotations:
       - type: Override
     body: return ${entity.name}Repository.existsById(id);
+
+  - name: countAll
+    access: PUBLIC
+    type: long
+    annotations:
+      - type: Override
+    body: return ${entity.name}Repository.count();

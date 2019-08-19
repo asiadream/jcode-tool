@@ -8,9 +8,13 @@ nameRule:
     - from: Service
       to: Facade
 
+# io.naradrama.talk.domain.spec.task.talk
+# io.naradrama.talk.facade.task.talk
 packageRule:
   skipChangeImports: true
   changeElements:
-    - from: spec
+    - from: domain
       fromIndex: 3
       to: facade
+    - from: spec
+      fromIndex: 4

@@ -56,7 +56,7 @@ modules:
       - ref: ${baseName}-store
         type: Project
       - group: javax.transaction
-        name: transaction-api
+        name: javax.transaction-api
         version: 1.3
         type: Implementation
       - group: org.springframework.boot

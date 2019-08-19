@@ -6,10 +6,18 @@ import com.asiadream.jcode.tool.generator.creator.JavaCreator;
 import com.asiadream.jcode.tool.generator.meta.ExpressionContext;
 import com.asiadream.jcode.tool.generator.meta.GeneratorMeta;
 import com.asiadream.jcode.tool.generator.meta.JavaMeta;
+import com.asiadream.jcode.tool.generator.model.Access;
+import com.asiadream.jcode.tool.generator.model.ClassType;
+import com.asiadream.jcode.tool.generator.model.FieldModel;
 import com.asiadream.jcode.tool.generator.model.JavaModel;
 import com.asiadream.jcode.tool.generator.reader.JavaReader;
+import com.asiadream.jcode.tool.generator.reader.SqlReader;
 import com.asiadream.jcode.tool.generator.sdo.ReferenceSdo;
 import com.asiadream.jcode.tool.generator.source.JavaSource;
+import com.asiadream.jcode.tool.generator.source.SqlSource;
+import com.asiadream.jcode.tool.generator.source.sql.CreateTableStatement;
+import com.asiadream.jcode.tool.generator.source.sql.TableField;
+import com.asiadream.jcode.tool.generator.writer.JavaWriter;
 import com.asiadream.jcode.tool.share.config.ConfigurationType;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
 import com.asiadream.jcode.tool.share.exception.ClassFileNotFoundException;
@@ -27,8 +35,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class JavaService {
     //
@@ -229,6 +239,62 @@ public class JavaService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void writeJavaSource(JavaSource javaSource, String projectHomePath) {
+        //
+        JavaWriter writer = new JavaWriter(new ProjectConfiguration(ConfigurationType.Target, projectHomePath, true));
+        try {
+            writer.write(javaSource);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private SqlSource readSqlSourceByPhysicalPath(String physicalFilePath) {
+        //
+        SqlReader reader = new SqlReader();
+        try {
+            return reader.readPhysicalFile(physicalFilePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void addFields(String className, String targetProjectPath, String physicalScriptPath) {
+        //
+        // TODO
+        // Read JavaSource
+        JavaSource source = readJavaSource(targetProjectPath, className);
+        logger.debug("read java --> {}", source);
+        int fieldSize = source.getFieldsSize();
+
+        // Read Script
+        SqlSource sqlSource = readSqlSourceByPhysicalPath(physicalScriptPath);
+        logger.debug("read sql --> {}", sqlSource);
+
+        // update
+        CreateTableStatement cts = sqlSource.findFirstCreateTableStatement();
+        List<FieldModel> fields = cts.getFields().stream()
+                .map(JavaService::convertField)
+                .collect(Collectors.toList());
+        source.addFieldAll(fields, fieldSize);
+        logger.debug("update java --> {}", source);
+
+        // Write
+        writeJavaSource(source, targetProjectPath);
+    }
+
+    private static FieldModel convertField(TableField tableField) {
+        //
+        String name = tableField.getName();
+        String camelCaseName = StringUtil.toCamelCase(name);
+        ClassType type = ClassType.String;
+        FieldModel fieldModel = new FieldModel(camelCaseName, type);
+        fieldModel.setAccess(Access.PRIVATE);
+
+        return fieldModel;
     }
 
 }
