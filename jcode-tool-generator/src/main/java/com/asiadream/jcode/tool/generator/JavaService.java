@@ -125,11 +125,11 @@ public class JavaService {
     public String create(ReferenceSdo referenceSdo, String template, String targetProjectPath) {
         //
         String groupId = generatorMeta.getGroupId();
-        String appName = generatorMeta.getAppName();
+        String appNameWithRemovedDash = generatorMeta.getAppNameWithRemovedDash();
 
         JavaMeta javaMeta = loadJavaMeta(template);
 
-        ExpressionContext expressionContext = constructExpressionContext(groupId, appName, referenceSdo, javaMeta);
+        ExpressionContext expressionContext = constructExpressionContext(groupId, appNameWithRemovedDash, referenceSdo, javaMeta);
         JavaModel javaModel = javaMeta
                 .replaceExp(expressionContext)   // replace expression with context (${...})
                 .toJavaModel(); // create java model
@@ -155,7 +155,7 @@ public class JavaService {
         //
         JavaMeta javaMeta = loadJavaMeta(template);
 
-        ExpressionContext expressionContext = constructExpressionContext(generatorMeta.getGroupId(), generatorMeta.getAppName(), referenceSdo, javaMeta);
+        ExpressionContext expressionContext = constructExpressionContext(generatorMeta.getGroupId(), generatorMeta.getAppNameWithRemovedDash(), referenceSdo, javaMeta);
         JavaModel javaModel = javaMeta
                 .replaceExp(expressionContext)   // replace expression with context (${...})
                 .toJavaModel();
@@ -181,22 +181,22 @@ public class JavaService {
     }
 
     // TODO : ExpressionContextBuilder
-    private ExpressionContext constructExpressionContext(String groupId, String appName, ReferenceSdo referenceSdo, JavaMeta javaMeta) {
+    private ExpressionContext constructExpressionContext(String groupId, String appNameWithRemovedDash, ReferenceSdo referenceSdo, JavaMeta javaMeta) {
         //
         ExpressionContext expressionContext = new ExpressionContext(settings);
 
         expressionContext.add("groupId", groupId);
-        expressionContext.add("appName", appName);
-        expressionContext.add("AppName", StringUtil.toFirstUpperCase(appName));
+        expressionContext.add("appName", appNameWithRemovedDash);
+        expressionContext.add("AppName", StringUtil.toFirstUpperCase(appNameWithRemovedDash));
         expressionContext.add("simpleClassName", javaMeta.getSimpleClassName());
         expressionContext.add("packageName", javaMeta.getPackageName());
         expressionContext.add("className", javaMeta.getClassName());
 
         if (referenceSdo != null) {
             // Set bizName with their className.
-            String preBizName = referenceSdo.getPreBizName(generatorMeta.getBizNameLocation(), groupId, appName);
+            String preBizName = referenceSdo.getPreBizName(generatorMeta.getBizNameLocation(), groupId, appNameWithRemovedDash);
             expressionContext.add("preBizName", preBizName != null ? "." + preBizName : "");
-            String postBizName = referenceSdo.getPostBizName(generatorMeta.getBizNameLocation(), groupId, appName);
+            String postBizName = referenceSdo.getPostBizName(generatorMeta.getBizNameLocation(), groupId, appNameWithRemovedDash);
             expressionContext.add("postBizName", postBizName != null ? "." + postBizName : "");
         }
 

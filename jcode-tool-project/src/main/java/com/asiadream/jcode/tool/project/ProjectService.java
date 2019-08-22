@@ -1,6 +1,7 @@
 package com.asiadream.jcode.tool.project;
 
 import com.asiadream.jcode.tool.project.creator.NestedProjectCreator;
+import com.asiadream.jcode.tool.project.meta.ProjectCdo;
 import com.asiadream.jcode.tool.project.meta.ProjectMeta;
 import com.asiadream.jcode.tool.project.model.ProjectModel;
 import org.yaml.snakeyaml.Yaml;
@@ -12,16 +13,11 @@ public class ProjectService {
     //
     private ProjectMeta projectMeta = loadProjectMeta();
 
-    public void createNestedProject(String name, String baseName, String workspace) {
-        //
-        createNestedProject(name, baseName, workspace, false);
-    }
-
-    public void createNestedProject(String name, String baseName, String workspace, boolean isGradle) {
+    public void createNestedProject(ProjectCdo cdo) {
         // ProjectMeta -> ProjectModel -> Project
-        ProjectModel projectModel = projectMeta.toProjectModel(name, baseName, workspace);
-        NestedProjectCreator projectCreator = new NestedProjectCreator(workspace);
-        projectCreator.create(projectModel, isGradle);
+        ProjectModel projectModel = projectMeta.toProjectModel(cdo);
+        NestedProjectCreator projectCreator = new NestedProjectCreator(cdo.getWorkspace());
+        projectCreator.create(projectModel, cdo.isGradle());
     }
 
     private ProjectMeta loadProjectMeta() {

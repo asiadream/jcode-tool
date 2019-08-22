@@ -14,7 +14,7 @@ public class ModuleMeta {
 
     public ProjectModel toProjectModel(ProjectModel parent) {
         //
-        String name = ExpressionUtil.replaceExp(this.name, "baseName", parent.getBaseName());
+        String name = ExpressionUtil.replaceExp(this.name, "appName", parent.getAppName());
         String groupId = parent.getGroup();
         String version = parent.getVersion();
         ProjectModel projectModel = new ProjectModel(name, groupId, version);
@@ -22,7 +22,7 @@ public class ModuleMeta {
 
         Optional.ofNullable(dependencies).ifPresent(dependencies -> dependencies.forEach(dependencyMeta -> {
             if (dependencyMeta.existRef()) {
-                String ref = ExpressionUtil.replaceExp(dependencyMeta.getRef(), "baseName", parent.getBaseName());
+                String ref = ExpressionUtil.replaceExp(dependencyMeta.getRef(), "appName", parent.getAppName());
                 ProjectModel subModel = parent.findBySuffix(ref);
                 projectModel.addDependency(subModel, dependencyMeta.getType());
             } else {
@@ -45,9 +45,9 @@ public class ModuleMeta {
         return false;
     }
 
-    public String getAppliedName(String baseName) {
+    public String getAppliedName(String appName) {
         //
-        return ExpressionUtil.replaceExp(this.name, "baseName", baseName);
+        return ExpressionUtil.replaceExp(this.name, "appName", appName);
     }
 
     public String getName() {

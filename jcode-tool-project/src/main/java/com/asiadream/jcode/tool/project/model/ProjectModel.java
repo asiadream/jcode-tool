@@ -2,6 +2,7 @@ package com.asiadream.jcode.tool.project.model;
 
 import com.asiadream.jcode.tool.share.config.ConfigurationType;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
+import com.asiadream.jcode.tool.share.util.string.StringUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class ProjectModel {
     private String group;
     private String version;
     private String packaging;
-    private String baseName;
+    private String appName;  // Dash is allowed
     private List<ProjectType> types;
 
     private ProjectModel parent;
@@ -37,7 +38,7 @@ public class ProjectModel {
     public ProjectModel(String name, String group, String version, String packaging) {
         //
         this.name = name;
-        this.baseName = name;
+        this.appName = name;
         this.group = group;
         this.version = version;
         this.packaging = packaging;
@@ -159,6 +160,11 @@ public class ProjectModel {
         return properties != null && properties.size() > 0;
     }
 
+    public String getAppNameWithRemoveDash() {
+        //
+        return StringUtil.remove(appName, "-");
+    }
+
     public List<ProjectModel> getChildren() {
         return children;
     }
@@ -220,12 +226,12 @@ public class ProjectModel {
         return properties;
     }
 
-    public String getBaseName() {
-        return baseName;
+    public String getAppName() {
+        return appName;
     }
 
-    public void setBaseName(String baseName) {
-        this.baseName = baseName;
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
     public List<ProjectType> getTypes() {

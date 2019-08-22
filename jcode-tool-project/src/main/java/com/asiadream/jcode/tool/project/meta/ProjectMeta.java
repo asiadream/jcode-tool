@@ -8,17 +8,15 @@ import java.util.Optional;
 
 public class ProjectMeta {
     //
-    private String group;
-    private String version;
     private List<DependencyMeta> dependencies;
     private List<PropertyMeta> properties;
     private List<ModuleMeta> modules;
 
-    public ProjectModel toProjectModel(String name, String baseName, String workspace) {
+    public ProjectModel toProjectModel(ProjectCdo cdo) {
         //
-        ProjectModel projectModel = new ProjectModel(name, group, version, "pom");
-        projectModel.setBaseName(baseName);
-        projectModel.setWorkspacePath(workspace);
+        ProjectModel projectModel = new ProjectModel(cdo.name, cdo.group, cdo.version, "pom");
+        projectModel.setAppName(cdo.appName);
+        projectModel.setWorkspacePath(cdo.workspace);
 
         Optional.ofNullable(dependencies).ifPresent(deps -> deps.forEach(dep ->
                 projectModel.addDependency(dep.toDependencyModel())));
@@ -53,22 +51,6 @@ public class ProjectMeta {
             }
         }
         return null;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
     }
 
     public List<DependencyMeta> getDependencies() {

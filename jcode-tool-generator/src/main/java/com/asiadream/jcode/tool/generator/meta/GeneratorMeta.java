@@ -3,7 +3,7 @@ package com.asiadream.jcode.tool.generator.meta;
 public class GeneratorMeta {
     //
     private String groupId;
-    private String appName;
+    private String appNameWithRemovedDash;
     private BizNameLocation bizNameLocation;
 
     public String getGroupId() {
@@ -14,12 +14,12 @@ public class GeneratorMeta {
         this.groupId = groupId;
     }
 
-    public String getAppName() {
-        return appName;
+    public String getAppNameWithRemovedDash() {
+        return appNameWithRemovedDash;
     }
 
-    public void setAppName(String appName) {
-        this.appName = appName;
+    public void setAppNameWithRemovedDash(String appNameWithRemovedDash) {
+        this.appNameWithRemovedDash = appNameWithRemovedDash;
     }
 
     public BizNameLocation getBizNameLocation() {

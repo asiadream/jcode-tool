@@ -97,15 +97,15 @@ public class GradleCreator {
 
     private GradleScript createMainBuildGradle(ProjectModel model) {
         // TODO : Remove hardcode
-        AssignmentStatement talkVersion = new AssignmentStatement("talkVersion", "0.2.1-SNAPSHOT");
+        AssignmentStatement version = new AssignmentStatement(model.getAppNameWithRemoveDash() + "Version", model.getVersion());
         AssignmentStatement nexususer = new AssignmentStatement("nexususer", "admin");
         AssignmentStatement nexuspassword = new AssignmentStatement("nexuspassword", "password");
 
         GradleScript gradleScript = new GradleScript(BUILD_GRADLE_FILE);
         // plugins
         gradleScript.addElement(createPlugins(model));
-        gradleScript.addElement(createExt(model, talkVersion));
-        gradleScript.addElement(createAllProjects(model, talkVersion));
+        gradleScript.addElement(createExt(model, version));
+        gradleScript.addElement(createAllProjects(model, version));
         gradleScript.addElement(createConfigurationsAll(model));
         gradleScript.addElement(createSubprojects(model, nexususer, nexuspassword));
 
