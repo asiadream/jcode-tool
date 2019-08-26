@@ -13,8 +13,8 @@ public class JavaInterfaceAbstracting {
     //
     public void execute(String sourceProjectHome, String targetProjectHome, String sourceDtoPackage, String sourceFileName) throws IOException {
         //
-        ProjectConfiguration sourceConfiguration = new ProjectConfiguration(ConfigurationType.Source, sourceProjectHome, false);
-        ProjectConfiguration targetConfiguration = new ProjectConfiguration(ConfigurationType.Target, targetProjectHome, false);
+        ProjectConfiguration sourceConfiguration = new ProjectConfiguration(ConfigurationType.Source, sourceProjectHome);
+        ProjectConfiguration targetConfiguration = new ProjectConfiguration(ConfigurationType.Target, targetProjectHome);
         JavaAbstractParam javaAbstractParam = new JavaAbstractParam();
         javaAbstractParam.setSourceDtoPackage(sourceDtoPackage);
 

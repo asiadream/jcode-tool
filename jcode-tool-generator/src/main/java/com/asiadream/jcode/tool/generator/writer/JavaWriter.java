@@ -24,6 +24,7 @@ public class JavaWriter implements Writer<JavaSource> {
 
     private void writeSource(JavaSource source, String physicalTargetFilePath) throws IOException {
         //
+        source.setUseOwnPrinter(configuration.isUseOwnPrinter());
         source.write(physicalTargetFilePath);
     }
 }

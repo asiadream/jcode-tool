@@ -37,7 +37,7 @@ public class CodeAnalysis {
 
     private static void analysis(JavaDependencyStore store, String sourceProjectHome, String basePackage) throws Exception {
         //
-        ProjectConfiguration configuration = new ProjectConfiguration(ConfigurationType.Source, sourceProjectHome, false);
+        ProjectConfiguration configuration = new ProjectConfiguration(ConfigurationType.Source, sourceProjectHome);
 
         // 1. java file analyze
         //Analyzer analyzer = new JavaAnalyzer(configuration, store);

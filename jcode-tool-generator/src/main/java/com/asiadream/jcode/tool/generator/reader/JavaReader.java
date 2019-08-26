@@ -18,15 +18,7 @@ public class JavaReader implements Reader<JavaSource> {
     public JavaSource read(String sourceFilePath) throws IOException {
         //
         String physicalSourceFilePath = configuration.makePhysicalJavaSourceFilePath(sourceFilePath);
-        return new JavaSource(physicalSourceFilePath, isLexicalPreserving(sourceFilePath));
-    }
-
-    private boolean isLexicalPreserving(String sourceFilePath) {
-        //
-        if (configuration.isLexicalPreserving() && (sourceFilePath.endsWith("ProcService.java") || sourceFilePath.endsWith("BizService.java"))) {
-            return true;
-        }
-        return false;
+        return new JavaSource(physicalSourceFilePath, configuration.isLexicalPreserving(), configuration.isUseOwnPrinter());
     }
 
     public boolean exists(String sourceFilePath) {

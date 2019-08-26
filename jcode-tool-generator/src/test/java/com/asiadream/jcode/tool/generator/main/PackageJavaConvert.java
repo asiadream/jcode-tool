@@ -14,8 +14,8 @@ public class PackageJavaConvert {
 
     public static void main(String[] args) throws Exception {
         //
-        ProjectConfiguration sourceConfiguration = new ProjectConfiguration(ConfigurationType.Source, SOURCE_PROJECT_PATH, false);
-        ProjectConfiguration targetConfiguration = new ProjectConfiguration(ConfigurationType.Target, TARGET_PROJECT_PATH, false);
+        ProjectConfiguration sourceConfiguration = new ProjectConfiguration(ConfigurationType.Source, SOURCE_PROJECT_PATH);
+        ProjectConfiguration targetConfiguration = new ProjectConfiguration(ConfigurationType.Target, TARGET_PROJECT_PATH);
 
         // package convert
         JavaConverter javaConverter = new JavaConverter(sourceConfiguration, targetConfiguration);

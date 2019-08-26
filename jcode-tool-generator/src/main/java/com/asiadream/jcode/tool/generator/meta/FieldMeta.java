@@ -4,8 +4,10 @@ import com.asiadream.jcode.tool.generator.model.Access;
 import com.asiadream.jcode.tool.generator.model.ClassType;
 import com.asiadream.jcode.tool.generator.model.FieldModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class FieldMeta {
     //
@@ -27,6 +29,34 @@ public class FieldMeta {
         this();
         this.name = name;
         this.type = type;
+    }
+
+    public FieldMeta(FieldModel model) {
+        //
+        this.name = model.getName();
+        this.type = model.getType().toString();
+        this.access = model.getAccess();
+        this.isStatic = model.isStatic();
+        this.isFinal = model.isFinal();
+        Optional.ofNullable(model.getAnnotations()).ifPresent(annotationTypes ->
+                this.annotations = annotationTypes.stream().map(AnnotationMeta::new).collect(Collectors.toList()));
+        this.initializer = model.getInitializer();
+    }
+
+    public FieldMeta(FieldMeta other) {
+        //
+        this.name = other.name;
+        this.type = other.type;
+        this.access = other.access;
+        this.isStatic = other.isStatic;
+        this.isFinal = other.isFinal;
+        Optional.ofNullable(other.annotations).ifPresent(annotationMetas -> {
+            this.annotations = new ArrayList<>();
+            for (AnnotationMeta annotationMeta : annotationMetas) {
+                this.annotations.add(new AnnotationMeta(annotationMeta));
+            }
+        });
+        this.initializer = other.initializer;
     }
 
     public void replaceExp(ExpressionContext expressionContext) {

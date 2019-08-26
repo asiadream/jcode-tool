@@ -50,7 +50,7 @@ public class ProjectModel {
     public ProjectConfiguration configuration(ConfigurationType configurationType) {
         //
         assert workspacePath != null : "The workspacePath can't be null.";
-        return new ProjectConfiguration(configurationType, workspacePath, name, false);
+        return new ProjectConfiguration(configurationType, workspacePath, name, false, false);
     }
 
     public ProjectModel findBySuffix(String suffix) {

@@ -1,6 +1,7 @@
 package com.asiadream.jcode.tool.generator.source;
 
 import com.asiadream.jcode.tool.generator.ast.AstMapper;
+import com.asiadream.jcode.tool.generator.javaparser.ToolPrintVisitor;
 import com.asiadream.jcode.tool.generator.model.ClassType;
 import com.asiadream.jcode.tool.generator.model.FieldModel;
 import com.asiadream.jcode.tool.generator.model.JavaModel;
@@ -21,6 +22,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithName;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -44,11 +46,13 @@ public class JavaSource {
     private String physicalSourceFile;
 
     private boolean lexicalPreserving;
+    private boolean useOwnPrinter;
 
-    public JavaSource(String physicalSourceFile, boolean lexicalPreserving) throws FileNotFoundException {
+    public JavaSource(String physicalSourceFile, boolean lexicalPreserving, boolean useOwnPrinter) throws FileNotFoundException {
         //
         this.physicalSourceFile = physicalSourceFile;
         this.lexicalPreserving = lexicalPreserving;
+        this.useOwnPrinter = useOwnPrinter;
 
         //
         this.compilationUnit = JavaParser.parse(new FileInputStream(physicalSourceFile));
@@ -98,16 +102,16 @@ public class JavaSource {
         return false;
     }
 
-    private String findFullName(String returnTypeName) {
+    private String findFullName(String simpleClassName) {
         //
         for (Object obj : compilationUnit.getImports()) {
             ImportDeclaration importDeclaration = (ImportDeclaration) obj;
             String packageName = importDeclaration.getName().asString();
-            if (packageName.endsWith("." + returnTypeName)) {
+            if (packageName.endsWith("." + simpleClassName)) {
                 return packageName;
             }
         }
-        return returnTypeName;
+        return simpleClassName;
     }
 
     public boolean isFromFile() {
@@ -277,8 +281,10 @@ public class JavaSource {
     public List<FieldModel> getFieldsAsModel() {
         //
         return compilationUnit.getType(0).getFields().stream().map(fieldDeclaration -> {
-            VariableDeclarator varDec = fieldDeclaration.getVariable(0);
-            return new FieldModel(varDec.getName().asString(), ClassType.newClassType(varDec.getType().asString()));
+            FieldModel fieldModel = AstMapper.toFieldModel(fieldDeclaration, this::findFullName);
+            //VariableDeclarator varDec = fieldDeclaration.getVariable(0);
+            //return new FieldModel(varDec.getName().asString(), ClassType.newClassType(varDec.getType().asString()));
+            return fieldModel;
         }).collect(Collectors.toList());
     }
 
@@ -661,25 +667,40 @@ public class JavaSource {
     public void write(String physicalTargetFilePath) throws IOException {
         //
         File file = new File(physicalTargetFilePath);
+        String generated = generate();
         if (logger.isTraceEnabled()) {
-            logger.trace(compilationUnit.toString());
+            logger.trace(generated);
         }
 
-        FileUtils.writeStringToFile(file, generate(), "UTF-8");
+        FileUtils.writeStringToFile(file, generated, "UTF-8");
     }
 
     public String generate() {
         //
+        logger.debug("generate... lexical ? {}, ownPrinter ? {}", lexicalPreserving, useOwnPrinter);
         if (lexicalPreserving) {
             return LexicalPreservingPrinter.print(compilationUnit);
         }
-        return compilationUnit.toString();
+        if (useOwnPrinter) {
+            PrettyPrinterConfiguration printerConfiguration = new PrettyPrinterConfiguration();
+            printerConfiguration.setVisitorFactory(ToolPrintVisitor::new);
+            return this.compilationUnit.toString(printerConfiguration);
+        }
+        return toString();
     }
 
     @Override
     public String toString() {
         //
         return this.compilationUnit.toString();
+    }
+
+    public boolean isUseOwnPrinter() {
+        return useOwnPrinter;
+    }
+
+    public void setUseOwnPrinter(boolean useOwnPrinter) {
+        this.useOwnPrinter = useOwnPrinter;
     }
 
     public static void main(String[] args) {

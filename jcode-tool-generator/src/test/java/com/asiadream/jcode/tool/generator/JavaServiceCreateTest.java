@@ -23,6 +23,14 @@ public class JavaServiceCreateTest extends BaseFileTest {
                 .addCustomContext("postBizName", ".talk"), "domain_entity", super.testDirName);
     }
 
+    private String createEntityCase2() {
+        //
+        return javaService.create(ReferenceSdo.create()
+                .addCustomContext("name", "joinBoard")
+                .addCustomContext("preBizName", "")
+                .addCustomContext("postBizName", ".talk"), "domain_entity", super.testDirName);
+    }
+
     private String createServiceInterface(String entityClassName) {
         //
         return javaService.create(ReferenceSdo.create()
@@ -60,6 +68,14 @@ public class JavaServiceCreateTest extends BaseFileTest {
         String domainEntityClassName = createEntity();
         String className = javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "store_jpo", super.testDirName);
         Assert.assertEquals("io.naradrama.talk.store.jpa.talk.jpo.TalkJpo", className);
+    }
+
+    @Test
+    public void testCreateJpoCase2() {
+        // ex) io.naradrama.talk.store.jpa.talk.jpo.JoinBoardJpo
+        String domainEntityClassName = createEntityCase2();
+        String className = javaService.create(newClassRefs(new String[][]{{"entity", domainEntityClassName}}), "store_jpo", super.testDirName);
+        Assert.assertEquals("io.naradrama.talk.store.jpa.talk.jpo.JoinBoardJpo", className);
     }
 
     @Test
@@ -144,6 +160,16 @@ public class JavaServiceCreateTest extends BaseFileTest {
 
         String facadeClassName = javaService.convert(serviceClassName, super.testDirName, "service_to_facade", super.testDirName);
         Assert.assertEquals("io.naradrama.talk.facade.task.talk.TalkTaskFacade", facadeClassName);
+    }
+
+    @Test
+    public void testCreateFlowFacade() {
+        // Service: io.naradrama.talk.domain.spec.flow.TalkFlowService
+        // Facade : io.naradrama.talk.facade.flow.TalkFlowFacade
+        String serviceClassName = "io.naradrama.talk.domain.spec.flow.TalkFlowService";
+        final String SOURCE_PROJECT_HOME = "src/test/resources/sample-project";
+        String facadeClassName = javaService.convert(serviceClassName, SOURCE_PROJECT_HOME, "service_to_facade", super.testDirName);
+        Assert.assertEquals("io.naradrama.talk.facade.flow.TalkFlowFacade", facadeClassName);
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.asiadream.jcode.tool.generator.javaparser;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -11,6 +12,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ArrayType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.VoidType;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import org.junit.Test;
 
@@ -61,8 +63,16 @@ public class BasicParseTest {
     @Test
     public void testSimpleMake() {
         //
+        ParserConfiguration configuration = JavaParser.getStaticConfiguration();
+        configuration.setDoNotAssignCommentsPrecedingEmptyLines(false);
+
+        //
+        PrettyPrinterConfiguration printerConfiguration = new PrettyPrinterConfiguration();
+        printerConfiguration.setVisitorFactory(ToolPrintVisitor::new);
+
+        //
         CompilationUnit cu = simpleMake();
-        System.out.println(cu);
+        System.out.println(cu.toString(printerConfiguration));
     }
 
     @Test
@@ -87,6 +97,23 @@ public class BasicParseTest {
         ClassOrInterfaceDeclaration type = new ClassOrInterfaceDeclaration();
         type.setName("foo");
         cu.addType(type);
+
+        // field
+        FieldDeclaration fieldDeclaration = new FieldDeclaration();
+        fieldDeclaration.addModifier(Modifier.PRIVATE);
+        VariableDeclarator variable = new VariableDeclarator();
+        variable.setName("name");
+        variable.setType("String");
+        fieldDeclaration.addVariable(variable);
+        type.addMember(fieldDeclaration);
+
+        FieldDeclaration fieldDeclaration2 = new FieldDeclaration();
+        fieldDeclaration2.addModifier(Modifier.PRIVATE);
+        VariableDeclarator variable2 = new VariableDeclarator();
+        variable2.setName("age");
+        variable2.setType("int");
+        fieldDeclaration2.addVariable(variable2);
+        type.addMember(fieldDeclaration2);
 
         //
         MethodDeclaration methodDeclaration = new MethodDeclaration();

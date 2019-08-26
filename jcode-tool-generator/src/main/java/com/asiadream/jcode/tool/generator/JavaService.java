@@ -43,6 +43,8 @@ import java.util.stream.Collectors;
 public class JavaService {
     //
     private static Logger logger = LoggerFactory.getLogger(JavaService.class);
+    private static final boolean lexicalPreserving = false;
+    private static final boolean useOwnPrinter = true;
 
     private GeneratorMeta generatorMeta;
     private Map<String, String> settings;
@@ -135,7 +137,7 @@ public class JavaService {
                 .toJavaModel(); // create java model
 
         //
-        ProjectConfiguration targetConfiguration = new ProjectConfiguration(ConfigurationType.Target, targetProjectPath);
+        ProjectConfiguration targetConfiguration = new ProjectConfiguration(ConfigurationType.Target, targetProjectPath, lexicalPreserving, useOwnPrinter);
         JavaCreator creator = new JavaCreator(targetConfiguration);
         try {
             creator.create(javaModel.getSourceFileName(), javaModel);
@@ -147,7 +149,7 @@ public class JavaService {
 
     public String getPath(String projectPath, String className) {
         //
-        ProjectConfiguration configuration = new ProjectConfiguration(ConfigurationType.Target, projectPath);
+        ProjectConfiguration configuration = new ProjectConfiguration(ConfigurationType.Target, projectPath, lexicalPreserving, useOwnPrinter);
         return configuration.makePhysicalJavaSourceFilePath(ClassNameUtil.toSourceFileName(className));
     }
 
@@ -166,8 +168,8 @@ public class JavaService {
         //
         ConverterConfig converterConfig = loadConverterConfig(configName);
 
-        ProjectConfiguration sourceConfig = new ProjectConfiguration(ConfigurationType.Source, sourceProjectPath, true);
-        ProjectConfiguration targetConfig = new ProjectConfiguration(ConfigurationType.Target, targetProjectPath, true);
+        ProjectConfiguration sourceConfig = new ProjectConfiguration(ConfigurationType.Source, sourceProjectPath, lexicalPreserving, useOwnPrinter);
+        ProjectConfiguration targetConfig = new ProjectConfiguration(ConfigurationType.Target, targetProjectPath, lexicalPreserving, useOwnPrinter);
 
         PackageRule packageRule = converterConfig.toPackageRule();
         NameRule nameRule = converterConfig.toNameRule();
@@ -205,7 +207,10 @@ public class JavaService {
             expressionContext.add(ref.getName() + ".packageName", ClassNameUtil.getPackageName(ref.getClassName()));
             expressionContext.add(ref.getName() + ".className", ref.getClassName());
             expressionContext.add(ref.getName() + ".simpleClassName", ref.getSimpleClassName());
-            expressionContext.add(ref.getName() + ".name", StringUtil.toFirstLowerCase(ref.getSimpleClassName()));
+            String name = StringUtil.toFirstLowerCase(ref.getSimpleClassName());
+            expressionContext.add(ref.getName() + ".name", name);
+            expressionContext.add(ref.getName() + ".upperUnderscoreName", StringUtil.toUpperUnderscoreString(name));
+
             JavaSource javaSource = ref.read(this::readJavaSource);
             expressionContext.add(ref.getName() + ".fields", javaSource.getFieldsAsModel());
             expressionContext.add(ref.getName() + ".methods", javaSource.getMethodsAsModel());
@@ -230,7 +235,7 @@ public class JavaService {
 
     public JavaSource readJavaSource(String projectPath, String className) {
         //
-        JavaReader reader = new JavaReader(new ProjectConfiguration(ConfigurationType.Source, projectPath));
+        JavaReader reader = new JavaReader(new ProjectConfiguration(ConfigurationType.Source, projectPath, lexicalPreserving, useOwnPrinter));
         try {
             JavaSource javaSource = reader.read(PathUtil.toSourceFileName(className, "java"));
             return javaSource;
@@ -243,7 +248,7 @@ public class JavaService {
 
     private void writeJavaSource(JavaSource javaSource, String projectHomePath) {
         //
-        JavaWriter writer = new JavaWriter(new ProjectConfiguration(ConfigurationType.Target, projectHomePath, true));
+        JavaWriter writer = new JavaWriter(new ProjectConfiguration(ConfigurationType.Target, projectHomePath, lexicalPreserving, useOwnPrinter));
         try {
             writer.write(javaSource);
         } catch (IOException e) {

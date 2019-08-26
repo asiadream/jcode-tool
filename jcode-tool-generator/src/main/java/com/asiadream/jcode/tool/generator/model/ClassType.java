@@ -43,7 +43,7 @@ public class ClassType {
         return new ClassType(className);
     }
 
-    private static boolean isPrimitiveType(String className) {
+    public static boolean isPrimitiveType(String className) {
         //
         if (PRIMITIVE_INT.toLowerCase().equals(className)) {
             return true;

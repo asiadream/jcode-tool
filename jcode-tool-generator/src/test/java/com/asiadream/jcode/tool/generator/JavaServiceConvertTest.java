@@ -2,6 +2,7 @@ package com.asiadream.jcode.tool.generator;
 
 import com.asiadream.jcode.tool.generator.sdo.ReferenceSdo;
 import com.asiadream.jcode.tool.share.test.BaseFileTest;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class JavaServiceConvertTest extends BaseFileTest {
@@ -20,6 +21,16 @@ public class JavaServiceConvertTest extends BaseFileTest {
         ReferenceSdo referenceSdo = new ReferenceSdo("entity", ENTITY_CLASS_NAME, SOURCE_PROJECT_HOME);
         referenceSdo.addClassReference("facade", facadeClassName, super.testDirName);
         javaService.create(referenceSdo, "service_resource", super.testDirName);
+    }
+
+    @Test
+    public void testCreateJpoCase3() {
+        //
+        String domainEntityClassName = "io.naradrama.talk.domain.entity.room.JoinBoard";
+        String className = javaService.create(ReferenceSdo.create()
+                        .addClassReference("entity", domainEntityClassName, SOURCE_PROJECT_HOME)
+                , "store_jpo", super.testDirName);
+        Assert.assertEquals("io.naradrama.talk.store.jpa.room.jpo.JoinBoardJpo", className);
     }
 
 

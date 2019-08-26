@@ -168,6 +168,27 @@ public abstract class AstMapper {
         throw new RuntimeException("could not find the right type..." + valueClass);
     }
 
+    // Ast:FieldDeclaration -> Model:FieldModel
+    public static FieldModel toFieldModel(FieldDeclaration fieldDeclaration, FullNameProvider fullNameProvider) {
+        //
+        VariableDeclarator var = fieldDeclaration.getVariable(0);
+        EnumSet<Modifier> modifiers = fieldDeclaration.getModifiers();
+
+        String name = var.getNameAsString();
+        AccessSpecifier access = Modifier.getAccessSpecifier(modifiers);
+        Type fieldType = var.getType();
+
+        ClassType classType = toClassType(fieldType, fullNameProvider);
+
+        FieldModel fieldModel = new FieldModel(name, classType);
+        fieldModel.setAccess(Access.valueOf(access.name()));
+        fieldModel.setStatic(modifiers.contains(Modifier.STATIC));
+        fieldModel.setFinal(modifiers.contains(Modifier.FINAL));
+
+        // TODO : AnnotationType
+        return fieldModel;
+    }
+
     // Ast:MethodDeclaration -> Model:MethodModel
     public static MethodModel toMethodModel(MethodDeclaration method, FullNameProvider fullNameProvider) {
         //

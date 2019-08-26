@@ -20,6 +20,12 @@ public class AnnotationMeta {
         // TODO : AnnotationPair -> AnnotationElementMeta
     }
 
+    public AnnotationMeta(AnnotationMeta other) {
+        //
+        this.type = other.type;
+        // TODO : AnnotationElementMeta copy
+    }
+
     public void replaceExp(ExpressionContext expressionContext) {
         //
         this.type = expressionContext.replaceExpString(type);

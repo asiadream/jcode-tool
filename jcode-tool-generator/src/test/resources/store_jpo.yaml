@@ -9,7 +9,7 @@ classAnnotations:
   - type: javax.persistence.Table
     elements:
       - name: name
-        value: TALK
+        value: ${entity.upperUnderscoreName}
 classExtends:
   - ${DramaEntityJpo}
 
@@ -20,10 +20,7 @@ fields:
       - type: javax.persistence.Id
 eachField:
   items: ${entity.fields}
-  var: f
-  field:
-    name: ${f.name}
-    type: ${f.type}
+  handler: com.asiadream.jcode.tool.generator.handler.JpoFieldHandler
 
 constructors:
   - parameters:

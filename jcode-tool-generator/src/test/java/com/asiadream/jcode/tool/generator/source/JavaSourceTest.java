@@ -36,7 +36,7 @@ public class JavaSourceTest {
         String physicalSourceFile = "." + DELIM + "jcode-tool-generator" + DELIM + "src" + DELIM + "test" + DELIM + "java" +
                 DELIM + "com" + DELIM + "asiadream" + DELIM + "jcode" + DELIM + "tool" + DELIM + "source" + DELIM + "TestClass.java";
 
-        JavaSource javaSource = new JavaSource(physicalSourceFile, false);
+        JavaSource javaSource = new JavaSource(physicalSourceFile, false, false);
         javaSource.removeGetterAndSetter();
 
         System.out.println(javaSource.toString());
@@ -47,7 +47,7 @@ public class JavaSourceTest {
         //
         String physicalSourceFile = "." + DELIM + "jcode-tool-generator" + DELIM + "src" + DELIM + "test" + DELIM + "java" + DELIM + "kr" + DELIM + "amc" + DELIM + "amil" + DELIM + "tool" + DELIM + "source" + DELIM + "TestClass2.java";
 
-        JavaSource javaSource = new JavaSource(physicalSourceFile, true);
+        JavaSource javaSource = new JavaSource(physicalSourceFile, true, false);
         javaSource.setName("Tes");
 
         System.out.println(javaSource.generate());

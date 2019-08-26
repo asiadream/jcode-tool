@@ -19,6 +19,7 @@ public class EachMethodMeta {
     private String var;
     private MethodOverrideMeta methodOverrides;
 
+    @Deprecated
     private MethodMeta methodMapping; // TODO
 
     public EachMethodMeta replaceExp(ExpressionContext expressionContext) {

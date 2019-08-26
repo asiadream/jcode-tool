@@ -82,4 +82,9 @@ public class StringUtil extends org.apache.commons.lang3.StringUtils {
         // HELLO_CAMEL_CASE --> helloCamelCase
         return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, upperUnderscoreString);
     }
+
+    public static String toUpperUnderscoreString(String camelCaseString) {
+        // helloCamelCase --> HELLO_CAMEL_CASE
+        return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, camelCaseString);
+    }
 }

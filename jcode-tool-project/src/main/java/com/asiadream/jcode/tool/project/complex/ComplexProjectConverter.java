@@ -61,7 +61,7 @@ public class ComplexProjectConverter {
 
     private void moveJavaSource(ProjectModel model) throws IOException {
         //
-        ProjectConfiguration sourceConfig = new ProjectConfiguration(ConfigurationType.Source, param.getSourceProjectHomePath(), param.isLexicalPreserving());
+        ProjectConfiguration sourceConfig = new ProjectConfiguration(ConfigurationType.Source, param.getSourceProjectHomePath(), param.isLexicalPreserving(), false);
         ProjectConfiguration stubConfig = model.findBySuffix(PROJECT_SUFFIX_STUB).configuration(ConfigurationType.Target);
         ProjectConfiguration skeletonConfig = model.findBySuffix(PROJECT_SUFFIX_SKELETON).configuration(ConfigurationType.Target);
         ProjectConfiguration serviceConfig = model.findBySuffix(PROJECT_SUFFIX_SERVICE).configuration(ConfigurationType.Target);
@@ -97,7 +97,7 @@ public class ComplexProjectConverter {
         String srcMainResources = param.getSourceSqlMapResourceFolder().replaceAll("/", Matcher.quoteReplacement(File.separator));
         SourceFolders sourceFolders = SourceFolders.newSourceFolders(null, srcMainResources);
 
-        ProjectConfiguration sqlMapSourceConfig = new ProjectConfiguration(ConfigurationType.Source, param.getSourceSqlMapProjectHomePath(), sourceFolders, false);
+        ProjectConfiguration sqlMapSourceConfig = new ProjectConfiguration(ConfigurationType.Source, param.getSourceSqlMapProjectHomePath(), sourceFolders, false, false);
         ProjectConfiguration serviceConfig = model.findBySuffix(PROJECT_SUFFIX_SERVICE).configuration(ConfigurationType.Target);
 
         MyBatisMapperCreator mapperCreator = new MyBatisMapperCreator(sqlMapSourceConfig, serviceConfig, serviceConfig,

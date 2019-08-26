@@ -11,8 +11,8 @@ public class PackageMyBatisMapperCreate {
 
     public static void main(String[] args) throws Exception {
         //
-        ProjectConfiguration sourceConfiguration = new ProjectConfiguration(ConfigurationType.Source, SOURCE_PROJECT_PATH, false);
-        ProjectConfiguration targetConfiguration = new ProjectConfiguration(ConfigurationType.Target, SOURCE_PROJECT_PATH, false);
+        ProjectConfiguration sourceConfiguration = new ProjectConfiguration(ConfigurationType.Source, SOURCE_PROJECT_PATH);
+        ProjectConfiguration targetConfiguration = new ProjectConfiguration(ConfigurationType.Target, SOURCE_PROJECT_PATH);
 
         MyBatisMapperCreator myBatisMapperCreator = new MyBatisMapperCreator(sourceConfiguration, sourceConfiguration,
                 targetConfiguration);

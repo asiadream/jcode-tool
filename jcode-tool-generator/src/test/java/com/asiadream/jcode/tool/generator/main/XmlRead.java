@@ -20,7 +20,7 @@ public class XmlRead {
 
     public static void main(String[] args) throws Exception {
         //
-        ProjectConfiguration configuration = new ProjectConfiguration(ConfigurationType.Source, SOURCE_PROJECT_PATH, false);
+        ProjectConfiguration configuration = new ProjectConfiguration(ConfigurationType.Source, SOURCE_PROJECT_PATH);
 
         Reader<XmlSource> reader = new XmlReader(configuration);
         XmlSource source = reader.read("foo/bar/SampleSqlMap.xml");

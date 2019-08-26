@@ -16,8 +16,8 @@ public class JavaConverterTest extends BaseFileTest {
     @Test
     public void testConvert() throws IOException {
         //
-        ProjectConfiguration sourceConfig = new ProjectConfiguration(ConfigurationType.Source, SOURCE_PROJECT_HOME, false);
-        ProjectConfiguration targetConfig = new ProjectConfiguration(ConfigurationType.Target, super.testDirName, false);
+        ProjectConfiguration sourceConfig = new ProjectConfiguration(ConfigurationType.Source, SOURCE_PROJECT_HOME);
+        ProjectConfiguration targetConfig = new ProjectConfiguration(ConfigurationType.Target, super.testDirName);
         PackageRule packageRule = PackageRule.newInstance()
                 .add(0, "com", "kr");
 

@@ -23,7 +23,7 @@ public class ProjectCreator {
 
     public void create(ProjectModel model, boolean isGradle) {
         //
-        ProjectConfiguration configuration = new ProjectConfiguration(ConfigurationType.Target, targetHomePath, model.getName(), false);
+        ProjectConfiguration configuration = new ProjectConfiguration(ConfigurationType.Target, targetHomePath, model.getName(), false, false);
 
         // make project home
         makeProjectHome(configuration);

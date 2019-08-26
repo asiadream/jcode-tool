@@ -21,8 +21,8 @@ public class JavaConvert {
      */
     public void execute(String sourceProjectHome, String targetProjectHome, String sourceFileName) throws IOException {
         //
-        ProjectConfiguration sourceConfiguration = new ProjectConfiguration(ConfigurationType.Source, sourceProjectHome, false);
-        ProjectConfiguration targetConfiguration = new ProjectConfiguration(ConfigurationType.Target, targetProjectHome, false);
+        ProjectConfiguration sourceConfiguration = new ProjectConfiguration(ConfigurationType.Source, sourceProjectHome);
+        ProjectConfiguration targetConfiguration = new ProjectConfiguration(ConfigurationType.Target, targetProjectHome);
 
         // java file convert
         // FIXME : remove hardcode

@@ -16,7 +16,7 @@ public class JavaWrite {
 
     public static void main(String[] args) throws Exception {
         //
-        ProjectConfiguration targetConfiguration = new ProjectConfiguration(ConfigurationType.Target, TARGET_PROJECT_PATH, false);
+        ProjectConfiguration targetConfiguration = new ProjectConfiguration(ConfigurationType.Target, TARGET_PROJECT_PATH);
 
         // 1. java file write
         JavaSource source = createSampleJavaSource();

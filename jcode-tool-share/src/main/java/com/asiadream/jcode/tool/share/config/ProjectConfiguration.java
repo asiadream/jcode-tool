@@ -16,6 +16,7 @@ public class ProjectConfiguration {
     private final String physicalTestResourcesPath;
 
     private final boolean lexicalPreserving;
+    private final boolean useOwnPrinter;
 
     // - Terms
     // sourceFolder         : 소스 폴더                                      : src/main/java
@@ -28,22 +29,22 @@ public class ProjectConfiguration {
     // physicalSourceFile   : 소스가 되는 File 의 물리적 절대경로                 : C://Users/user/Documents/.../src/main/java/com/foo/bar/SampleService.java
     // physicalSourceFilePath   : 소스가 되는 Path or File 의 물리적 절대경로     : C://Users/user/Documents/.../src/main/java/com/foo/bar/SampleService.java
 
-    public ProjectConfiguration(ConfigurationType type, String workspacePath, String projectName, boolean lexicalPreserving) {
+    public ProjectConfiguration(ConfigurationType type, String workspacePath, String projectName, boolean lexicalPreserving, boolean useOwnPrinter) {
         //
-        this(type, workspacePath + PATH_DELIM + projectName, lexicalPreserving);
+        this(type, workspacePath + PATH_DELIM + projectName, lexicalPreserving, useOwnPrinter);
     }
 
-    public ProjectConfiguration(ConfigurationType type, String projectHomePath, boolean lexicalPreserving) {
+    public ProjectConfiguration(ConfigurationType type, String projectHomePath, boolean lexicalPreserving, boolean useOwnPrinter) {
         //
-        this(type, projectHomePath, ProjectSources.SOURCE_FOLDERS, lexicalPreserving);
+        this(type, projectHomePath, ProjectSources.SOURCE_FOLDERS, lexicalPreserving, useOwnPrinter);
     }
 
     public ProjectConfiguration(ConfigurationType type, String projectHomePath) {
         //
-        this(type, projectHomePath, ProjectSources.SOURCE_FOLDERS, false);
+        this(type, projectHomePath, ProjectSources.SOURCE_FOLDERS, false, false);
     }
 
-    public ProjectConfiguration(ConfigurationType type, String projectHomePath, SourceFolders sourceFolders, boolean lexicalPreserving) {
+    public ProjectConfiguration(ConfigurationType type, String projectHomePath, SourceFolders sourceFolders, boolean lexicalPreserving, boolean useOwnPrinter) {
         //
         this.type = type;
         this.projectHomePath = projectHomePath;
@@ -53,6 +54,7 @@ public class ProjectConfiguration {
         this.physicalTestPath = projectHomePath + PATH_DELIM + sourceFolders.SRC_TEST_JAVA;
         this.physicalTestResourcesPath = projectHomePath + PATH_DELIM + sourceFolders.SRC_TEST_RESOURCES;
         this.lexicalPreserving = lexicalPreserving;
+        this.useOwnPrinter = useOwnPrinter;
     }
 
     // com/foo/bar/SampleService.java -> C://Users/user/Documents/.../src/main/java/com/foo/bar/SampleService.java
@@ -103,5 +105,9 @@ public class ProjectConfiguration {
 
     public boolean isLexicalPreserving() {
         return lexicalPreserving;
+    }
+
+    public boolean isUseOwnPrinter() {
+        return useOwnPrinter;
     }
 }
