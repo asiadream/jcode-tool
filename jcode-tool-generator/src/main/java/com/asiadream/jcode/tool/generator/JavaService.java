@@ -46,17 +46,25 @@ public class JavaService {
     private static final boolean lexicalPreserving = false;
     private static final boolean useOwnPrinter = true;
 
+    private String metaLocation;
     private GeneratorMeta generatorMeta;
     private Map<String, String> settings;
 
     public JavaService() {
         //
+        this(null);
+    }
+
+    public JavaService(String metaLocation) {
+        //
+        this.metaLocation = metaLocation;
         this.generatorMeta = loadGeneratorMeta();
         this.settings = loadSettingsParameters();
     }
 
-    public JavaService(GeneratorMeta generatorMeta) {
+    public JavaService(GeneratorMeta generatorMeta, String metaLocation) {
         //
+        this.metaLocation = metaLocation;
         this.generatorMeta = generatorMeta;
         if (this.generatorMeta == null) {
             this.generatorMeta = loadGeneratorMeta();
@@ -67,7 +75,7 @@ public class JavaService {
     private GeneratorMeta loadGeneratorMeta() {
         //
         Yaml yaml = new Yaml(new Constructor(GeneratorMeta.class));
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("generator.yaml");
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(getMetaLocation() + "generator.yaml");
         if (inputStream == null) {
             throw new RuntimeException("generator.yaml not exists.");
         }
@@ -78,21 +86,21 @@ public class JavaService {
     private JavaMeta loadJavaMeta(String template) {
         //
         Yaml yaml = new Yaml(new Constructor(JavaMeta.class));
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(template + ".yaml");
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(getMetaLocation() + template + ".yaml");
         return yaml.load(inputStream);
     }
 
     private ConverterConfig loadConverterConfig(String configName) {
         //
         Yaml yaml = new Yaml(new Constructor((ConverterConfig.class)));
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(configName + ".convert.yaml");
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(getMetaLocation() + configName + ".convert.yaml");
         return yaml.load(inputStream);
     }
 
     private Map<String, Object> loadSettings() {
         //
         Yaml yaml = new Yaml();
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("settings.yaml");
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(getMetaLocation() + "settings.yaml");
         if (inputStream == null) {
             throw new RuntimeException("settings.yaml not exists.");
         }
@@ -289,6 +297,11 @@ public class JavaService {
 
         // Write
         writeJavaSource(source, targetProjectPath);
+    }
+
+    private String getMetaLocation() {
+        //
+        return StringUtil.isNotEmpty(metaLocation) ? metaLocation + "/" : "";
     }
 
     private static FieldModel convertField(TableField tableField) {
