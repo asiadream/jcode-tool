@@ -31,6 +31,7 @@ public class ProjectCreator {
         // make source folder
         if (!model.isPom()) {
             makeSourceFolder(configuration);
+            makePackageFolder(configuration, model);
         }
 
         if (isGradle) {
@@ -53,6 +54,15 @@ public class ProjectCreator {
         FolderUtil.mkdir(configuration.getPhysicalResourcesPath());
         FolderUtil.mkdir(configuration.getPhysicalTestPath());
         FolderUtil.mkdir(configuration.getPhysicalTestResourcesPath());
+    }
+
+    private void makePackageFolder(ProjectConfiguration configuration, ProjectModel model) {
+        //
+        if (!model.hasPackageNames()) {
+            return;
+        }
+
+        model.getPackageNames().forEach(packageName -> FolderUtil.mkdir(configuration.makePhysicalJavaPackagePath(packageName)));
     }
 
     private void makePom(ProjectModel model, ProjectConfiguration configuration) {

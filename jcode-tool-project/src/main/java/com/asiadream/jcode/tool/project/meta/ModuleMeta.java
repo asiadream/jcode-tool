@@ -3,18 +3,20 @@ package com.asiadream.jcode.tool.project.meta;
 import com.asiadream.jcode.tool.project.model.ProjectModel;
 import com.asiadream.jcode.tool.project.model.ProjectType;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ModuleMeta {
     //
     private String name;
     private List<ProjectType> types;
     private List<DependencyMeta> dependencies;
+    private List<String> packageNames;
 
     public ProjectModel toProjectModel(ProjectModel parent) {
         //
-        String name = ExpressionUtil.replaceExp(this.name, "appName", parent.getAppName());
+        Map<String, String> contextMap = getContext(parent);
+
+        String name = ExpressionUtil.replaceExp(this.name, contextMap);
         String groupId = parent.getGroup();
         String version = parent.getVersion();
         ProjectModel projectModel = new ProjectModel(name, groupId, version);
@@ -22,7 +24,7 @@ public class ModuleMeta {
 
         Optional.ofNullable(dependencies).ifPresent(dependencies -> dependencies.forEach(dependencyMeta -> {
             if (dependencyMeta.existRef()) {
-                String ref = ExpressionUtil.replaceExp(dependencyMeta.getRef(), "appName", parent.getAppName());
+                String ref = ExpressionUtil.replaceExp(dependencyMeta.getRef(), contextMap);
                 ProjectModel subModel = parent.findBySuffix(ref);
                 projectModel.addDependency(subModel, dependencyMeta.getType());
             } else {
@@ -30,7 +32,21 @@ public class ModuleMeta {
             }
         }));
 
+        List<String> replacedPackageNames = new ArrayList<>();
+        Optional.ofNullable(packageNames).ifPresent(packageNames -> packageNames.forEach(packageName -> {
+            replacedPackageNames.add(ExpressionUtil.replaceExp(packageName, contextMap));
+        }));
+        projectModel.setPackageNames(replacedPackageNames);
+
         return projectModel;
+    }
+
+    private Map<String, String> getContext(ProjectModel parent) {
+        //
+        Map<String, String> contextMap = new HashMap<>();
+        contextMap.put("appName", parent.getAppName());
+        contextMap.put("groupId", parent.getGroup());
+        return contextMap;
     }
 
     public boolean containsType(ProjectType projectType) {
@@ -72,5 +88,13 @@ public class ModuleMeta {
 
     public void setDependencies(List<DependencyMeta> dependencies) {
         this.dependencies = dependencies;
+    }
+
+    public List<String> getPackageNames() {
+        return packageNames;
+    }
+
+    public void setPackageNames(List<String> packageNames) {
+        this.packageNames = packageNames;
     }
 }

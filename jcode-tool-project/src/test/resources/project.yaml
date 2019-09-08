@@ -26,6 +26,10 @@ modules:
     types:
       - Entity
     dependencies:
+    packageNames:
+      - ${groupId}.${appName}.domain.entity
+      - ${groupId}.${appName}.domain.sdo
+      - ${groupId}.${appName}.domain.store
 
   # store
   - name: ${appName}-store

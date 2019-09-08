@@ -9,6 +9,7 @@ public class TableField extends SqlStatement {
     private int size;
     private String defaultValue;
     private boolean notNull;
+    private String comment;
 
     public TableField(String fieldStatement) {
         //
@@ -40,5 +41,13 @@ public class TableField extends SqlStatement {
 
     public boolean isNotNull() {
         return notNull;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

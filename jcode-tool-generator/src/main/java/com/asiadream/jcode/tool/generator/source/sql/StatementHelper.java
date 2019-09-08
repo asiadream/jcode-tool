@@ -12,6 +12,9 @@ public class StatementHelper {
     //
     private static final Logger logger = LoggerFactory.getLogger(StatementHelper.class);
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // CREATE TABLE
+    // -----------------------------------------------------------------------------------------------------------------
     public static String getSchemaNameFromCreateStatement(String statement) {
         //
         String schemaTableName = getSchemaTableNameFromCreateStatement(statement);
@@ -42,7 +45,7 @@ public class StatementHelper {
     public static String getSchemaTableNameFromCreateStatement(String statement) {
         //
         checkCreateStatement(statement);
-        String removed = StringUtil.removePrefix(statement, "CREATE TABLE ");
+        String removed = StringUtil.removePrefix(statement, StatementType.CreateTable.getCommand() + " ");
         String schemaTableName = removed.substring(0, removed.indexOf("(")).trim();
         logger.debug("schemaTableName: {}", schemaTableName);
         return schemaTableName;
@@ -51,12 +54,134 @@ public class StatementHelper {
     public static List<TableField> getTableFieldsFromCreateStatement(String statement) {
         //
         checkCreateStatement(statement);
-        String fieldsBlock = stripOffTheFirstBracket(statement);
+        String fieldsBlock = stripOff(statement, '(', ')');
 
         return truncatesByField(fieldsBlock).stream()
                 .map(TableField::new)
                 .collect(Collectors.toList());
     }
+
+    private static void checkCreateStatement(String statement) {
+        //
+        if (!statement.startsWith(StatementType.CreateTable.getCommand())) {
+            throw new IllegalArgumentException("It's Not 'CREATE TABLE' statement.");
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // COMMENT ON COLUMN
+    // -----------------------------------------------------------------------------------------------------------------
+    public static String getSchemaNameFromCommentOnColumnStatement(String statement) {
+        //
+        String schemaTableColumnName = getSchemaTableColumnNameFromCommentOnColumnStatement(statement);
+        int dotCount = StringUtil.countMatches(schemaTableColumnName, ".");
+        if (dotCount == 2) {
+            return schemaTableColumnName.split("\\.")[0];
+        }
+        return null;
+    }
+
+    public static String getTableNameFromCommentOnColumnStatement(String statement) {
+        //
+        String schemaTableColumnName = getSchemaTableColumnNameFromCommentOnColumnStatement(statement);
+        int dotCount = StringUtil.countMatches(schemaTableColumnName, ".");
+        String[] splited = schemaTableColumnName.split("\\.");
+        if (dotCount == 2) {
+            return splited[1];
+        } else if (dotCount == 1) {
+            return splited[0];
+        }
+        return null;
+    }
+
+    public static String getColumnNameFromCommentOnColumnStatement(String statement) {
+        //
+        String schemaTableColumnName = getSchemaTableColumnNameFromCommentOnColumnStatement(statement);
+        int dotCount = StringUtil.countMatches(schemaTableColumnName, ".");
+        String[] splited = schemaTableColumnName.split("\\.");
+        if (dotCount == 2) {
+            return splited[2];
+        } else if (dotCount == 1) {
+            return splited[1];
+        }
+        return splited[0];
+    }
+
+    public static String getCommentFromCommentOnColumnStatement(String statement) {
+        //
+        checkCommentOnColumnStatement(statement);
+        String quotedComment = statement.substring(statement.indexOf(" IS ") + 4);
+        return stripOff(quotedComment, '\'');
+    }
+
+    private static String getSchemaTableColumnNameFromCommentOnColumnStatement(String statement) {
+        //
+        checkCommentOnColumnStatement(statement);
+        String removed = StringUtil.removePrefix(statement, StatementType.CommentOnColumn.getCommand() + " ");
+        String schemaTableColumnName = removed.substring(0, removed.indexOf(" IS ")).trim();
+        logger.debug("schemaTableColumnName: {}", schemaTableColumnName);
+        return schemaTableColumnName;
+    }
+
+    private static void checkCommentOnColumnStatement(String statement) {
+        //
+        if (!statement.startsWith(StatementType.CommentOnColumn.getCommand())) {
+            throw new IllegalArgumentException("It's Not 'COMMENT ON COLUMN' statement.");
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // COMMENT ON TABLE
+    // -----------------------------------------------------------------------------------------------------------------
+    public static String getSchemaNameFromCommentOnTableStatement(String statement) {
+        //
+        String schemaTableName = getSchemaTableNameFromCommentOnTableStatement(statement);
+        int dotCount = StringUtil.countMatches(schemaTableName, ".");
+        if (dotCount == 1) {
+            return schemaTableName.split("\\.")[0];
+        }
+        return null;
+    }
+
+    public static String getTableNameFromCommentOnTableStatement(String statement) {
+        //
+        String schemaTableName = getSchemaTableNameFromCommentOnTableStatement(statement);
+        int dotCount = StringUtil.countMatches(schemaTableName, ".");
+        String[] splited = schemaTableName.split("\\.");
+        if (dotCount == 1) {
+            return splited[1];
+        } else if (dotCount == 0) {
+            return splited[0];
+        }
+        return null;
+    }
+
+    public static String getCommentFromCommentOnTableStatement(String statement) {
+        //
+        checkCommentOnTableStatement(statement);
+        String quotedComment = statement.substring(statement.indexOf(" IS ") + 4);
+        return stripOff(quotedComment, '\'');
+    }
+
+    private static String getSchemaTableNameFromCommentOnTableStatement(String statement) {
+        //
+        checkCommentOnTableStatement(statement);
+        String removed = StringUtil.removePrefix(statement, StatementType.CommentOnTable.getCommand() + " ");
+        String schemaTableName = removed.substring(0, removed.indexOf(" IS ")).trim();
+        logger.debug("schemaTableName: {}", schemaTableName);
+        return schemaTableName;
+    }
+
+    private static void checkCommentOnTableStatement(String statement) {
+        //
+        if (!statement.startsWith(StatementType.CommentOnTable.getCommand())) {
+            throw new IllegalArgumentException("It's Not 'COMMENT ON TABLE' statement.");
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Utils
+    // -----------------------------------------------------------------------------------------------------------------
 
     // STDNO VARCHAR2(12 BYTE) NOT NULL, STD_PERSHIS_NO VARCHAR2(12 BYTE) NOT NULL, ...
     // -->
@@ -114,12 +239,24 @@ public class StatementHelper {
         return fieldElements;
     }
 
+    private static String stripOff(String statement, char marker) {
+        //
+        int count = StringUtil.countMatches(statement, marker);
+        if (count == 2) {
+            return statement.split(String.valueOf(marker))[1];
+        }
+        return null;
+    }
+
     // CREATE TABLE UNI.SREG200( STDNO VARCHAR2(12 BYTE) NOT NULL, ...)
     // -->
     // STDNO VARCHAR2(12 BYTE) NOT NULL, ...
-    private static String stripOffTheFirstBracket(String statement) {
+    private static String stripOff(String statement, char open, char close) {
         //
-        if (statement == null || !statement.contains("(") || !statement.contains(")")) {
+        if (open == close) {
+            throw new IllegalArgumentException("Open and Close markers must be different. --> [" + open + "]");
+        }
+        if (statement == null || !statement.contains(String.valueOf(open)) || !statement.contains(String.valueOf(close))) {
             return null;
         }
 
@@ -131,9 +268,9 @@ public class StatementHelper {
             char c = charArray[i];
 
             int levelChange = 0;
-            if (c == '(') {
+            if (c == open) {
                 levelChange = 1;
-            } else if (c == ')') {
+            } else if (c == close) {
                 levelChange = -1;
             }
 
@@ -157,17 +294,14 @@ public class StatementHelper {
         }
 
         String stripOffed = statement.substring(openIndex + 1, closeIndex).trim();
-        logger.trace("stripOffedBracket: " + stripOffed);
+        logger.trace("stripOffed: " + stripOffed);
 
         return stripOffed;
     }
 
-    private static void checkCreateStatement(String statement) {
-        //
-        if (!statement.startsWith(StatementType.CreateTable.getCommand())) {
-            throw new IllegalArgumentException("It's Not 'CREATE TABLE' statement.");
-        }
-    }
+
+
+
 
     public static boolean getNotNullFromFieldElements(List<String> fieldElements) {
         //
@@ -206,7 +340,7 @@ public class StatementHelper {
 
     public static int getSizeFromFieldElements(List<String> fieldElements) {
         String typeSize = fieldElements.get(1);
-        String sizeStatement = stripOffTheFirstBracket(typeSize);
+        String sizeStatement = stripOff(typeSize, '(', ')');
         return getNumberFromSizeStatement(sizeStatement);
     }
 

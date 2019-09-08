@@ -19,4 +19,10 @@ public class SqlScript {
     public List<SqlStatement> getStatements() {
         return statements;
     }
+
+    public <T extends SqlStatement> List<T> getStatements(Class<T> type) {
+        //
+        return SqlStatementBuilder.findStatements(this.statements, type);
+    }
+
 }

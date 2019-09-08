@@ -1,5 +1,7 @@
 package com.asiadream.jcode.tool.share.config;
 
+import com.asiadream.jcode.tool.share.util.file.PathUtil;
+
 import java.io.File;
 
 public class ProjectConfiguration {
@@ -61,6 +63,12 @@ public class ProjectConfiguration {
     public String makePhysicalJavaSourceFilePath(String sourceFilePath) {
         //
         return physicalJavaPath + PATH_DELIM + sourceFilePath;
+    }
+
+    // com.foo.bar -> C://Users/user/Documents/.../src/main/java/com/foo/bar
+    public String makePhysicalJavaPackagePath(String packageName) {
+        //
+        return physicalJavaPath + PATH_DELIM + PathUtil.toPath(packageName);
     }
 
     // com/foo/bar/SampleSqlMap.xml -> C://Users/user/Documents/.../src/main/java/com/foo/bar/SampleSqlMap.xml

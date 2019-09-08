@@ -6,6 +6,7 @@ public class CreateTableStatement extends SqlStatement {
     //
     private String schemaName;
     private String tableName;
+    private String comment;
     private List<TableField> fields;
 
     public CreateTableStatement(String text) {
@@ -16,6 +17,14 @@ public class CreateTableStatement extends SqlStatement {
         this.fields = StatementHelper.getTableFieldsFromCreateStatement(text);
     }
 
+    public TableField findField(String fieldName) {
+        //
+        return fields.stream()
+                .filter(tableField -> fieldName.equals(tableField.getName()))
+                .findAny()
+                .orElse(null);
+    }
+
     public String getSchemaName() {
         return schemaName;
     }
@@ -24,7 +33,15 @@ public class CreateTableStatement extends SqlStatement {
         return tableName;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
     public List<TableField> getFields() {
         return fields;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

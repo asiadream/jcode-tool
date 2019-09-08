@@ -22,6 +22,7 @@ public class ProjectModel {
     private List<ProjectModel> children;
     private List<Dependency> dependencies;
     private List<ProjectProperty> properties;
+    private List<String> packageNames;
 
     private String workspacePath;
 
@@ -165,6 +166,11 @@ public class ProjectModel {
         return StringUtil.remove(appName, "-");
     }
 
+    public boolean hasPackageNames() {
+        //
+        return packageNames != null && packageNames.size() > 0;
+    }
+
     public List<ProjectModel> getChildren() {
         return children;
     }
@@ -240,5 +246,13 @@ public class ProjectModel {
 
     public void setTypes(List<ProjectType> types) {
         this.types = types;
+    }
+
+    public List<String> getPackageNames() {
+        return packageNames;
+    }
+
+    public void setPackageNames(List<String> packageNames) {
+        this.packageNames = packageNames;
     }
 }

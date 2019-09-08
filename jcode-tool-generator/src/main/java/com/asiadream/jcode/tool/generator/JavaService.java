@@ -16,6 +16,7 @@ import com.asiadream.jcode.tool.generator.sdo.ReferenceSdo;
 import com.asiadream.jcode.tool.generator.source.JavaSource;
 import com.asiadream.jcode.tool.generator.source.SqlSource;
 import com.asiadream.jcode.tool.generator.source.sql.CreateTableStatement;
+import com.asiadream.jcode.tool.generator.source.sql.SqlScript;
 import com.asiadream.jcode.tool.generator.source.sql.TableField;
 import com.asiadream.jcode.tool.generator.writer.JavaWriter;
 import com.asiadream.jcode.tool.share.config.ConfigurationType;
@@ -275,6 +276,7 @@ public class JavaService {
         }
     }
 
+    @Deprecated
     public void addFields(String className, String targetProjectPath, String physicalScriptPath) {
         //
         // TODO
@@ -313,6 +315,15 @@ public class JavaService {
         fieldModel.setAccess(Access.PRIVATE);
 
         return fieldModel;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // TODO : move to SqlService
+
+    public SqlScript readSqlScript(String physicalScriptPath) {
+        //
+        SqlSource sqlSource = readSqlSourceByPhysicalPath(physicalScriptPath);
+        return sqlSource.getSqlScript();
     }
 
 }
