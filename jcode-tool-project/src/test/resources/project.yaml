@@ -24,7 +24,7 @@ modules:
   # spec
   - name: ${appName}-spec
     types:
-      - Entity
+      - Spec
     dependencies:
     packageNames:
       - ${groupId}.${appName}.domain.entity

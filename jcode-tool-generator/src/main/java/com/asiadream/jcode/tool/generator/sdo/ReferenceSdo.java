@@ -11,6 +11,7 @@ public class ReferenceSdo {
     //
     private List<ClassReference> references;
     private List<Pair<String, String>> customContext;
+    private String bizName;
 
     public static ReferenceSdo create() {
         //
@@ -34,29 +35,35 @@ public class ReferenceSdo {
         this.references.add(new ClassReference(referenceName, className, projectPath));
     }
 
-    public String getPreBizName(BizNameLocation location, String groupId, String appName) {
+    public String getPreBizNameFromReferenceClass(BizNameLocation location, int middleNameSeq, String groupId, String appName) {
         // kr.ac.kookmin.ktis.code.domain.entity.SubjectCode --> preBizName: 'code', postBizName: ''
         // io.naradrama.talk.domain.entity.town.TalkTown     --> preBizName: '',     postBizName: 'town'
         if (location == BizNameLocation.PRE) {
-            return getBizName(location, groupId, appName);
+            return getBizNameFromReferenceClass(location, middleNameSeq, groupId, appName);
         }
-
         return null;
     }
 
-    public String getPostBizName(BizNameLocation location, String groupId, String appName) {
+    public String getPostBizNameFromReferenceClass(BizNameLocation location, int middleNameSeq, String groupId, String appName) {
         //
         if (location == BizNameLocation.POST) {
-            return getBizName(location, groupId, appName);
+            return getBizNameFromReferenceClass(location, middleNameSeq, groupId, appName);
         }
-
         return null;
     }
 
-    private String getBizName(BizNameLocation location, String groupId, String appName) {
+    public String getMiddleBizNameFromReferenceClass(BizNameLocation location, int middleNameSeq, String groupId, String appName) {
+        //
+        if (location == BizNameLocation.MIDDLE) {
+            return getBizNameFromReferenceClass(location, middleNameSeq, groupId, appName);
+        }
+        return null;
+    }
+
+    private String getBizNameFromReferenceClass(BizNameLocation location, int middleNameSeq, String groupId, String appName) {
         // className: io.naradrama.talk.domain.entity.town.TalkTown -> bizName: town
         if (references == null || references.size() <= 0) {
-            return null;
+            return this.bizName;
         }
         String className = references.get(0).getClassName();
         // The groupId and appName must be in class name.
@@ -71,6 +78,8 @@ public class ReferenceSdo {
             return PackageNameUtil.getFirstName(partName);
         } else if (location == BizNameLocation.POST) {
             return PackageNameUtil.getLastName(partName);
+        } else if (location == BizNameLocation.MIDDLE) {
+            return PackageNameUtil.getName(partName, middleNameSeq);
         }
         return null;
     }
@@ -88,6 +97,12 @@ public class ReferenceSdo {
     public ReferenceSdo addCustomContext(String key, String value) {
         //
         this.customContext.add(new Pair<>(key, value));
+        return this;
+    }
+
+    public ReferenceSdo setBizName(String bizName) {
+        //
+        this.bizName = bizName;
         return this;
     }
 

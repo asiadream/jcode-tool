@@ -4,7 +4,7 @@ public class GeneratorMeta {
     //
     private String groupId;
     private String appNameWithRemovedDash;
-    private BizNameLocation bizNameLocation;
+    //private BizNameLocation bizNameLocation;
 
     public String getGroupId() {
         return groupId;
@@ -22,11 +22,11 @@ public class GeneratorMeta {
         this.appNameWithRemovedDash = appNameWithRemovedDash;
     }
 
-    public BizNameLocation getBizNameLocation() {
-        return bizNameLocation;
-    }
-
-    public void setBizNameLocation(BizNameLocation bizNameLocation) {
-        this.bizNameLocation = bizNameLocation;
-    }
+//    public BizNameLocation getBizNameLocation() {
+//        return bizNameLocation;
+//    }
+//
+//    public void setBizNameLocation(BizNameLocation bizNameLocation) {
+//        this.bizNameLocation = bizNameLocation;
+//    }
 }

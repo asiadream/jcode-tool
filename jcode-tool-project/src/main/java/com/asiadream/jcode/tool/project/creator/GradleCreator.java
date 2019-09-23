@@ -85,6 +85,9 @@ public class GradleCreator {
             case TestCompile:
                 methodCall = new MethodCall("testCompile", dependency.toColonSeparatedString()).setPrintBracket(true);
                 break;
+            case TestCompileProject:
+                methodCall = new MethodCall("testCompile", new MethodCall("project", dependency.toSimpleString()).setPrintBracket(true));
+                break;
             case Runtime:
                 methodCall = new MethodCall("runtime", dependency.toColonSeparatedString()).setPrintBracket(true);
                 break;

@@ -3,6 +3,7 @@ package com.asiadream.jcode.tool.generator;
 import com.asiadream.jcode.tool.generator.converter.JavaConverter;
 import com.asiadream.jcode.tool.generator.converter.config.ConverterConfig;
 import com.asiadream.jcode.tool.generator.creator.JavaCreator;
+import com.asiadream.jcode.tool.generator.meta.BizNameRuleMeta;
 import com.asiadream.jcode.tool.generator.meta.ExpressionContext;
 import com.asiadream.jcode.tool.generator.meta.GeneratorMeta;
 import com.asiadream.jcode.tool.generator.meta.JavaMeta;
@@ -49,6 +50,7 @@ public class JavaService {
 
     private String metaLocation;
     private GeneratorMeta generatorMeta;
+    private BizNameRuleMeta bizNameRuleMeta;
     private Map<String, String> settings;
 
     public JavaService() {
@@ -60,6 +62,7 @@ public class JavaService {
         //
         this.metaLocation = metaLocation;
         this.generatorMeta = loadGeneratorMeta();
+        this.bizNameRuleMeta = loadBizNameRuleMeta();
         this.settings = loadSettingsParameters();
     }
 
@@ -70,6 +73,7 @@ public class JavaService {
         if (this.generatorMeta == null) {
             this.generatorMeta = loadGeneratorMeta();
         }
+        this.bizNameRuleMeta = loadBizNameRuleMeta();
         this.settings = loadSettingsParameters();
     }
 
@@ -82,6 +86,17 @@ public class JavaService {
         }
         GeneratorMeta generatorMeta = yaml.load(inputStream);
         return generatorMeta;
+    }
+
+    private BizNameRuleMeta loadBizNameRuleMeta() {
+        //
+        Yaml yaml = new Yaml(new Constructor(BizNameRuleMeta.class));
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(getMetaLocation() + "biz_name_rule.yaml");
+        if (inputStream == null) {
+            throw new RuntimeException("biz_name_rule.yaml not exists.");
+        }
+        BizNameRuleMeta bizNameRuleMeta = yaml.load(inputStream);
+        return bizNameRuleMeta;
     }
 
     private JavaMeta loadJavaMeta(String template) {
@@ -203,12 +218,18 @@ public class JavaService {
         expressionContext.add("packageName", javaMeta.getPackageName());
         expressionContext.add("className", javaMeta.getClassName());
 
+        expressionContext.add("preBizName", "");
+        expressionContext.add("postBizName", "");
+        expressionContext.add("middleBizName", "");
+
         if (referenceSdo != null) {
             // Set bizName with their className.
-            String preBizName = referenceSdo.getPreBizName(generatorMeta.getBizNameLocation(), groupId, appNameWithRemovedDash);
+            String preBizName = referenceSdo.getPreBizNameFromReferenceClass(bizNameRuleMeta.getBizNameLocation(), bizNameRuleMeta.getMiddleNameSeq(), groupId, appNameWithRemovedDash);
             expressionContext.add("preBizName", preBizName != null ? "." + preBizName : "");
-            String postBizName = referenceSdo.getPostBizName(generatorMeta.getBizNameLocation(), groupId, appNameWithRemovedDash);
+            String postBizName = referenceSdo.getPostBizNameFromReferenceClass(bizNameRuleMeta.getBizNameLocation(), bizNameRuleMeta.getMiddleNameSeq(), groupId, appNameWithRemovedDash);
             expressionContext.add("postBizName", postBizName != null ? "." + postBizName : "");
+            String middleBizName = referenceSdo.getMiddleBizNameFromReferenceClass(bizNameRuleMeta.getBizNameLocation(), bizNameRuleMeta.getMiddleNameSeq(), groupId, appNameWithRemovedDash);
+            expressionContext.add("middleBizName", middleBizName != null ? "." + middleBizName : "");
         }
 
         // Register reference

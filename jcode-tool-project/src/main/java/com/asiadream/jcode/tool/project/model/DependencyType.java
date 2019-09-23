@@ -7,6 +7,7 @@ public enum DependencyType {
     CompileOnly,
     AnnotationProcessor,
     TestCompile,
+    TestCompileProject,
     Runtime,
     MavenBom,
     ;

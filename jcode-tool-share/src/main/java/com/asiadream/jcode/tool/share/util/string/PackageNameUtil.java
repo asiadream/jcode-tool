@@ -28,6 +28,19 @@ public class PackageNameUtil {
     }
 
     /**
+     * Get the last element of the Package name.
+     * Ex) com.foo.bar.kkk, 1 - foo
+     * @param packageName A package name
+     * @param seq A sequence of the package name
+     * @return The element of the package name
+     */
+    public static String getName(String packageName, int seq) {
+        //
+        String[] elements = packageName.split(PACKAGE_DELIM);
+        return elements[seq];
+    }
+
+    /**
      * Remove the first part of the package name.
      * Ex) com.foo.bar.kkk, foo.bar - com.kkk
      * @param packageName A package name
