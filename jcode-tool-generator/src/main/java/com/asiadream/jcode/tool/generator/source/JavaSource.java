@@ -146,9 +146,26 @@ public class JavaSource {
         return getPackageName() + "." + getName();
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+    private boolean isClassOrInterface() {
+        //
+        TypeDeclaration type = compilationUnit.getType(0);
+        return type.isClassOrInterfaceDeclaration();
+    }
+
+    private ClassOrInterfaceDeclaration getClassOrInterface() {
+        //
+        return (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+    }
+    // -----------------------------------------------------------------------------------------------------------------
+
     public boolean isInterface() {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return false;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         return classType.isInterface();
     }
 
@@ -186,7 +203,11 @@ public class JavaSource {
 
     public void setImplementedType(String name, String packageName) {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         NodeList<ClassOrInterfaceType> nodeList = new NodeList<>();
         nodeList.add(JavaParser.parseClassOrInterfaceType(name));
         classType.setImplementedTypes(nodeList);
@@ -201,7 +222,11 @@ public class JavaSource {
 
     public void setExtendedType(String name, String packageName) {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         NodeList<ClassOrInterfaceType> nodeList = new NodeList<>();
         nodeList.add(JavaParser.parseClassOrInterfaceType(name));
 
@@ -211,7 +236,12 @@ public class JavaSource {
     }
 
     public String getExtendedType() {
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        //
+        if (!isClassOrInterface()) {
+            return null;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         if (classType.getExtendedTypes().size() > 0) {
             return classType.getExtendedTypes(0).getNameAsString();
         }
@@ -219,7 +249,12 @@ public class JavaSource {
     }
 
     public boolean isExtends(String simpleClassName) {
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        //
+        if (!isClassOrInterface()) {
+            return false;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         if (classType.getExtendedTypes().size() <= 0) {
             return false;
         }
@@ -246,13 +281,21 @@ public class JavaSource {
 
     public void addField(FieldModel fieldModel) {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         classType.addMember(AstMapper.createFieldDeclaration(fieldModel));
     }
 
     public void addField(FieldModel fieldModel, int index) {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         classType.getMembers().add(index, AstMapper.createFieldDeclaration(fieldModel));
     }
 
@@ -263,7 +306,11 @@ public class JavaSource {
 
     public void addField(String fieldTypeName, String packageName, String varName, String annotationName, String annotationPackageName) {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         FieldDeclaration field = classType.addPrivateField(fieldTypeName, varName);
         compilationUnit.addImport(packageName + "." + fieldTypeName);
 
@@ -304,7 +351,11 @@ public class JavaSource {
 
     public void addAnnotation(String annotation, String packageName) {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         classType.addMarkerAnnotation(annotation);
 
         compilationUnit.addImport(packageName + "." + annotation);
@@ -317,7 +368,11 @@ public class JavaSource {
 
     public void addAnnotation(String annotation, String packageName, String annotationArgs) {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         AnnotationExpr expr = new SingleMemberAnnotationExpr(new Name(annotation), new StringLiteralExpr(annotationArgs));
         classType.addAnnotation(expr);
 
@@ -326,7 +381,11 @@ public class JavaSource {
 
     public void addAnnotation(ClassType annotation, List<Pair<String, Object>> annotationArgs) {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         NodeList<MemberValuePair> pairs = new NodeList<>();
         for (Pair<String, Object> pair : annotationArgs) {
             Expression expression;
@@ -353,13 +412,21 @@ public class JavaSource {
 
     private Optional<AnnotationExpr> findAnnotation(String annotationName) {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return Optional.empty();
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         return classType.getAnnotationByName(annotationName);
     }
 
     public boolean containsAnnotation(String annotationClassName) {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return false;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         return classType.isAnnotationPresent(annotationClassName);
     }
 
@@ -383,7 +450,11 @@ public class JavaSource {
 
     public MethodDeclaration addMethod(MethodModel methodModel) {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return null;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
 
         MethodDeclaration methodDeclaration = AstMapper.createMethodDeclaration(methodModel);
         classType.addMember(methodDeclaration);
@@ -401,7 +472,11 @@ public class JavaSource {
 
     public void removeGetterAndSetter() {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         for (FieldDeclaration fieldDeclaration : classType.getFields()) {
             VariableDeclarator variableDeclarator = fieldDeclaration.getVariable(0);
             String varName = variableDeclarator.getNameAsString();
@@ -457,7 +532,11 @@ public class JavaSource {
 
     public void forEachMethod(Consumer<MethodDeclaration> methodConsumer) {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         List<MethodDeclaration> methodDeclarations = classType.getMethods();
 
         // for field, method ordering issue.
@@ -481,11 +560,11 @@ public class JavaSource {
 
     public void removeMethodsByAnnotation(String annotationName) {
         //
-        if (StringUtil.isEmpty(annotationName)) {
+        if (StringUtil.isEmpty(annotationName) || !isClassOrInterface()) {
             return;
         }
 
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         List<MethodDeclaration> methodDeclarations = classType.getMethods();
         methodDeclarations.forEach(methodDeclaration -> {
             if (methodDeclaration.isAnnotationPresent(annotationName)) {
@@ -562,7 +641,11 @@ public class JavaSource {
 
     public void removeNoArgsConstructor() {
         //
-        ClassOrInterfaceDeclaration classType = (ClassOrInterfaceDeclaration) compilationUnit.getType(0);
+        if (!isClassOrInterface()) {
+            return;
+        }
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
         classType.getDefaultConstructor().ifPresent(Node::remove);
     }
 
@@ -701,6 +784,12 @@ public class JavaSource {
 
     public void setUseOwnPrinter(boolean useOwnPrinter) {
         this.useOwnPrinter = useOwnPrinter;
+    }
+
+    public boolean isExistField(String fieldName) {
+        //
+        Optional<FieldDeclaration> existField = compilationUnit.getType(0).getFieldByName(fieldName);
+        return existField.isPresent();
     }
 
     public static void main(String[] args) {

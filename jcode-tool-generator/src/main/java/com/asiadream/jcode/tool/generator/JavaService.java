@@ -286,41 +286,47 @@ public class JavaService {
         }
     }
 
-    private SqlSource readSqlSourceByPhysicalPath(String physicalFilePath) {
-        //
-        SqlReader reader = new SqlReader();
-        try {
-            return reader.readPhysicalFile(physicalFilePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Deprecated
-    public void addFields(String className, String targetProjectPath, String physicalScriptPath) {
-        //
-        // TODO
-        // Read JavaSource
+    public void addFields(String className, String targetProjectPath, List<FieldModel> fields) {
+        // Read java source
         JavaSource source = readJavaSource(targetProjectPath, className);
         logger.debug("read java --> {}", source);
-        int fieldSize = source.getFieldsSize();
 
-        // Read Script
-        SqlSource sqlSource = readSqlSourceByPhysicalPath(physicalScriptPath);
-        logger.debug("read sql --> {}", sqlSource);
-
-        // update
-        CreateTableStatement cts = sqlSource.findFirstCreateTableStatement();
-        List<FieldModel> fields = cts.getFields().stream()
-                .map(JavaService::convertField)
+        // Deduplication
+        List<FieldModel> nonDuplicateFields = fields.stream()
+                .filter(fieldModel -> !source.isExistField(fieldModel.getName()))
                 .collect(Collectors.toList());
-        source.addFieldAll(fields, fieldSize);
-        logger.debug("update java --> {}", source);
+
+        // Update java source
+        source.addFieldAll(nonDuplicateFields, source.getFieldsSize());
 
         // Write
         writeJavaSource(source, targetProjectPath);
     }
+
+//    @Deprecated
+//    private void addFields(String className, String targetProjectPath, String physicalScriptPath) {
+//        //
+//        // TODO
+//        // Read JavaSource
+//        JavaSource source = readJavaSource(targetProjectPath, className);
+//        logger.debug("read java --> {}", source);
+//        int fieldSize = source.getFieldsSize();
+//
+//        // Read Script
+//        SqlSource sqlSource = readSqlSourceByPhysicalPath(physicalScriptPath);
+//        logger.debug("read sql --> {}", sqlSource);
+//
+//        // update
+//        CreateTableStatement cts = sqlSource.findFirstCreateTableStatement();
+//        List<FieldModel> fields = cts.getFields().stream()
+//                .map(JavaService::convertField)
+//                .collect(Collectors.toList());
+//        source.addFieldAll(fields, fieldSize);
+//        logger.debug("update java --> {}", source);
+//
+//        // Write
+//        writeJavaSource(source, targetProjectPath);
+//    }
 
     private String getMetaLocation() {
         //
@@ -336,15 +342,6 @@ public class JavaService {
         fieldModel.setAccess(Access.PRIVATE);
 
         return fieldModel;
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // TODO : move to SqlService
-
-    public SqlScript readSqlScript(String physicalScriptPath) {
-        //
-        SqlSource sqlSource = readSqlSourceByPhysicalPath(physicalScriptPath);
-        return sqlSource.getSqlScript();
     }
 
 }
