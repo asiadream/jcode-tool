@@ -6,6 +6,7 @@ import com.asiadream.jcode.tool.share.util.string.StringUtil;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
+import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.*;
@@ -314,6 +315,10 @@ public abstract class AstMapper {
         // Initializer
         Optional.ofNullable(fieldModel.getInitializer()).ifPresent(initializer ->
                 variable.setInitializer(initializer));
+
+        // Line Comment
+        Optional.ofNullable(fieldModel.getLineComment()).ifPresent(lineComment ->
+                field.setComment(new LineComment(lineComment)));
 
         field.addVariable(variable);
 

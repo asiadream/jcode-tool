@@ -287,6 +287,9 @@ public class JavaSource {
 
         ClassOrInterfaceDeclaration classType = getClassOrInterface();
         classType.addMember(AstMapper.createFieldDeclaration(fieldModel));
+
+        // add import
+        addImport(fieldModel.getType());
     }
 
     public void addField(FieldModel fieldModel, int index) {
@@ -297,6 +300,9 @@ public class JavaSource {
 
         ClassOrInterfaceDeclaration classType = getClassOrInterface();
         classType.getMembers().add(index, AstMapper.createFieldDeclaration(fieldModel));
+
+        // add import
+        addImport(fieldModel.getType());
     }
 
     public void addField(JavaSource fieldType, String varName, ClassType annotation) {
@@ -312,11 +318,10 @@ public class JavaSource {
 
         ClassOrInterfaceDeclaration classType = getClassOrInterface();
         FieldDeclaration field = classType.addPrivateField(fieldTypeName, varName);
-        compilationUnit.addImport(packageName + "." + fieldTypeName);
+        addImport(fieldTypeName, packageName);
 
         if (annotationName != null) {
-            field.addMarkerAnnotation(annotationName);
-            compilationUnit.addImport(annotationPackageName + "." + annotationName);
+            addAnnotation(annotationName, annotationPackageName);
         }
     }
 
@@ -358,7 +363,7 @@ public class JavaSource {
         ClassOrInterfaceDeclaration classType = getClassOrInterface();
         classType.addMarkerAnnotation(annotation);
 
-        compilationUnit.addImport(packageName + "." + annotation);
+        addImport(annotation, packageName);
     }
 
     public void addAnnotation(ClassType classType, String annotationArgs) {
@@ -376,7 +381,7 @@ public class JavaSource {
         AnnotationExpr expr = new SingleMemberAnnotationExpr(new Name(annotation), new StringLiteralExpr(annotationArgs));
         classType.addAnnotation(expr);
 
-        compilationUnit.addImport(packageName + "." + annotation);
+        addImport(annotation, packageName);
     }
 
     public void addAnnotation(ClassType annotation, List<Pair<String, Object>> annotationArgs) {
@@ -401,7 +406,7 @@ public class JavaSource {
         AnnotationExpr expr = new NormalAnnotationExpr(new Name(annotation.getName()), pairs);
         classType.addAnnotation(expr);
 
-        compilationUnit.addImport(annotation.getClassName());
+        addImport(annotation.getClassName());
     }
 
     public void removeAnnotations(List<String> annotationsToRemove) {
@@ -430,6 +435,11 @@ public class JavaSource {
         return classType.isAnnotationPresent(annotationClassName);
     }
 
+    public void addImport(String importName) {
+        //
+        compilationUnit.addImport(importName);
+    }
+
     public void addImport(String name, String packageName) {
         //
         compilationUnit.addImport(packageName + "." + name);
@@ -437,6 +447,9 @@ public class JavaSource {
 
     public void addImport(ClassType classType) {
         //
+        if (classType == null || classType.isPrimitive() || classType.getName().equals("String")) {
+            return;
+        }
         compilationUnit.addImport(classType.getClassName());
     }
 

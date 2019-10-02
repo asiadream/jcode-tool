@@ -8,6 +8,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ArrayType;
 import com.github.javaparser.ast.type.Type;
@@ -17,19 +18,120 @@ import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinte
 import org.junit.Test;
 
 public class BasicParseTest {
+    //
 
     @Test
-    public void testFieldParse() {
+    public void testFieldsCodeParse() {
         //
-        CompilationUnit cu = JavaParser.parse(
-                "class Foo {\n" +
-                        "    private String url = RestTemplateConfig.RESOURCE_URL +\"/talktowns\";\n" +
-                        "}");
+        CompilationUnit cu = JavaParser.parse(fieldsCode());
         System.out.println(cu);
     }
 
     @Test
-    public void testFieldMake() {
+    public void testFieldsCodeParseWithComment() {
+        //
+        CompilationUnit cu = JavaParser.parse(fieldsCodeWithComment());
+        System.out.println(cu);
+    }
+
+    @Test
+    public void testFieldsCodeParseUsingOwnPrinter() {
+        //
+        CompilationUnit cu = JavaParser.parse(fieldsCode());
+        System.out.println(cu.toString(myPrinter()));
+    }
+
+    @Test
+    public void testFieldsCodeParseWithCommentUsingOwnPrinter() {
+        //
+        CompilationUnit cu = JavaParser.parse(fieldsCodeWithComment());
+        System.out.println(cu.toString(myPrinter()));
+    }
+
+    @Test
+    public void testFieldsCompliationUnit() {
+        //
+        CompilationUnit cu = fieldsCompliationUnit();
+        System.out.println(cu);
+    }
+
+    @Test
+    public void testFieldsCompliationUnitUsingOwnPrinter() {
+        //
+        CompilationUnit cu = fieldsCompliationUnit();
+        System.out.println(cu.toString(myPrinter()));
+    }
+
+    @Test
+    public void testSimpleCodeParse() {
+        //
+        CompilationUnit cu = JavaParser.parse(simpleCode());
+        System.out.println(cu);
+    }
+
+    @Test
+    public void testSimpleCompliationUnit() {
+        //
+        ParserConfiguration configuration = JavaParser.getStaticConfiguration();
+        configuration.setDoNotAssignCommentsPrecedingEmptyLines(false);
+
+        //
+        PrettyPrinterConfiguration printerConfiguration = new PrettyPrinterConfiguration();
+        printerConfiguration.setVisitorFactory(ToolPrintVisitor::new);
+
+        //
+        CompilationUnit cu = simpleCompliationUnit();
+        System.out.println(cu.toString(printerConfiguration));
+    }
+
+    @Test
+    public void testSimpleParseWithLexicalPreserving() {
+        //
+        CompilationUnit cu = JavaParser.parse(simpleCode());
+        LexicalPreservingPrinter.setup(cu);
+        System.out.println(LexicalPreservingPrinter.print(cu));
+    }
+
+    //@Test
+    public void testSimpleMakeWithLexicalPreserving() {
+        // not working...
+        CompilationUnit cu = simpleCompliationUnit();
+        LexicalPreservingPrinter.setup(cu);
+        System.out.println(LexicalPreservingPrinter.print(cu));
+    }
+
+    @Test
+    public void testComplexParseWithAnnotations() {
+        CompilationUnit cu = JavaParser.parse(complexCode());
+        System.out.println(cu);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    private PrettyPrinterConfiguration myPrinter() {
+        //
+        PrettyPrinterConfiguration printerConfiguration = new PrettyPrinterConfiguration();
+        printerConfiguration.setVisitorFactory(ToolPrintVisitor::new);
+        return printerConfiguration;
+    }
+
+    private String fieldsCode() {
+        //
+        return "class Foo {\n" +
+                "    private String url = RestTemplateConfig.RESOURCE_URL +\"/talktowns\";\n" +
+                "    private int age;\n" +
+                "}";
+    }
+
+    private String fieldsCodeWithComment() {
+        //
+        return "class Foo {\n" +
+                "    private String url = RestTemplateConfig.RESOURCE_URL +\"/talktowns\";    // this is comment...\n" +
+                "    private int age;    // this is age\n" +
+                "}";
+    }
+
+    private CompilationUnit fieldsCompliationUnit() {
         //
         CompilationUnit cu = new CompilationUnit();
         ClassOrInterfaceDeclaration type = new ClassOrInterfaceDeclaration();
@@ -47,51 +149,26 @@ public class BasicParseTest {
         variable.setInitializer("RestTemplateConfig.RESOURCE_URL +\"/talktowns\"");
         fieldDeclaration.addVariable(variable);
 
+        //
+        LineComment lineComment = new LineComment("this is a url...");
+        fieldDeclaration.setComment(lineComment);
+
         type.addMember(fieldDeclaration);
 
-        //
-        System.out.println(cu);
+        return cu;
     }
 
-    @Test
-    public void testSimpleParse() {
-        //
-        CompilationUnit cu = JavaParser.parse(simpleCode());
-        System.out.println(cu);
+    private String simpleCode() {
+        return  "class foo {\n" +
+                "    public static void main(String[] args) {\n" +
+                "        int a = 1;\n" +
+                "        \n" +
+                "        int b = 1;\n" +
+                "    }\n" +
+                "}\n";
     }
 
-    @Test
-    public void testSimpleMake() {
-        //
-        ParserConfiguration configuration = JavaParser.getStaticConfiguration();
-        configuration.setDoNotAssignCommentsPrecedingEmptyLines(false);
-
-        //
-        PrettyPrinterConfiguration printerConfiguration = new PrettyPrinterConfiguration();
-        printerConfiguration.setVisitorFactory(ToolPrintVisitor::new);
-
-        //
-        CompilationUnit cu = simpleMake();
-        System.out.println(cu.toString(printerConfiguration));
-    }
-
-    @Test
-    public void testSimpleParseWithLexicalPreserving() {
-        //
-        CompilationUnit cu = JavaParser.parse(simpleCode());
-        LexicalPreservingPrinter.setup(cu);
-        System.out.println(LexicalPreservingPrinter.print(cu));
-    }
-
-    //@Test
-    public void testSimpleMakeWithLexicalPreserving() {
-        // not working...
-        CompilationUnit cu = simpleMake();
-        LexicalPreservingPrinter.setup(cu);
-        System.out.println(LexicalPreservingPrinter.print(cu));
-    }
-
-    private CompilationUnit simpleMake() {
+    private CompilationUnit simpleCompliationUnit() {
         //
         CompilationUnit cu = new CompilationUnit();
         ClassOrInterfaceDeclaration type = new ClassOrInterfaceDeclaration();
@@ -134,23 +211,7 @@ public class BasicParseTest {
         return cu;
     }
 
-    private String simpleCode() {
-        return  "class foo {\n" +
-                "    public static void main(String[] args) {\n" +
-                "        int a = 1;\n" +
-                "        \n" +
-                "        int b = 1;\n" +
-                "    }\n" +
-                "}\n";
-    }
-
-    @Test
-    public void testComplexParseWithAnnotations() {
-        CompilationUnit cu = JavaParser.parse(example());
-        System.out.println(cu);
-    }
-
-    private String example() {
+    private String complexCode() {
         return "/*\n" +
                 " * COPYRIGHT (c) NEXTREE Consulting 2014\n" +
                 " * This software is the proprietary of NEXTREE Consulting CO.\n" +

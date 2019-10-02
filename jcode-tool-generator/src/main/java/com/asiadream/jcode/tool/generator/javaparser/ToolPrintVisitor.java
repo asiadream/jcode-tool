@@ -6,9 +6,11 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import com.github.javaparser.printer.PrettyPrintVisitor;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
@@ -18,12 +20,101 @@ import java.util.stream.Collectors;
 
 import static com.github.javaparser.utils.PositionUtils.sortByBeginPosition;
 import static com.github.javaparser.utils.Utils.isNullOrEmpty;
+import static com.github.javaparser.utils.Utils.normalizeEolInTextBlock;
 
 public class ToolPrintVisitor extends PrettyPrintVisitor {
     //
     public ToolPrintVisitor(PrettyPrinterConfiguration prettyPrinterConfiguration) {
         super(prettyPrinterConfiguration);
     }
+
+    @Override
+    public void visit(FieldDeclaration n, Void arg) {
+        printOrphanCommentsBeforeThisChildNode(n);
+
+        // syhan modified
+        boolean isLineComment = isLineComment(n.getComment());
+        if (!isLineComment) {
+            printComment(n.getComment(), arg);
+        }
+        //
+        printMemberAnnotations(n.getAnnotations(), arg);
+        printModifiers(n.getModifiers());
+        if (!n.getVariables().isEmpty()) {
+            Optional<Type> maximumCommonType = n.getMaximumCommonType();
+            maximumCommonType.ifPresent(t -> t.accept(this, arg));
+            if (!maximumCommonType.isPresent()) {
+                printer.print("???");
+            }
+        }
+
+        printer.print(" ");
+        for (final Iterator<VariableDeclarator> i = n.getVariables().iterator(); i.hasNext(); ) {
+            final VariableDeclarator var = i.next();
+            var.accept(this, arg);
+            if (i.hasNext()) {
+                printer.print(", ");
+            }
+        }
+
+        printer.print(";");
+
+        // syhan added
+        if (isLineComment) {
+            printer.print(" ");
+            printLineComment(n.getComment());
+        }
+        //
+    }
+
+    // syhan added : see PrettyPrintVisitor.visit(final LineComment n, final Void arg)
+    private void printLineComment(Optional<Comment> comment) {
+        //
+        if (configuration.isIgnoreComments()) {
+            return;
+        }
+
+        comment.ifPresent(c -> printer.print("// ")
+                .print(normalizeEolInTextBlock(c.getContent(), "").trim()));
+    }
+
+    // syhan added
+    private boolean isLineComment(Optional<Comment> comment) {
+        //
+        return comment.map(Comment::isLineComment).orElse(false);
+    }
+
+    private void printOrphanCommentsBeforeThisChildNode(final Node node) {
+        if (configuration.isIgnoreComments()) return;
+        if (node instanceof Comment) return;
+
+        Node parent = node.getParentNode().orElse(null);
+        if (parent == null) return;
+        List<Node> everything = new LinkedList<>();
+        everything.addAll(parent.getChildNodes());
+        sortByBeginPosition(everything);
+        int positionOfTheChild = -1;
+        for (int i = 0; i < everything.size(); i++) {
+            if (everything.get(i) == node) positionOfTheChild = i;
+        }
+        if (positionOfTheChild == -1) {
+            throw new AssertionError("I am not a child of my parent.");
+        }
+        int positionOfPreviousChild = -1;
+        for (int i = positionOfTheChild - 1; i >= 0 && positionOfPreviousChild == -1; i--) {
+            if (!(everything.get(i) instanceof Comment)) positionOfPreviousChild = i;
+        }
+        for (int i = positionOfPreviousChild + 1; i < positionOfTheChild; i++) {
+            Node nodeToPrint = everything.get(i);
+            if (!(nodeToPrint instanceof Comment))
+                throw new RuntimeException(
+                        "Expected comment, instead " + nodeToPrint.getClass() + ". Position of previous child: "
+                                + positionOfPreviousChild + ", position of child " + positionOfTheChild);
+            nodeToPrint.accept(this, null);
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     @Override
     public void visit(ClassOrInterfaceDeclaration n, Void arg) {

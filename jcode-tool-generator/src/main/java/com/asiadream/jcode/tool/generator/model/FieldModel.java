@@ -12,6 +12,7 @@ public class FieldModel {
     private boolean isFinal;
     private List<AnnotationType> annotations;
     private String initializer;
+    private String lineComment;
 
     private FieldModel() {
         //
@@ -115,5 +116,13 @@ public class FieldModel {
 
     public void setInitializer(String initializer) {
         this.initializer = initializer;
+    }
+
+    public String getLineComment() {
+        return lineComment;
+    }
+
+    public void setLineComment(String lineComment) {
+        this.lineComment = lineComment;
     }
 }
