@@ -1,6 +1,10 @@
 package com.asiadream.jcode.tool.generator.source;
 
 import com.asiadream.jcode.tool.generator.JavaService;
+import com.asiadream.jcode.tool.generator.model.Access;
+import com.asiadream.jcode.tool.generator.model.ClassType;
+import com.asiadream.jcode.tool.generator.model.FieldModel;
+import com.asiadream.jcode.tool.generator.model.JavaModel;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -8,21 +12,45 @@ import java.io.File;
 
 public class JavaSourceTest {
     //
+
+    @Test
+    public void testCreateWithModel() {
+        //
+        JavaModel javaModel = new JavaModel("com.foo.Foo");
+        javaModel.addFieldModel(new FieldModel("name", ClassType.String)
+                .setAccess(Access.PRIVATE)
+                .setLineComment("This is a name"));
+        javaModel.addFieldModel(new FieldModel("age", ClassType.Int)
+                .setAccess(Access.PUBLIC)
+                .setStatic(true)
+                .setFinal(true)
+                .setLineComment("This is age"));
+
+        JavaSource javaSource = new JavaSource(javaModel);
+        javaSource.setUseOwnPrinter(true);
+        javaSource.calculateBlankOfLineComment();
+
+        System.out.println(javaSource.generate());
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // TODO : Move test codes to JavaServiceTest
     private static final String DELIM = File.separator;
     private static final String SOURCE_PROJECT_HOME = "src/test/resources/sample-project";
 
-    private JavaService javaService = new JavaService();
-
-    @Test
+    //@Test
     public void testIsExtends() {
         //
+        JavaService javaService = new JavaService();
         JavaSource javaSource = javaService.readJavaSource(SOURCE_PROJECT_HOME, "io.naradrama.talk.domain.entity.town.TalkTown");
         System.out.println(javaSource.isExtends("DramaEntity"));
         Assert.assertTrue(javaSource.isExtends("DramaEntity"));
     }
 
-    @Test
+    //@Test
     public void testIsInterface() {
+        JavaService javaService = new JavaService();
+
         JavaSource entitySource = javaService.readJavaSource(SOURCE_PROJECT_HOME, "io.naradrama.talk.domain.entity.town.TalkTown");
         Assert.assertFalse(entitySource.isInterface());
 

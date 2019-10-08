@@ -60,6 +60,13 @@ public class BasicParseTest {
         //
         CompilationUnit cu = fieldsCompliationUnit();
         System.out.println(cu.toString(myPrinter()));
+
+
+        PrettyPrinterConfiguration commentIgnore = new PrettyPrinterConfiguration();
+        commentIgnore.setPrintComments(false);
+        String fieldString = cu.getTypes().get(0).getMember(0).toString(commentIgnore);
+        System.out.println(fieldString);
+        System.out.println(fieldString.length());
     }
 
     @Test
@@ -152,6 +159,7 @@ public class BasicParseTest {
         //
         LineComment lineComment = new LineComment("this is a url...");
         fieldDeclaration.setComment(lineComment);
+        fieldDeclaration.setData(ToolPrintVisitor.KEY_LINE_COMMENT_BLANK_SIZE, 10);
 
         type.addMember(fieldDeclaration);
 

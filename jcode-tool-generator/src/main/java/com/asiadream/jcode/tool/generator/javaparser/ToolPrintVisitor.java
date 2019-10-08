@@ -1,5 +1,7 @@
 package com.asiadream.jcode.tool.generator.javaparser;
 
+import com.asiadream.jcode.tool.share.util.string.StringUtil;
+import com.github.javaparser.ast.DataKey;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
@@ -24,6 +26,9 @@ import static com.github.javaparser.utils.Utils.normalizeEolInTextBlock;
 
 public class ToolPrintVisitor extends PrettyPrintVisitor {
     //
+    public static DataKey<Integer> KEY_LINE_COMMENT_BLANK_SIZE = new DataKey<Integer>() {
+    };
+
     public ToolPrintVisitor(PrettyPrinterConfiguration prettyPrinterConfiguration) {
         super(prettyPrinterConfiguration);
     }
@@ -61,7 +66,9 @@ public class ToolPrintVisitor extends PrettyPrintVisitor {
 
         // syhan added
         if (isLineComment) {
-            printer.print(" ");
+            Integer blankSize = n.getData(KEY_LINE_COMMENT_BLANK_SIZE);
+            int size = Optional.ofNullable(blankSize).orElse(1);
+            printer.print(StringUtil.repeat(" ", size));
             printLineComment(n.getComment());
         }
         //

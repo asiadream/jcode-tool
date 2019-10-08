@@ -51,14 +51,16 @@ public class FieldModel {
 
     }
 
-    public void addAnnotation(AnnotationType annotation) {
+    public FieldModel addAnnotation(AnnotationType annotation) {
         //
         this.annotations.add(annotation);
+        return this;
     }
 
-    public void addAnnotation(String annotationClassName) {
+    public FieldModel addAnnotation(String annotationClassName) {
         //
         addAnnotation(new AnnotationType(annotationClassName));
+        return this;
     }
 
     public boolean hasAnnotation() {
@@ -70,24 +72,27 @@ public class FieldModel {
         return name;
     }
 
-    public void setName(String name) {
+    public FieldModel setName(String name) {
         this.name = name;
+        return this;
     }
 
     public Access getAccess() {
         return access;
     }
 
-    public void setAccess(Access access) {
+    public FieldModel setAccess(Access access) {
         this.access = access;
+        return this;
     }
 
     public ClassType getType() {
         return type;
     }
 
-    public void setType(ClassType type) {
+    public FieldModel setType(ClassType type) {
         this.type = type;
+        return this;
     }
 
     public List<AnnotationType> getAnnotations() {
@@ -98,31 +103,35 @@ public class FieldModel {
         return isStatic;
     }
 
-    public void setStatic(boolean aStatic) {
+    public FieldModel setStatic(boolean aStatic) {
         isStatic = aStatic;
+        return this;
     }
 
     public boolean isFinal() {
         return isFinal;
     }
 
-    public void setFinal(boolean aFinal) {
+    public FieldModel setFinal(boolean aFinal) {
         isFinal = aFinal;
+        return this;
     }
 
     public String getInitializer() {
         return initializer;
     }
 
-    public void setInitializer(String initializer) {
+    public FieldModel setInitializer(String initializer) {
         this.initializer = initializer;
+        return this;
     }
 
     public String getLineComment() {
         return lineComment;
     }
 
-    public void setLineComment(String lineComment) {
+    public FieldModel setLineComment(String lineComment) {
         this.lineComment = lineComment;
+        return this;
     }
 }

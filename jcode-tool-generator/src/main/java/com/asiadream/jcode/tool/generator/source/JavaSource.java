@@ -12,10 +12,7 @@ import com.asiadream.jcode.tool.share.rule.PackageRule;
 import com.asiadream.jcode.tool.share.util.file.PathUtil;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
 import com.github.javaparser.JavaParser;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.ImportDeclaration;
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.nodeTypes.NodeWithName;
@@ -34,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -803,6 +801,42 @@ public class JavaSource {
         //
         Optional<FieldDeclaration> existField = compilationUnit.getType(0).getFieldByName(fieldName);
         return existField.isPresent();
+    }
+
+    public void calculateBlankOfLineComment() {
+        //
+        if (!isClassOrInterface()) {
+            return;
+        }
+
+        PrettyPrinterConfiguration commentIgnore = new PrettyPrinterConfiguration();
+        commentIgnore.setPrintComments(false);
+
+        DataKey<Integer> CODE_LENGTH = new DataKey<Integer>() {
+        };
+
+        ClassOrInterfaceDeclaration classType = getClassOrInterface();
+        List<FieldDeclaration> fields = classType.getFields();
+
+        // Calculate the length of the code and max length.
+        AtomicInteger maxLength = new AtomicInteger();
+        fields.forEach(fieldDeclaration -> {
+            String code = fieldDeclaration.toString(commentIgnore);
+            int length = code.length();
+            fieldDeclaration.setData(CODE_LENGTH, length);
+
+            if (maxLength.get() < length) {
+                maxLength.set(length);
+            }
+        });
+
+        // Calculate the length of the blank of the line comment.
+        fields.forEach(fieldDeclaration -> {
+            int codeLength = fieldDeclaration.getData(CODE_LENGTH);
+            int blankSize = maxLength.get() - codeLength + 1;
+            logger.debug("blank size -> " + blankSize);
+            fieldDeclaration.setData(ToolPrintVisitor.KEY_LINE_COMMENT_BLANK_SIZE, blankSize);
+        });
     }
 
     public static void main(String[] args) {

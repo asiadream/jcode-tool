@@ -12,12 +12,8 @@ import com.asiadream.jcode.tool.generator.model.ClassType;
 import com.asiadream.jcode.tool.generator.model.FieldModel;
 import com.asiadream.jcode.tool.generator.model.JavaModel;
 import com.asiadream.jcode.tool.generator.reader.JavaReader;
-import com.asiadream.jcode.tool.generator.reader.SqlReader;
 import com.asiadream.jcode.tool.generator.sdo.ReferenceSdo;
 import com.asiadream.jcode.tool.generator.source.JavaSource;
-import com.asiadream.jcode.tool.generator.source.SqlSource;
-import com.asiadream.jcode.tool.generator.source.sql.CreateTableStatement;
-import com.asiadream.jcode.tool.generator.source.sql.SqlScript;
 import com.asiadream.jcode.tool.generator.source.sql.TableField;
 import com.asiadream.jcode.tool.generator.writer.JavaWriter;
 import com.asiadream.jcode.tool.share.config.ConfigurationType;
@@ -299,34 +295,12 @@ public class JavaService {
         // Update java source
         source.addFieldAll(nonDuplicateFields, source.getFieldsSize());
 
+        // Calculate blank size of the Line comment.
+        source.calculateBlankOfLineComment();
+
         // Write
         writeJavaSource(source, targetProjectPath);
     }
-
-//    @Deprecated
-//    private void addFields(String className, String targetProjectPath, String physicalScriptPath) {
-//        //
-//        // TODO
-//        // Read JavaSource
-//        JavaSource source = readJavaSource(targetProjectPath, className);
-//        logger.debug("read java --> {}", source);
-//        int fieldSize = source.getFieldsSize();
-//
-//        // Read Script
-//        SqlSource sqlSource = readSqlSourceByPhysicalPath(physicalScriptPath);
-//        logger.debug("read sql --> {}", sqlSource);
-//
-//        // update
-//        CreateTableStatement cts = sqlSource.findFirstCreateTableStatement();
-//        List<FieldModel> fields = cts.getFields().stream()
-//                .map(JavaService::convertField)
-//                .collect(Collectors.toList());
-//        source.addFieldAll(fields, fieldSize);
-//        logger.debug("update java --> {}", source);
-//
-//        // Write
-//        writeJavaSource(source, targetProjectPath);
-//    }
 
     private String getMetaLocation() {
         //
