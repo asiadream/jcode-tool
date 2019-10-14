@@ -1,6 +1,6 @@
 package com.asiadream.jcode.tool.generator.checker;
 
-import com.asiadream.jcode.tool.generator.source.JavaSource;
+import com.asiadream.jcode.tool.java.source.JavaSource;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;

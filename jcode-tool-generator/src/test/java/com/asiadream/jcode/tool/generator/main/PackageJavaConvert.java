@@ -1,7 +1,7 @@
 package com.asiadream.jcode.tool.generator.main;
 
-import com.asiadream.jcode.tool.generator.converter.JavaConverter;
 import com.asiadream.jcode.tool.generator.converter.PackageConverter;
+import com.asiadream.jcode.tool.java.converter.JavaConverter;
 import com.asiadream.jcode.tool.share.config.ConfigurationType;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
 

@@ -1,17 +1,19 @@
 package com.asiadream.jcode.tool.generator.converter;
 
-import com.asiadream.jcode.tool.generator.model.ClassType;
-import com.asiadream.jcode.tool.generator.model.JavaModel;
-import com.asiadream.jcode.tool.generator.model.MethodModel;
-import com.asiadream.jcode.tool.generator.reader.JavaReader;
-import com.asiadream.jcode.tool.generator.source.JavaSource;
-import com.asiadream.jcode.tool.generator.writer.JavaWriter;
+import com.asiadream.jcode.tool.java.model.ClassType;
+import com.asiadream.jcode.tool.java.model.JavaModel;
+import com.asiadream.jcode.tool.java.model.MethodModel;
+import com.asiadream.jcode.tool.java.reader.JavaReader;
+import com.asiadream.jcode.tool.java.source.JavaSource;
+import com.asiadream.jcode.tool.java.writer.JavaWriter;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
 import com.asiadream.jcode.tool.share.data.Pair;
 import com.asiadream.jcode.tool.share.rule.NameRule;
 import com.asiadream.jcode.tool.share.rule.PackageRule;
 import com.asiadream.jcode.tool.share.util.file.PathUtil;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
+import com.asiadream.jcode.tool.spec.converter.ProjectItemConverter;
+import com.asiadream.jcode.tool.spec.converter.ProjectItemType;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;

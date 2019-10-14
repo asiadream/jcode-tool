@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{35} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+	<root level="ERROR">
+		<appender-ref ref="console" />
+	</root>
+    <logger name="com.asiadream.jcode.tool.java.source.JavaSource" level="TRACE" />
+    <logger name="com.asiadream.jcode.tool.sql.source.SqlSource" level="TRACE" />
+    <logger name="com.asiadream.jcode.tool.java.JavaService" level="TRACE" />
+    <logger name="com.asiadream.jcode.tool.java.converter.JavaConverter" level="TRACE" />
+    <logger name="com.asiadream.jcode.tool.java.meta" level="DEBUG" />
+    <logger name="com.asiadream.jcode.tool.java.source" level="DEBUG" />
+
+</configuration>

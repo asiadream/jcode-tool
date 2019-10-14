@@ -1,7 +1,13 @@
 rootProject.name = 'jcode-tool'
 
 include 'jcode-tool-share'
-include 'jcode-tool-project'
+include 'jcode-tool-spec'
 include 'jcode-tool-generator'
+include 'jcode-tool-java'
+include 'jcode-tool-javascript'
+include 'jcode-tool-xml'
+include 'jcode-tool-groovy'
+include 'jcode-tool-sql'
+include 'jcode-tool-project'
 include 'jcode-tool-analyzer'
 

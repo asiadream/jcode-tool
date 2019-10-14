@@ -1,6 +1,6 @@
 package com.asiadream.jcode.tool.generator.checker;
 
-import com.asiadream.jcode.tool.generator.source.JavaSource;
+import com.asiadream.jcode.tool.java.source.JavaSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

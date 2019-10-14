@@ -1,6 +1,7 @@
 package com.asiadream.jcode.tool.project.complex;
 
 import com.asiadream.jcode.tool.generator.converter.*;
+import com.asiadream.jcode.tool.java.converter.JavaConverter;
 import com.asiadream.jcode.tool.project.creator.NestedProjectCreator;
 import com.asiadream.jcode.tool.project.model.ProjectModel;
 import com.asiadream.jcode.tool.share.config.ConfigurationType;
@@ -8,6 +9,8 @@ import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
 import com.asiadream.jcode.tool.share.config.SourceFolders;
 import com.asiadream.jcode.tool.share.rule.NameRule;
 import com.asiadream.jcode.tool.share.rule.PackageRule;
+import com.asiadream.jcode.tool.spec.converter.ProjectItemConverter;
+import com.asiadream.jcode.tool.spec.converter.ProjectItemType;
 
 import java.io.File;
 import java.io.IOException;

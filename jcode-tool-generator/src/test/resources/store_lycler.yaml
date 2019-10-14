@@ -1,6 +1,0 @@
-packageSuffix: domain.store.lifecycle
-nameSuffix: StoreLycler
-interfaceFile: true
-methods:
-  - name: request${refSimpleClassName}Store
-    type: ${refClassName}Store

@@ -9,7 +9,9 @@ repositories {
 }
 
 dependencies {
-    compile project(':jcode-tool-share')
+    compile project(':jcode-tool-spec')
     compile project(':jcode-tool-generator')
+    compile project(':jcode-tool-groovy')
+    compile project(':jcode-tool-xml')
     compile group: 'org.yaml', name: 'snakeyaml', version: '1.23'
 }

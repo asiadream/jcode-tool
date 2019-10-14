@@ -1,8 +1,10 @@
 package com.asiadream.jcode.tool.generator.converter;
 
-import com.asiadream.jcode.tool.generator.source.JavaSource;
+import com.asiadream.jcode.tool.java.converter.JavaConverter;
+import com.asiadream.jcode.tool.java.source.JavaSource;
 import com.asiadream.jcode.tool.share.rule.PackageRule;
 import com.asiadream.jcode.tool.share.util.file.PathUtil;
+import com.asiadream.jcode.tool.spec.converter.ProjectItemConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,14 +13,14 @@ import java.io.IOException;
 public class DtoManagingJavaConverter extends ProjectItemConverter {
     //
     private static Logger logger = LoggerFactory.getLogger(DtoManagingJavaConverter.class);
-
+    
     private PackageRule packageRule;
     private JavaConverter serviceJavaConverter;
     private JavaConverter stubJavaConverter;
 
     public DtoManagingJavaConverter(PackageRule packageRule, JavaConverter serviceJavaConverter, JavaConverter stubJavaConverter) {
         //
-        super(serviceJavaConverter.sourceConfiguration, serviceJavaConverter.projectItemType);
+        super(serviceJavaConverter.getSourceConfiguration(), serviceJavaConverter.getProjectItemType());
 
         this.packageRule = packageRule;
         this.serviceJavaConverter = serviceJavaConverter;

@@ -1,10 +1,10 @@
 package com.asiadream.jcode.tool.generator.checker;
 
-import com.asiadream.jcode.tool.generator.converter.ProjectItemConverter;
-import com.asiadream.jcode.tool.generator.converter.ProjectItemType;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
 import com.asiadream.jcode.tool.share.data.Pair;
 import com.asiadream.jcode.tool.share.util.file.PathUtil;
+import com.asiadream.jcode.tool.spec.converter.ProjectItemConverter;
+import com.asiadream.jcode.tool.spec.converter.ProjectItemType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +25,7 @@ public class ResourceDuplicationChecker extends ProjectItemConverter {
         //
         Pair<String, String> pathName = PathUtil.devideResourceName(sourceFileName);
         String shortName = pathName.y;
-
+        
         List<String> group = findOrCreateGroup(shortName);
         group.add(sourceFileName);
         return sourceFileName;
@@ -35,7 +35,7 @@ public class ResourceDuplicationChecker extends ProjectItemConverter {
         //
         List<String> group = nameGroup.get(shortName);
         if (group != null) return group;
-
+        
         group = new ArrayList<>();
         nameGroup.put(shortName, group);
         return nameGroup.get(shortName);

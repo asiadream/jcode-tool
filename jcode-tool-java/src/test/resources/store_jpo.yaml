@@ -1,0 +1,76 @@
+packageName: ${jpo.packageName}
+name: ${jpo.name}
+
+classAnnotations:
+  - type: lombok.Getter
+  - type: lombok.Setter
+  - type: lombok.NoArgsConstructor
+  - type: javax.persistence.Entity
+  - type: javax.persistence.Table
+    elements:
+      - name: name
+        value: ${entity.upperUnderscoreName}
+classExtends:
+  - ${DramaEntityJpo}
+
+fields:
+  - name: id
+    type: String
+    annotations:
+      - type: javax.persistence.Id
+eachField:
+  items: ${entity.fields}
+  handler: io.naraplatform.tool.generator.handler.JpoFieldHandler
+
+constructors:
+  - parameters:
+      - type: ${entity.className}
+    body: |
+      super(${entity.name});
+      BeanUtils.copyProperties(${entity.name}, this);
+
+methods:
+  # toDomain
+  - name: toDomain
+    type: ${entity.className}
+    access: PUBLIC
+    body: |
+      ${entity.simpleClassName} ${entity.name} = new ${entity.simpleClassName}(getId(), genPatronKey());
+      BeanUtils.copyProperties(this, ${entity.name});
+      return ${entity.name};
+    imports:
+      - org.springframework.beans.BeanUtils
+
+  # static toDomains
+  - name: toDomains
+    type: ${List}<${entity.className}>
+    access: PUBLIC
+    static: true
+    parameters:
+      - type: ${List}<${className}>
+        varName: ${entity.name}Jpos
+    body: return ${entity.name}Jpos.stream().map(${simpleClassName}::toDomain).collect(Collectors.toList());
+    imports:
+      - ${Collectors}
+
+  # toString
+  - name: toString
+    type: String
+    access: PUBLIC
+    body: return toJson();
+
+  # sample
+  - name: sample
+    type: ${className}
+    access: PUBLIC
+    static: true
+    body: return new ${simpleClassName}(${entity.simpleClassName}.sample());
+
+  # static main
+  - name: main
+    static: true
+    access: PUBLIC
+    parameters:
+      - type: String[]
+        varName: args
+    body: System.out.println(sample());

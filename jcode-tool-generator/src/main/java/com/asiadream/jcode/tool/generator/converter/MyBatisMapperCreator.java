@@ -1,17 +1,20 @@
 package com.asiadream.jcode.tool.generator.converter;
 
-import com.asiadream.jcode.tool.generator.model.*;
-import com.asiadream.jcode.tool.generator.reader.JavaReader;
-import com.asiadream.jcode.tool.generator.reader.XmlReader;
-import com.asiadream.jcode.tool.generator.source.JavaSource;
-import com.asiadream.jcode.tool.generator.source.XmlSource;
-import com.asiadream.jcode.tool.generator.writer.JavaWriter;
-import com.asiadream.jcode.tool.generator.writer.XmlWriter;
+import com.asiadream.jcode.tool.java.model.*;
+import com.asiadream.jcode.tool.java.reader.JavaReader;
+import com.asiadream.jcode.tool.java.source.JavaSource;
+import com.asiadream.jcode.tool.java.writer.JavaWriter;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
 import com.asiadream.jcode.tool.share.rule.NameRule;
 import com.asiadream.jcode.tool.share.rule.PackageRule;
 import com.asiadream.jcode.tool.share.util.file.PathUtil;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
+import com.asiadream.jcode.tool.spec.converter.ProjectItemConverter;
+import com.asiadream.jcode.tool.spec.converter.ProjectItemType;
+import com.asiadream.jcode.tool.xml.converter.SqlMapSource;
+import com.asiadream.jcode.tool.xml.reader.XmlReader;
+import com.asiadream.jcode.tool.xml.source.XmlSource;
+import com.asiadream.jcode.tool.xml.writer.XmlWriter;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
@@ -20,7 +23,7 @@ import java.util.List;
 public class MyBatisMapperCreator extends ProjectItemConverter {
     //
     private static final String MAPPER_SUFFIX = "Mapper";
-
+    
     private XmlReader xmlReader;
     private XmlWriter xmlWriter;
     private JavaReader daoReader;
@@ -130,7 +133,7 @@ public class MyBatisMapperCreator extends ProjectItemConverter {
                 javaModel.addMethodModel(createMyBatisMapperMethodModel(element, daoModel));
             }
         }
-
+        
         // Copy dao Comment if exists.
         if (daoModel != null) {
             javaModel.setNodeComment(daoModel.getNodeComment());

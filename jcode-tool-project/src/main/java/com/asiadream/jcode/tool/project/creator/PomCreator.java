@@ -1,13 +1,13 @@
 package com.asiadream.jcode.tool.project.creator;
 
-import com.asiadream.jcode.tool.generator.source.XmlSource;
-import com.asiadream.jcode.tool.generator.writer.XmlWriter;
 import com.asiadream.jcode.tool.project.model.Dependency;
 import com.asiadream.jcode.tool.project.model.DependencyType;
 import com.asiadream.jcode.tool.project.model.ProjectModel;
 import com.asiadream.jcode.tool.project.model.ProjectProperty;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
 import com.asiadream.jcode.tool.share.util.xml.DomUtil;
+import com.asiadream.jcode.tool.xml.source.XmlSource;
+import com.asiadream.jcode.tool.xml.writer.XmlWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

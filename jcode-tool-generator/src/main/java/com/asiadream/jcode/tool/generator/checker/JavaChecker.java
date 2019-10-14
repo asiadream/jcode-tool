@@ -1,10 +1,10 @@
 package com.asiadream.jcode.tool.generator.checker;
 
-import com.asiadream.jcode.tool.generator.converter.ProjectItemConverter;
-import com.asiadream.jcode.tool.generator.converter.ProjectItemType;
-import com.asiadream.jcode.tool.generator.reader.JavaReader;
-import com.asiadream.jcode.tool.generator.source.JavaSource;
+import com.asiadream.jcode.tool.java.reader.JavaReader;
+import com.asiadream.jcode.tool.java.source.JavaSource;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
+import com.asiadream.jcode.tool.spec.converter.ProjectItemConverter;
+import com.asiadream.jcode.tool.spec.converter.ProjectItemType;
 
 import java.io.IOException;
 
@@ -21,7 +21,7 @@ public class JavaChecker extends ProjectItemConverter {
         this.checker = checker;
         this.extChecker = extChecker;
     }
-
+    
     @Override
     public String convert(String sourceFilePath) throws IOException {
         //

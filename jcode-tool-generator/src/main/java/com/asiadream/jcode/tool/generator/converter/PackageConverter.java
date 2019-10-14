@@ -3,6 +3,8 @@ package com.asiadream.jcode.tool.generator.converter;
 import com.asiadream.jcode.tool.share.config.ProjectSources;
 import com.asiadream.jcode.tool.share.config.SourceFolders;
 import com.asiadream.jcode.tool.share.util.file.PathUtil;
+import com.asiadream.jcode.tool.spec.converter.ProjectItemConverter;
+import com.asiadream.jcode.tool.spec.converter.ProjectItemType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,10 +39,10 @@ public class PackageConverter {
 
     private String getPhysicalSourcePath(String sourcePath) {
         //
-        if (converter.projectItemType == ProjectItemType.Java) {
-            return converter.sourceConfiguration.makePhysicalJavaSourceFilePath(sourcePath);
+        if (converter.getProjectItemType() == ProjectItemType.Java) {
+            return converter.getSourceConfiguration().makePhysicalJavaSourceFilePath(sourcePath);
         } else {
-            return converter.sourceConfiguration.makePhysicalResourceFilePath(sourcePath);
+            return converter.getSourceConfiguration().makePhysicalResourceFilePath(sourcePath);
         }
     }
 
@@ -48,7 +50,7 @@ public class PackageConverter {
         //
         String sourceFile = null;
         try {
-            SourceFolders sourceFolders = converter.sourceConfiguration.getSourceFolders();
+            SourceFolders sourceFolders = converter.getSourceConfiguration().getSourceFolders();
             String physicalPathName = path.toString();
             sourceFile = ProjectSources.extractSourceFilePath(physicalPathName, sourceFolders);
 

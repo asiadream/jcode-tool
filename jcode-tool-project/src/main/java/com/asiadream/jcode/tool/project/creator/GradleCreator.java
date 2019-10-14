@@ -1,8 +1,8 @@
 package com.asiadream.jcode.tool.project.creator;
 
-import com.asiadream.jcode.tool.generator.source.GradleSource;
-import com.asiadream.jcode.tool.generator.source.gradle.*;
-import com.asiadream.jcode.tool.generator.writer.GradleWriter;
+import com.asiadream.jcode.tool.groovy.model.*;
+import com.asiadream.jcode.tool.groovy.source.GradleSource;
+import com.asiadream.jcode.tool.groovy.writer.GradleWriter;
 import com.asiadream.jcode.tool.project.model.Dependency;
 import com.asiadream.jcode.tool.project.model.ProjectModel;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
