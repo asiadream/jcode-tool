@@ -1,10 +1,8 @@
 package com.asiadream.jcode.tool.share.config;
 
-import java.io.File;
-
 public abstract class ProjectSources {
     //
-    public static final String PATH_DELIM = File.separator;
+    //public static final String PATH_DELIM = File.separator;
     public static final SourceFolders SOURCE_FOLDERS = SourceFolders.getDefault();
 //
 //    public static final String SRC_MAIN_JAVA      = String.format("src%smain%sjava", PATH_DELIM, PATH_DELIM);          // src/main/java

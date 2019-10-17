@@ -1,15 +1,21 @@
 package com.asiadream.jcode.tool.share.util.file;
 
-import com.asiadream.jcode.tool.share.config.ProjectSources;
 import com.asiadream.jcode.tool.share.data.Pair;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 public abstract class PathUtil {
     //
+    private static Logger logger = LoggerFactory.getLogger(PathUtil.class);
+    private static final String SEPARATOR = "/";
+
     // com.foo.bar -> com/foo/bar
     public static String toPath(String packageName) {
         //
-        return packageName.replace(".", ProjectSources.PATH_DELIM);
+        return packageName.replace(".", SEPARATOR);
     }
 
     // mc.oo.od.Sample -> mc.oo.od, Sample
@@ -33,7 +39,8 @@ public abstract class PathUtil {
     // com/foo/bar/SampleDto.xml -> com/foo/bar, SampleDto.xml
     public static Pair<String, String> devideResourceName(String sourceFilePath) {
         //
-        String[] paths = sourceFilePath.split(ProjectSources.PATH_DELIM.equals("\\") ? "\\\\" : ProjectSources.PATH_DELIM); // for Windows
+        final String separator = getSeparator(sourceFilePath);
+        String[] paths = sourceFilePath.split(separator.equals("\\") ? "\\\\" : separator); // for Windows
         int length = paths.length;
 
         StringBuffer sb = new StringBuffer();
@@ -41,17 +48,26 @@ public abstract class PathUtil {
         for (int i = 0; i < length - 1; i++) {
             sb.append(paths[i]);
             if (i < length - 2) {
-                sb.append(ProjectSources.PATH_DELIM);
+                sb.append(separator);
             }
         }
 
         return new Pair<>(sb.toString(), paths[length - 1]);
     }
 
+    public static String getSeparator(String projectPath) {
+        //
+        if (projectPath.contains(File.separator)) {
+            return File.separator;
+        }
+        return SEPARATOR;
+    }
+
     // com/foo/bar/SampleDto.java -> com.foo.bar.SampleDto
     public static String toClassName(String sourceFilePath) {
         //
-        String[] paths = sourceFilePath.split(ProjectSources.PATH_DELIM.equals("\\") ? "\\\\" : ProjectSources.PATH_DELIM); // for Windows
+        final String seperator = getSeparator(sourceFilePath);
+        String[] paths = sourceFilePath.split(seperator.equals("\\") ? "\\\\" : seperator); // for Windows
         int length = paths.length;
         String fileName = paths[length - 1];
         int dotIndex = fileName.indexOf(".");
@@ -65,6 +81,7 @@ public abstract class PathUtil {
         }
         sb.append(name);
 
+        logger.debug("toClassName: {} -> {}", sourceFilePath, sb.toString());
         return sb.toString();
     }
 
@@ -80,7 +97,7 @@ public abstract class PathUtil {
         for (int i = 0; i < length; i++) {
             sb.append(packageFrags[i]);
             if (i < length - 1) {
-                sb.append(ProjectSources.PATH_DELIM);
+                sb.append(SEPARATOR);
             }
         }
 
@@ -180,7 +197,8 @@ public abstract class PathUtil {
 
     public static String changePath(String sourceFilePath, int skipFolderCount, String[] addFolders, String skipNamePostFix, String namePostFix, String extension) {
         //
-        String[] paths = sourceFilePath.split(ProjectSources.PATH_DELIM.equals("\\") ? "\\\\" : ProjectSources.PATH_DELIM); // for Windows
+        final String separator = getSeparator(sourceFilePath);
+        String[] paths = sourceFilePath.split(separator.equals("\\") ? "\\\\" : separator); // for Windows
         int length = paths.length;
         String fileName = paths[length - 1];
         int dotIndex = fileName.indexOf(".");
@@ -191,14 +209,14 @@ public abstract class PathUtil {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < length - 1 - skipFolderCount; i++) {
             sb.append(paths[i]);
-            sb.append(ProjectSources.PATH_DELIM);
+            sb.append(separator);
         }
 
         // add folders to new path
         if (addFolders != null && addFolders.length > 0) {
             for (int i = 0; i < addFolders.length; i++) {
                 sb.append(addFolders[i]);
-                sb.append(ProjectSources.PATH_DELIM);
+                sb.append(separator);
             }
         }
 

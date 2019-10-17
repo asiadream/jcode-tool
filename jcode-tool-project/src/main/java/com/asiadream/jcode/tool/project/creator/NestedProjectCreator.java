@@ -1,7 +1,8 @@
 package com.asiadream.jcode.tool.project.creator;
 
 import com.asiadream.jcode.tool.project.model.ProjectModel;
-import com.asiadream.jcode.tool.share.config.ProjectSources;
+
+import java.io.File;
 
 public class NestedProjectCreator {
     //
@@ -29,7 +30,7 @@ public class NestedProjectCreator {
 
         if (model.hasChildren()) {
             for (ProjectModel child : model.getChildren()) {
-                createProject(child, targetHomePath + ProjectSources.PATH_DELIM + model.getName(), isGradle);
+                createProject(child, targetHomePath + File.separator + model.getName(), isGradle);
             }
         }
     }

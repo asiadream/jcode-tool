@@ -105,4 +105,15 @@ public class PathUtilTest {
         System.out.println(result);
         Assert.assertEquals(after, result);
     }
+
+    @Test
+    public void testToClassName2() {
+        // com/foo/bar/SampleDto.java -> com.foo.bar.SampleDto
+        String before = "com/foo/bar/SampleDto.java";
+        String after = "com.foo.bar.SampleDto";
+
+        String result = PathUtil.toClassName(before);
+        System.out.println(result);
+        Assert.assertEquals(after, result);
+    }
 }
