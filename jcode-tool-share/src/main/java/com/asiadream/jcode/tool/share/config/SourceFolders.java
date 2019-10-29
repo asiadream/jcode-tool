@@ -4,36 +4,36 @@ import java.io.File;
 
 public class SourceFolders {
     //
-    public final String SRC_MAIN_JAVA;
-    public final String SRC_MAIN_RESOURCES;
-    public final String SRC_TEST_JAVA;
-    public final String SRC_TEST_RESOURCES;
+    private static final String PATH_DELIM = File.separator;
+    public static final SourceFolders JavaFolders = new SourceFolders(
+            String.format("src%smain%sjava", PATH_DELIM, PATH_DELIM),
+            String.format("src%smain%sresources", PATH_DELIM, PATH_DELIM),
+            String.format("src%stest%sjava", PATH_DELIM, PATH_DELIM),
+            String.format("src%stest%sresources", PATH_DELIM, PATH_DELIM)
+    );
+    public static final SourceFolders JsFolders = new SourceFolders(
+            "src", "resources", "test", "test"
+    );
 
-    private SourceFolders() {
-        //
-        String PATH_DELIM = File.separator;
-        this.SRC_MAIN_JAVA      = String.format("src%smain%sjava", PATH_DELIM, PATH_DELIM);
-        this.SRC_MAIN_RESOURCES = String.format("src%smain%sresources", PATH_DELIM, PATH_DELIM);
-        this.SRC_TEST_JAVA      = String.format("src%stest%sjava", PATH_DELIM, PATH_DELIM);
-        this.SRC_TEST_RESOURCES = String.format("src%stest%sresources", PATH_DELIM, PATH_DELIM);
-    }
+    public final String source;
+    public final String resources;
+    public final String testSource;
+    public final String testResources;
 
-    private SourceFolders(String srcMainJava, String srcMainResources) {
-        //
-        String PATH_DELIM = File.separator;
-        this.SRC_MAIN_JAVA = srcMainJava == null ? String.format("src%smain%sjava", PATH_DELIM, PATH_DELIM) : srcMainJava;
-        this.SRC_MAIN_RESOURCES = srcMainResources == null ? String.format("src%smain%sresources", PATH_DELIM, PATH_DELIM) : srcMainResources;
-        this.SRC_TEST_JAVA      = String.format("src%stest%sjava", PATH_DELIM, PATH_DELIM);
-        this.SRC_TEST_RESOURCES = String.format("src%stest%sresources", PATH_DELIM, PATH_DELIM);
-    }
-
-    public static SourceFolders getDefault() {
-        //
-        return new SourceFolders();
+    public SourceFolders(String source, String resources, String testSource, String testResources) {
+        this.source = source;
+        this.resources = resources;
+        this.testSource = testSource;
+        this.testResources = testResources;
     }
 
     public static SourceFolders newSourceFolders(String srcMainJava, String srcMainResources) {
         //
-        return new SourceFolders(srcMainJava, srcMainResources);
+        return new SourceFolders(
+                srcMainJava != null ? srcMainJava : JavaFolders.source,
+                srcMainResources != null ? srcMainResources : JavaFolders.resources,
+                JavaFolders.testSource,
+                JavaFolders.testResources
+        );
     }
 }

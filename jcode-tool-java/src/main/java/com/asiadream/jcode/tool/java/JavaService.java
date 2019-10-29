@@ -157,7 +157,7 @@ public class JavaService {
         ProjectConfiguration targetConfiguration = new ProjectConfiguration(ConfigurationType.Target, targetProjectPath, lexicalPreserving, useOwnPrinter);
         JavaCreator creator = new JavaCreator(targetConfiguration);
         try {
-            creator.create(javaModel.getSourceFileName(), javaModel);
+            creator.create(javaModel);
             return javaModel.getClassName();
         } catch (IOException e) {
             throw new RuntimeException(e);

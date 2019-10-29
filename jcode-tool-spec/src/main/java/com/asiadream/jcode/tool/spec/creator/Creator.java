@@ -5,7 +5,7 @@ import com.asiadream.jcode.tool.spec.model.SourceModel;
 import java.io.IOException;
 
 // The creator is responsible for creating a new source.
-public interface Creator {
+public interface Creator<T extends SourceModel> {
     //
-    void create(String sourceFileName, SourceModel model) throws IOException;
+    void create(T model) throws IOException;
 }

@@ -11,6 +11,7 @@ import com.asiadream.jcode.tool.share.rule.NameRule;
 import com.asiadream.jcode.tool.share.rule.PackageRule;
 import com.asiadream.jcode.tool.share.util.file.PathUtil;
 import com.asiadream.jcode.tool.share.util.string.StringUtil;
+import com.asiadream.jcode.tool.spec.source.Source;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
@@ -36,13 +37,13 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
-public class JavaSource {
+public class JavaSource implements Source {
     //
     private static final Logger logger = LoggerFactory.getLogger(JavaSource.class);
 
     private CompilationUnit compilationUnit;
     private String physicalSourceFile;
-    
+
     private boolean lexicalPreserving;
     private boolean useOwnPrinter;
 
@@ -124,6 +125,7 @@ public class JavaSource {
     }
 
     // com/foo/bar/SampleService.java
+    @Override
     public String getSourceFilePath() {
         //
         //String packageName = compilationUnit.getPackageDeclaration().get().getNameAsString();
@@ -232,7 +234,7 @@ public class JavaSource {
 
         compilationUnit.addImport(packageName + "." + name);
     }
-    
+
     public String getExtendedType() {
         //
         if (!isClassOrInterface()) {
@@ -758,11 +760,13 @@ public class JavaSource {
         }
     }
 
+    @Override
     public void write(String physicalTargetFilePath) throws IOException {
         //
         File file = new File(physicalTargetFilePath);
         String generated = generate();
         if (logger.isTraceEnabled()) {
+            logger.trace(physicalTargetFilePath);
             logger.trace(generated);
         }
 

@@ -57,7 +57,7 @@ public class AnnotationTypeTest extends BaseFileTest {
         ProjectConfiguration targetConfiguration = new ProjectConfiguration(ConfigurationType.Target, super.testDirName);
         JavaCreator creator = new JavaCreator(targetConfiguration);
         try {
-            creator.create(javaModel.getSourceFileName(), javaModel);
+            creator.create(javaModel);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

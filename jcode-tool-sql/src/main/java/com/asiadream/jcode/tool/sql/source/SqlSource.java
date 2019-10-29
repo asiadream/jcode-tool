@@ -1,13 +1,16 @@
 package com.asiadream.jcode.tool.sql.source;
 
 import com.asiadream.jcode.tool.share.util.file.FileReadUtil;
+import com.asiadream.jcode.tool.spec.source.Source;
 import com.asiadream.jcode.tool.sql.model.CreateTableStatement;
 import com.asiadream.jcode.tool.sql.model.SqlScript;
 import com.asiadream.jcode.tool.sql.model.SqlStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SqlSource {
+import java.io.IOException;
+
+public class SqlSource implements Source {
     //
     private static final Logger logger = LoggerFactory.getLogger(SqlSource.class);
 
@@ -35,6 +38,17 @@ public class SqlSource {
                 return (CreateTableStatement) sqlStatement;
             }
         }
+        return null;
+    }
+
+    @Override
+    public void write(String physicalTargetFilePath) throws IOException {
+        // Not implemented yet
+    }
+
+    @Override
+    public String getSourceFilePath() {
+        // Not implemented yet
         return null;
     }
 }

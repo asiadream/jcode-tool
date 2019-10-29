@@ -64,6 +64,6 @@ public class JavaCreatorTest extends BaseFileTest {
                 .body("return (new Gson()).fromJson(json, " + simpleClassName + ".class);");
         javaModel.addMethodModel(fromJsonMethod);
 
-        creator.create("Foo.java", javaModel);
+        creator.create(javaModel);
     }
 }

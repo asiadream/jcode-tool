@@ -1,6 +1,7 @@
 package com.asiadream.jcode.tool.groovy.source;
 
 import com.asiadream.jcode.tool.groovy.model.GradleScript;
+import com.asiadream.jcode.tool.spec.source.Source;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 
-public class GradleSource {
+public class GradleSource implements Source {
     //
     private static final Logger logger = LoggerFactory.getLogger(GradleSource.class);
 
@@ -21,6 +22,7 @@ public class GradleSource {
         this.sourceFilePath = sourceFilePath;
     }
 
+    @Override
     public void write(String physicalTargetFilePath) throws IOException {
         //
         File file = new File(physicalTargetFilePath);
@@ -34,6 +36,7 @@ public class GradleSource {
         return gradleScript;
     }
 
+    @Override
     public String getSourceFilePath() {
         return sourceFilePath;
     }

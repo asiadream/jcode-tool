@@ -38,12 +38,17 @@ public class ProjectConfiguration {
 
     public ProjectConfiguration(ConfigurationType type, String projectHomePath, boolean lexicalPreserving, boolean useOwnPrinter) {
         //
-        this(type, projectHomePath, ProjectSources.SOURCE_FOLDERS, lexicalPreserving, useOwnPrinter);
+        this(type, projectHomePath, SourceFolders.JavaFolders, lexicalPreserving, useOwnPrinter);
     }
 
     public ProjectConfiguration(ConfigurationType type, String projectHomePath) {
         //
-        this(type, projectHomePath, ProjectSources.SOURCE_FOLDERS, false, false);
+        this(type, projectHomePath, SourceFolders.JavaFolders, false, false);
+    }
+
+    public ProjectConfiguration(ConfigurationType type, String projectHomePath, SourceFolders sourceFolders) {
+        //
+        this(type, projectHomePath, sourceFolders, false, false);
     }
 
     public ProjectConfiguration(ConfigurationType type, String projectHomePath, SourceFolders sourceFolders, boolean lexicalPreserving, boolean useOwnPrinter) {
@@ -51,10 +56,10 @@ public class ProjectConfiguration {
         this.type = type;
         this.projectHomePath = projectHomePath;
         this.sourceFolders = sourceFolders;
-        this.physicalJavaPath = projectHomePath + PATH_DELIM + sourceFolders.SRC_MAIN_JAVA;
-        this.physicalResourcesPath = projectHomePath + PATH_DELIM + sourceFolders.SRC_MAIN_RESOURCES;
-        this.physicalTestPath = projectHomePath + PATH_DELIM + sourceFolders.SRC_TEST_JAVA;
-        this.physicalTestResourcesPath = projectHomePath + PATH_DELIM + sourceFolders.SRC_TEST_RESOURCES;
+        this.physicalJavaPath = projectHomePath + PATH_DELIM + sourceFolders.source;
+        this.physicalResourcesPath = projectHomePath + PATH_DELIM + sourceFolders.resources;
+        this.physicalTestPath = projectHomePath + PATH_DELIM + sourceFolders.testSource;
+        this.physicalTestResourcesPath = projectHomePath + PATH_DELIM + sourceFolders.testResources;
         this.lexicalPreserving = lexicalPreserving;
         this.useOwnPrinter = useOwnPrinter;
     }

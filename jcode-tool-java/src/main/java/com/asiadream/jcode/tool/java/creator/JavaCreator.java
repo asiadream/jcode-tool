@@ -5,11 +5,10 @@ import com.asiadream.jcode.tool.java.source.JavaSource;
 import com.asiadream.jcode.tool.java.writer.JavaWriter;
 import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
 import com.asiadream.jcode.tool.spec.creator.ProjectItemCreator;
-import com.asiadream.jcode.tool.spec.model.SourceModel;
 
 import java.io.IOException;
 
-public class JavaCreator extends ProjectItemCreator {
+public class JavaCreator extends ProjectItemCreator<JavaModel> {
     //
     private JavaWriter javaWriter;
 
@@ -20,10 +19,9 @@ public class JavaCreator extends ProjectItemCreator {
     }
 
     @Override
-    public void create(String sourceFileName, SourceModel model) throws IOException {
+    public void create(JavaModel model) throws IOException {
         //
-        JavaModel javaModel = (JavaModel) model; // FIXME : without casting...
-        JavaSource javaSource = new JavaSource(javaModel);
+        JavaSource javaSource = new JavaSource(model);
         javaWriter.write(javaSource);
     }
 }

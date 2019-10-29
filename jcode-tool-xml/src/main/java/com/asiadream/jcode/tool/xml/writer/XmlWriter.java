@@ -4,7 +4,6 @@ import com.asiadream.jcode.tool.share.config.ProjectConfiguration;
 import com.asiadream.jcode.tool.spec.writer.Writer;
 import com.asiadream.jcode.tool.xml.source.XmlSource;
 
-import javax.xml.transform.TransformerException;
 import java.io.IOException;
 
 public class XmlWriter implements Writer<XmlSource> {
@@ -29,11 +28,6 @@ public class XmlWriter implements Writer<XmlSource> {
 
     private void writeSource(XmlSource source, String physicalTargetFilePath) throws IOException {
         //
-        try {
-            source.write(physicalTargetFilePath);
-        } catch (TransformerException e) {
-            e.printStackTrace();
-            throw new IOException(e);
-        }
+        source.write(physicalTargetFilePath);
     }
 }

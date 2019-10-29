@@ -1,6 +1,7 @@
 package com.asiadream.jcode.tool.xml.source;
 
 import com.asiadream.jcode.tool.share.util.xml.DomUtil;
+import com.asiadream.jcode.tool.spec.source.Source;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -14,7 +15,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
 
-public class XmlSource {
+public class XmlSource implements Source {
     //
     private Document document;
     private String sourceFilePath;
@@ -49,16 +50,21 @@ public class XmlSource {
         return document;
     }
 
-    public void write(String physicalTargetFilePath) throws TransformerException {
+    @Override
+    public void write(String physicalTargetFilePath) throws IOException {
         //
         createParentDirectory(physicalTargetFilePath);
 
-        Transformer transformer = DomUtil.newTransformer(this.document.getDoctype());
-        this.document.setXmlStandalone(true);
-        DOMSource source = new DOMSource(this.document);
-        // File write
-        StreamResult result = new StreamResult(new File(physicalTargetFilePath));
-        transformer.transform(source, result);
+        try {
+            Transformer transformer = DomUtil.newTransformer(this.document.getDoctype());
+            this.document.setXmlStandalone(true);
+            DOMSource source = new DOMSource(this.document);
+            // File write
+            StreamResult result = new StreamResult(new File(physicalTargetFilePath));
+            transformer.transform(source, result);
+        } catch (TransformerException e) {
+            throw new IOException(e);
+        }
 
         // Console write
         // TODO : using Logger
@@ -75,6 +81,7 @@ public class XmlSource {
         }
     }
 
+    @Override
     public String getSourceFilePath() {
         //
         return sourceFilePath;
